@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>손금왕 — AI 손금 풀이</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0c17; --bg2:#181325; --card:#1f1930; --line:#2e2643;
+  --gold:#e0bd72; --gold2:#f6dfa6; --txt:#efe9f7; --sub:#a69cbd; --mute:#6f6688;
+  --life:#ff8a7a; --head:#7fc8ff; --heart:#ff7fc1; --fate:#b6f07f; --sun:#ffd36b;
+  --r:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--txt);font-family:'Noto Sans KR',sans-serif;min-height:100%}
+body{background:
+  radial-gradient(120% 60% at 50% -10%,#3a2a5c55,transparent 60%),
+  radial-gradient(80% 40% at 100% 100%,#5a3a2a33,transparent 60%),var(--bg);}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding:0 18px 40px;position:relative}
+.serif{font-family:'Gowun Batang',serif}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:16px 0 8px}
+.logo{display:flex;align-items:center;gap:8px;font-family:'Gowun Batang',serif;font-weight:700;font-size:20px;color:var(--gold2);cursor:pointer}
+.logo svg{width:26px;height:26px}
+.chip{font-size:11px;color:var(--sub);border:1px solid var(--line);padding:5px 10px;border-radius:99px;background:#ffffff08;cursor:pointer}
+.chip b{color:var(--gold)}
+.screen{display:none;animation:fade .35s ease}
+.screen.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* home */
+.hero{text-align:center;padding:26px 0 18px}
+.hero .palm{width:150px;height:150px;margin:0 auto 14px;position:relative}
+.hero .palm svg{width:100%;height:100%}
+.hero h1{font-family:'Gowun Batang',serif;font-size:30px;line-height:1.3;color:var(--gold2)}
+.hero p{color:var(--sub);font-size:14px;margin-top:8px;line-height:1.6}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.mode{background:linear-gradient(160deg,#2a2140,#1b1529);border:1px solid var(--line);border-radius:var(--r);padding:18px 14px;cursor:pointer;text-align:left;color:var(--txt);transition:.2s}
+.mode:active{transform:scale(.98)}
+.mode:hover{border-color:#e0bd7266}
+.mode .ic{font-size:26px}
+.mode h3{font-size:16px;margin:10px 0 4px}
+.mode p{font-size:12px;color:var(--sub);line-height:1.5}
+.mode.main{grid-column:1/-1;background:linear-gradient(135deg,#3b2a1a,#2a1f35);border-color:#e0bd7255;display:flex;gap:14px;align-items:center}
+.mode.main h3{margin-top:0;color:var(--gold2)}
+.sect-t{font-size:13px;color:var(--sub);margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+.sect-t::after{content:"";flex:1;height:1px;background:var(--line)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{border:1px solid var(--line);background:#ffffff06;color:var(--sub);padding:8px 14px;border-radius:99px;font-size:13px;cursor:pointer}
+.opt.on{border-color:var(--gold);color:var(--gold2);background:#e0bd7214}
+.tips{background:var(--card);border-radius:var(--r);padding:16px;margin-top:16px;font-size:13px;color:var(--sub);line-height:1.8}
+.tips b{color:var(--txt)}
+.foot{font-size:11px;color:var(--mute);text-align:center;margin-top:26px;line-height:1.6}
+
+/* photo */
+.drop{border:1.5px dashed #e0bd7266;border-radius:var(--r);min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;text-align:center;background:#ffffff04;cursor:pointer;position:relative;overflow:hidden}
+.drop .big{font-size:44px}
+.drop p{color:var(--sub);font-size:13px;line-height:1.6}
+.stage{position:relative;border-radius:var(--r);overflow:hidden;background:#000}
+.stage img{display:block;width:100%;height:auto}
+.stage svg.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ov path{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px currentColor);stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.scan{position:absolute;left:0;right:0;height:80px;top:-80px;background:linear-gradient(180deg,transparent,#e0bd7255,transparent);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{top:100%}}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn.gold{background:linear-gradient(135deg,#f3d58f,#c99a45);color:#2a1a08}
+.btn.ghost{background:#ffffff0a;color:var(--txt);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+label.pick{position:relative;overflow:hidden}
+label.pick input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+label.drop{display:flex}
+.row{display:flex;gap:10px;margin-top:12px}
+.row .btn{flex:1}
+.status{text-align:center;color:var(--gold2);font-family:'Gowun Batang',serif;font-size:17px;margin:16px 0 6px;min-height:24px}
+.substatus{text-align:center;color:var(--sub);font-size:12px}
+
+/* result */
+.rtype{text-align:center;padding:22px 16px;background:linear-gradient(160deg,#2c2140,#1a1426);border-radius:var(--r);border:1px solid #e0bd7244;margin:14px 0}
+.rtype .em{font-size:44px}
+.rtype h2{font-family:'Gowun Batang',serif;color:var(--gold2);font-size:24px;margin:6px 0}
+.rtype p{color:var(--sub);font-size:13px;line-height:1.6}
+.speak{display:flex;align-items:center;gap:10px;background:#e0bd7218;border:1px solid #e0bd7244;border-radius:14px;padding:12px 14px;margin:12px 0;cursor:pointer}
+.speak .pl{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#2a1a08;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.speak .t{font-size:13px;color:var(--gold2)}
+.speak .t small{display:block;color:var(--sub);font-size:11px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.lg{font-size:11px;padding:4px 9px;border-radius:99px;background:#ffffff0a;display:flex;align-items:center;gap:5px;cursor:pointer;border:1px solid transparent}
+.lg i{width:8px;height:8px;border-radius:50%;display:block}
+.lg.on{border-color:currentColor}
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin-top:10px}
+.card h4{font-size:14px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.card h4 i{width:10px;height:10px;border-radius:50%}
+.card p{font-size:14px;line-height:1.75;color:#ddd5ea}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.sc{background:var(--card);border-radius:14px;padding:12px}
+.sc .k{font-size:12px;color:var(--sub);display:flex;justify-content:space-between}
+.sc .k b{color:var(--gold2);font-size:15px}
+.bar{height:6px;border-radius:9px;background:#ffffff10;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#c99a45,#f6dfa6);width:0;transition:width 1.2s ease}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:12px;color:var(--gold2);background:#e0bd7214;padding:5px 10px;border-radius:99px}
+.retake{background:#3a1f2a;border:1px solid #ff8a7a55;border-radius:var(--r);padding:16px;margin-top:14px;font-size:14px;line-height:1.7}
+
+/* live */
+.cam{position:relative;border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:3/4}
+.cam video{width:100%;height:100%;object-fit:cover;display:block}
+.cam .guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.cam .guide svg{width:72%;opacity:.55}
+.cam .live{position:absolute;top:12px;left:12px;font-size:11px;background:#ff3b3bcc;color:#fff;padding:4px 9px;border-radius:99px;display:none}
+.cam .live.on{display:block;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.5}}
+.cam .sub{position:absolute;left:10px;right:10px;bottom:12px;background:#0f0c17d9;backdrop-filter:blur(6px);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.6;font-family:'Gowun Batang',serif;color:var(--gold2);min-height:52px;display:none}
+.cam .sub.on{display:block}
+.steps{display:flex;gap:4px;margin:12px 0}
+.steps span{flex:1;height:4px;border-radius:9px;background:#ffffff14}
+.steps span.done{background:var(--gold)}
+.steps span.now{background:#f6dfa6;animation:blink 1s infinite}
+.log{margin-top:12px}
+.log .it{background:var(--card);border-radius:14px;padding:12px 14px;margin-top:8px;font-size:14px;line-height:1.7}
+.log .it b{color:var(--gold);font-size:12px;display:block;margin-bottom:2px}
+.notice{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;font-size:14px;line-height:1.7;color:var(--sub)}
+.notice b{color:var(--txt)}
+
+/* modal */
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal.on{display:flex}
+.sheet{background:var(--bg2);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:22px 20px 28px;border-top:1px solid var(--line)}
+.sheet h3{font-family:'Gowun Batang',serif;color:var(--gold2);margin-bottom:8px}
+.sheet p{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:12px}
+.sheet input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:#00000040;color:var(--txt);font-size:14px;margin-bottom:12px}
+.sel{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:#00000040;color:var(--txt);font-size:14px;margin-bottom:12px;font-family:inherit}
+.sheet{max-height:92vh;overflow:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#2a2140;color:var(--gold2);padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:60;border:1px solid var(--line)}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.back{background:none;border:0;color:var(--sub);font-size:14px;cursor:pointer;padding:6px 0;margin-bottom:8px;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="logo" onclick="go('home')">
+      <svg viewBox="0 0 32 32" fill="none" stroke="#e0bd72" stroke-width="1.6"><circle cx="16" cy="16" r="14.5"/><path d="M9 21c3-2 5-6 6-11M11 14c4 1 8 0 11-3M13 24c3-3 7-4 10-4"/></svg>
+      손금왕
+    </div>
+    <div class="chip" id="aiChip" onclick="openKey()">⚙ <b id="aiState">연결 확인 중</b></div>
+  </header>
+
+  <!-- HOME -->
+  <section class="screen on" id="home">
+    <div class="hero">
+      <div class="palm">
+        <svg viewBox="0 0 200 200" fill="none">
+          <defs><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#e0bd72" stop-opacity=".25"/><stop offset="1" stop-color="#e0bd72" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="100" cy="100" r="96" fill="url(#g)"/>
+          <path d="M70 175c-10-20-28-38-30-58-1-12 10-14 16-4l10 16V48c0-10 14-10 14 0v46-58c0-10 14-10 14 0v58-52c0-10 14-10 14 0v54-40c0-10 14-10 14 0v70c0 26-10 42-22 54" stroke="#e0bd72" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M82 112c8 14 10 30 6 48" stroke="#ff8a7a" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M80 118c18-6 34-4 48 4" stroke="#7fc8ff" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M84 104c16-8 32-10 46-6" stroke="#ff7fc1" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M106 168c-2-20 0-40 4-58" stroke="#b6f07f" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>손바닥에 새겨진<br>당신의 이야기</h1>
+      <p>사진 한 장, 혹은 카메라에 손을 비추면<br>손금왕이 선을 짚어가며 말로 풀어드려요.</p>
+    </div>
+
+    <div class="modes">
+      <div class="mode main" onclick="go('photo')">
+        <div class="ic">📸</div>
+        <div><h3>사진으로 손금 보기</h3><p>찍거나 앨범에서 고르면 선을 그려주고 운세를 읽어드려요</p></div>
+      </div>
+      <div class="mode" onclick="go('live')">
+        <div class="ic">🎥</div><h3>영상으로 보기</h3><p>카메라에 손을 대면 하나씩 짚으며 말로 풀이</p>
+      </div>
+      <div class="mode" onclick="toast('양손·궁합 모드는 다음 버전에 준비 중이에요')">
+        <div class="ic">🤝</div><h3>궁합 손금</h3><p>두 사람 손바닥으로 보는 궁합 (준비 중)</p>
+      </div>
+    </div>
+
+    <div class="sect-t">어느 손인가요?</div>
+    <div class="opts" data-group="hand">
+      <div class="opt on" data-v="오른손">오른손</div>
+      <div class="opt" data-v="왼손">왼손</div>
+    </div>
+    <div class="sect-t">주로 쓰는 손</div>
+    <div class="opts" data-group="dom">
+      <div class="opt on" data-v="오른손잡이">오른손잡이</div>
+      <div class="opt" data-v="왼손잡이">왼손잡이</div>
+    </div>
+    <div class="sect-t">가장 궁금한 것</div>
+    <div class="opts" data-group="focus">
+      <div class="opt on" data-v="종합">종합</div>
+      <div class="opt" data-v="연애운">연애운</div>
+      <div class="opt" data-v="재물운">재물운</div>
+      <div class="opt" data-v="직업·진로">직업·진로</div>
+    </div>
+
+    <div class="tips">
+      <b>✋ 잘 나오게 찍는 법</b><br>
+      · 밝은 곳에서, 그림자 없이 손바닥 정면으로<br>
+      · 손가락은 자연스럽게 펴고 손목까지 보이게<br>
+      · 주로 쓰는 손 = 살아온 흐름, 반대 손 = 타고난 기질
+    </div>
+    <p class="foot">손금 풀이는 재미로 보는 오락 콘텐츠예요. 건강·수명은 판단하지 않아요.<br>사진은 풀이에만 쓰이고 저장되지 않아요.</p>
+  </section>
+
+  <!-- PHOTO -->
+  <section class="screen" id="photo">
+    <button class="back" onclick="go('home')">← 처음으로</button>
+    <div id="photoEmpty">
+      <label class="drop" for="filePick">
+        <div class="big">✋</div>
+        <div class="serif" style="font-size:18px;color:var(--gold2)">여기를 눌러 손바닥 사진 넣기</div>
+        <p><span id="handLabel">오른손</span> 손바닥을 화면 가득<br>밝은 곳에서 정면으로</p>
+        <p style="font-size:12px;color:var(--mute)">PC에서는 사진을 복사해 <b style="color:var(--gold2)">Ctrl+V</b> 또는 끌어다 놓기</p>
+      </label>
+      <div class="row">
+        <label class="btn gold pick">📷 촬영하기<input type="file" id="fileCam" accept="image/*" capture="environment"></label>
+        <label class="btn ghost pick">🖼 앨범·카메라<input type="file" id="fileAlb" accept="image/*"></label>
+      </div>
+      <input type="file" id="filePick" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">
+      <p class="foot" style="margin-top:12px">촬영하기가 안 열리면 <b style="color:var(--gold2)">앨범·카메라</b>를 눌러 '사진 찍기'를 고르세요.</p>
+    </div>
+    <div id="photoReady" style="display:none">
+      <div class="stage" id="stage">
+        <img id="pimg" alt="손바닥 사진">
+        <svg class="ov" id="ov" viewBox="0 0 1 1" preserveAspectRatio="none"></svg>
+        <div class="scan" id="scan" style="display:none"></div>
+      </div>
+      <div class="status" id="pstatus"></div>
+      <div class="substatus" id="psub"></div>
+      <div class="row" id="pActions">
+        <button class="btn ghost" onclick="resetPhoto()">다시 찍기</button>
+        <button class="btn gold" id="readBtn" onclick="readPhoto()">🔮 손금 보기</button>
+      </div>
+      <div id="result"></div>
+    </div>
+  </section>
+
+  <!-- LIVE -->
+  <section class="screen" id="live">
+    <button class="back" onclick="stopLive();go('home')">← 처음으로</button>
+    <div id="liveWrap">
+      <div class="cam">
+        <video id="vid" playsinline muted autoplay></video>
+        <div class="guide"><svg viewBox="0 0 200 240" fill="none" stroke="#f6dfa6" stroke-width="2" stroke-dasharray="6 6"><path d="M70 230c-10-24-34-48-36-72-1-14 12-16 19-5l13 20V58c0-12 17-12 17 0v52-68c0-12 17-12 17 0v68-60c0-12 17-12 17 0v62-46c0-12 17-12 17 0v84c0 32-12 50-26 62" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="live" id="liveTag">● LIVE 손금 풀이 중</div>
+        <div class="sub" id="liveSub"></div>
+      </div>
+      <div class="steps" id="steps"></div>
+      <div class="row">
+        <button class="btn gold" id="liveBtn" onclick="toggleLive()">🎙 풀이 시작</button>
+        <button class="btn ghost" style="flex:.45" id="muteBtn" onclick="toggleMute()">🔊</button>
+      </div>
+      <div class="log" id="liveLog"></div>
+    </div>
+    <div id="liveNo" style="display:none">
+      <div class="notice">
+        <b>📵 이 화면에서는 카메라를 직접 켤 수 없어요</b><br><br>
+        라이브 모드는 앱으로 배포한 주소(https)나 휴대폰 브라우저에서 이 파일을 열면 동작해요.
+        지금은 <b>사진 모드</b>로 촬영하면 똑같이 선을 짚으며 말로 풀어드려요.
+      </div>
+      <div class="row"><button class="btn gold" onclick="go('photo')">📸 사진 모드로 보기</button></div>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="keyModal" onclick="if(event.target===this)closeKey()">
+  <div class="sheet">
+    <h3>🔮 AI 연결</h3>
+    <p id="keyDesc">Claude 안에서 열면 별도 설정 없이 동작해요. 직접 배포해서 열 때는 Anthropic API 키를 넣어주세요. 키는 이 기기 브라우저에만 저장돼요.</p>
+    <input id="keyInput" type="password" placeholder="sk-ant-...">
+    <h3 style="margin-top:6px">🎙 목소리</h3>
+    <p>기본은 휴대폰 내장 음성이에요. 사람 같은 목소리는 <b style="color:var(--gold2)">Azure 무료 음성</b>(월 50만 자 무료)을 켜세요. 직접 배포한 주소에서만 동작해요.</p>
+    <select id="ttsEngine" class="sel">
+      <option value="device">휴대폰 기본 음성 (무료·설정 없음)</option>
+      <option value="azure">Azure 자연 음성 (무료 키 필요)</option>
+    </select>
+    <div id="azureBox" style="display:none">
+      <input id="azKey" type="password" placeholder="Azure Speech 키">
+      <input id="azRegion" placeholder="지역 (예: koreacentral)">
+      <select id="azVoice" class="sel">
+        <option value="ko-KR-SoonBokNeural">순복 — 할머니 점쟁이 느낌</option>
+        <option value="ko-KR-BongJinNeural">봉진 — 중년 남성, 도사 느낌</option>
+        <option value="ko-KR-SunHiNeural">선희 — 차분한 여성</option>
+        <option value="ko-KR-InJoonNeural">인준 — 부드러운 남성</option>
+        <option value="ko-KR-HyunsuNeural">현수 — 젊은 남성</option>
+        <option value="ko-KR-JiMinNeural">지민 — 밝은 여성</option>
+      </select>
+      <button class="btn ghost" style="margin-bottom:12px;padding:12px" onclick="testVoice()">▶ 목소리 들어보기</button>
+    </div>
+    <div class="row" style="margin-top:0">
+      <button class="btn ghost" onclick="closeKey()">닫기</button>
+      <button class="btn gold" onclick="saveKey()">저장</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const state = { hand:'오른손', dom:'오른손잡이', focus:'종합', blob:null, result:null, muted:false };
+const LINE = {
+  life:{name:'생명선',c:'var(--life)',hex:'#ff8a7a'},
+  head:{name:'두뇌선',c:'var(--head)',hex:'#7fc8ff'},
+  heart:{name:'감정선',c:'var(--heart)',hex:'#ff7fc1'},
+  fate:{name:'운명선',c:'var(--fate)',hex:'#b6f07f'},
+  sun:{name:'태양선',c:'var(--sun)',hex:'#ffd36b'}
+};
+
+/* ---------- navigation & options ---------- */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+  window.scrollTo(0,0);
+  if(id==='photo') $('#handLabel').textContent=state.hand;
+  if(id==='live') initLive();
+  if(id!=='live') stopLive();
+}
+document.querySelectorAll('.opts').forEach(g=>{
+  g.addEventListener('click',e=>{
+    const o=e.target.closest('.opt'); if(!o) return;
+    g.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));
+    o.classList.add('on'); state[g.dataset.group]=o.dataset.v;
+  });
+});
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
+
+/* ---------- AI layer: Claude(artifact) or API key(direct) ---------- */
+let samplePromise = null;
+function getSample(){
+  if(!samplePromise){
+    samplePromise = (window.claude && window.claude.use) ? window.claude.use('sample').catch(()=>null) : Promise.resolve(null);
+  }
+  return samplePromise;
+}
+function getKey(){ try{return localStorage.getItem('sgw_key')||''}catch{return ''} }
+async function refreshAiChip(){
+  const s = await getSample();
+  if(s){ $('#aiState').textContent='Claude 연결됨'; return; }
+  $('#aiState').textContent = getKey() ? 'API 키 사용' : '키 입력 필요';
+}
+function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k)||''; localStorage.setItem(k,v); }catch{ return '' } }
+function openKey(){
+  $('#keyInput').value=getKey();
+  $('#ttsEngine').value=ls('sgw_tts')||'device';
+  $('#azKey').value=ls('sgw_azkey'); $('#azRegion').value=ls('sgw_azregion')||'koreacentral';
+  $('#azVoice').value=ls('sgw_azvoice')||'ko-KR-SoonBokNeural';
+  $('#azureBox').style.display=$('#ttsEngine').value==='azure'?'block':'none';
+  $('#keyModal').classList.add('on');
+}
+function closeKey(){ $('#keyModal').classList.remove('on') }
+function saveVoiceFields(){
+  ls('sgw_tts',$('#ttsEngine').value); ls('sgw_azkey',$('#azKey').value.trim());
+  ls('sgw_azregion',$('#azRegion').value.trim()||'koreacentral'); ls('sgw_azvoice',$('#azVoice').value);
+}
+function saveKey(){ ls('sgw_key',$('#keyInput').value.trim()); saveVoiceFields(); closeKey(); refreshAiChip(); toast('저장했어요') }
+document.addEventListener('change',e=>{ if(e.target.id==='ttsEngine') $('#azureBox').style.display=e.target.value==='azure'?'block':'none'; });
+async function testVoice(){ saveVoiceFields(); await speak('어디 보자... 오, 손금이 아주 좋네요. 올해는 기다리던 기회가 찾아오겠어요.'); }
+
+function blobToB64(blob){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(blob)})}
+function parseJSON(t){
+  if(typeof t!=='string') return t;
+  const m=t.match(/\{[\s\S]*\}/); if(!m) throw new Error('응답을 읽지 못했어요');
+  return JSON.parse(m[0]);
+}
+async function askAI(prompt, blob, maxTokens=2000){
+  const s = await getSample();
+  if(s){
+    let imgs = [];
+    if(blob){
+      const lim = await s.limits().catch(()=>({}));
+      if(!lim.images) throw new Error('이 환경에선 이미지 분석이 아직 허용되지 않았어요');
+      imgs=[blob];
+    }
+    const out = await s(prompt,{images:imgs, modelTier:'default'});
+    return parseJSON(out.text);
+  }
+  const key = getKey();
+  if(!key){ openKey(); throw new Error('AI 연결이 필요해요 (API 키)'); }
+  const content=[];
+  if(blob) content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await blobToB64(blob)}});
+  content.push({type:'text',text:prompt});
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-5-5',max_tokens:maxTokens,messages:[{role:'user',content}]})
+  });
+  if(!res.ok) throw new Error('AI 호출 실패 ('+res.status+')');
+  const j = await res.json();
+  return parseJSON(j.content.map(c=>c.text||'').join(''));
+}
+
+/* ---------- image utils ---------- */
+function shrink(src, max=1100){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const w=img.naturalWidth||img.videoWidth, h=img.naturalHeight||img.videoHeight;
+      const k=Math.min(1,max/Math.max(w,h));
+      const c=document.createElement('canvas'); c.width=Math.round(w*k); c.height=Math.round(h*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      c.toBlob(b=>resolve({blob:b,url:URL.createObjectURL(b)}),'image/jpeg',.88);
+    };
+    img.onerror=reject;
+    img.src=src;
+  });
+}
+function grabFrame(video,max=900){
+  const w=video.videoWidth,h=video.videoHeight; if(!w) return Promise.resolve(null);
+  const k=Math.min(1,max/Math.max(w,h));
+  const c=document.createElement('canvas'); c.width=Math.round(w*k); c.height=Math.round(h*k);
+  c.getContext('2d').drawImage(video,0,0,c.width,c.height);
+  return new Promise(r=>c.toBlob(r,'image/jpeg',.85));
+}
+
+/* ---------- voice ---------- */
+let koVoice=null;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs=speechSynthesis.getVoices();
+  const ko = vs.filter(v=>/ko/i.test(v.lang));
+  const rank = v => (/natural|neural|online|premium|enhanced/i.test(v.name)?4:0) + (/(Google|Samsung|SunHi|InJoon|Yuna|Heami)/i.test(v.name)?2:0) + (v.localService?0:1);
+  koVoice = ko.sort((a,b)=>rank(b)-rank(a))[0] || null;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+/* 사람처럼: 문장·쉼표 단위로 끊고, 문장마다 속도·높이를 살짝 바꾸고, 사이에 숨 쉬는 쉼을 넣는다 */
+let speakToken=0;
+function chunks(text){
+  return String(text||'')
+    .replace(/\s+/g,' ')
+    .split(/(?<=[.!?…~])\s+|(?<=\.\.\.)\s*/)
+    .flatMap(s=> s.length>60 ? s.split(/(?<=,)\s+/) : [s])
+    .map(s=>s.trim()).filter(Boolean);
+}
+function sayOne(t, token){
+  return new Promise(res=>{
+    if(token!==speakToken) return res();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang='ko-KR'; if(koVoice) u.voice=koVoice;
+    const q=/[?]$/.test(t), ex=/[!]$/.test(t), slow=/(음|자|그러니까|그런데|보자)[,.…]/.test(t);
+    u.rate = slow ? .86 : ex ? 1.04 : .95 + Math.random()*.06;
+    u.pitch = q ? 1.08 : ex ? 1.02 : .9 + Math.random()*.06;
+    u.onend=res; u.onerror=res;
+    speechSynthesis.speak(u);
+  });
+}
+/* Azure 자연 음성 (무료 F0: 월 50만 자) */
+let azAudio=null;
+function xmlEsc(s){return String(s).replace(/[<>&'"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c]))}
+async function azureSpeak(text, token){
+  const key=ls('sgw_azkey'), region=ls('sgw_azregion')||'koreacentral', voice=ls('sgw_azvoice')||'ko-KR-SoonBokNeural';
+  if(!key) throw new Error('no key');
+  const body = xmlEsc(text)
+    .replace(/(\.\.\.|…)/g,'<break time="550ms"/>')
+    .replace(/([?!])\s/g,'$1<break time="300ms"/> ');
+  const ssml=`<speak version="1.0" xml:lang="ko-KR"><voice name="${voice}"><prosody rate="-6%">${body}</prosody></voice></speak>`;
+  const res=await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`,{
+    method:'POST',
+    headers:{'Ocp-Apim-Subscription-Key':key,'Content-Type':'application/ssml+xml','X-Microsoft-OutputFormat':'audio-24khz-48kbitrate-mono-mp3'},
+    body:ssml
+  });
+  if(!res.ok) throw new Error('azure '+res.status);
+  const url=URL.createObjectURL(await res.blob());
+  if(token!==speakToken) return;
+  await new Promise(r=>{ azAudio=new Audio(url); azAudio.onended=r; azAudio.onerror=r; azAudio.play().catch(r); });
+}
+async function speak(text){
+  const token=++speakToken;
+  if(!state.muted && ls('sgw_tts')==='azure' && ls('sgw_azkey')){
+    try{ await azureSpeak(text, token); return; }
+    catch(e){ if(token!==speakToken) return; toast('Azure 음성 연결 실패 — 기본 음성으로 읽을게요'); }
+  }
+  if(state.muted || !('speechSynthesis' in window)){ await new Promise(r=>setTimeout(r, Math.min(9000, String(text).length*90))); return; }
+  try{
+    speechSynthesis.cancel();
+    for(const c of chunks(text)){
+      if(token!==speakToken) return;
+      await sayOne(c, token);
+      if(token!==speakToken) return;
+      const pause = /[…]|\.\.\.$/.test(c) ? 650 : /[?!]$/.test(c) ? 420 : /,$/.test(c) ? 160 : 300;
+      await new Promise(r=>setTimeout(r, pause + Math.random()*120));
+    }
+  }catch{}
+}
+function stopSpeak(){ speakToken++; try{speechSynthesis.cancel()}catch{} try{ if(azAudio){azAudio.pause();azAudio=null} }catch{} }
+function toggleMute(){ state.muted=!state.muted; $('#muteBtn').textContent=state.muted?'🔇':'🔊'; if(state.muted) stopSpeak(); }
+
+/* ---------- PHOTO MODE ---------- */
+$('#fileCam').onchange = e=>loadFile(e.target.files[0]);
+$('#fileAlb').onchange = e=>loadFile(e.target.files[0]);
+$('#filePick').onchange = e=>loadFile(e.target.files[0]);
+/* Ctrl+V 붙여넣기 · 드래그 앤 드롭 */
+function imageFrom(list){ return [...(list||[])].map(i=>i.getAsFile ? (i.kind==='file'?i.getAsFile():null) : i).find(f=>f && /^image\//.test(f.type)); }
+document.addEventListener('paste', e=>{
+  const f = imageFrom(e.clipboardData && e.clipboardData.items) || imageFrom(e.clipboardData && e.clipboardData.files);
+  if(!f) return;
+  e.preventDefault();
+  if(!$('#photo').classList.contains('on')) go('photo');
+  stopSpeak(); state.result=null; loadFile(f); toast('붙여넣은 사진을 불러왔어요');
+});
+document.addEventListener('dragover', e=>{ e.preventDefault(); });
+document.addEventListener('drop', e=>{
+  const f = imageFrom(e.dataTransfer && e.dataTransfer.files); if(!f) return;
+  e.preventDefault(); if(!$('#photo').classList.contains('on')) go('photo'); loadFile(f);
+});
+async function loadFile(f){
+  if(!f) return;
+  const url=URL.createObjectURL(f);
+  let blob=f, small=url;
+  try{ const s=await shrink(url); blob=s.blob; small=s.url; }
+  catch{ toast('사진 변환이 안 돼 원본으로 진행해요'); }
+  state.blob=blob;
+  $('#pimg').src=small; $('#ov').innerHTML=''; $('#result').innerHTML='';
+  $('#photoEmpty').style.display='none'; $('#photoReady').style.display='block';
+  $('#pActions').style.display='flex'; $('#readBtn').disabled=false;
+  $('#pstatus').textContent='좋아요, 이 손으로 볼까요?'; $('#psub').textContent=state.hand+' · '+state.dom+' · '+state.focus;
+}
+function resetPhoto(){
+  stopSpeak(); state.blob=null; state.result=null;
+  $('#fileCam').value=''; $('#fileAlb').value=''; $('#filePick').value='';
+  $('#photoEmpty').style.display='block'; $('#photoReady').style.display='none';
+}
+
+const PHOTO_PROMPT = () => `너는 40년 경력의 한국 손금 명인 "손금왕"이다. 첨부된 사진 속 손바닥을 실제로 관찰하고 손금을 풀이한다.
+사용자 정보: 사진 속 손=${state.hand}, ${state.dom}, 가장 궁금한 것=${state.focus}.
+(주로 쓰는 손은 살아온 흐름, 반대 손은 타고난 기질로 해석)
+
+규칙
+- 반드시 사진에서 보이는 특징(선의 길이, 깊이, 곡률, 갈라짐, 끊김, 시작점·끝점, 손가락 길이, 손 모양)을 근거로 말한다. 뻔한 일반론 금지.
+- 건강 진단·질병·수명·사고 예언은 절대 하지 않는다. 생명선은 활력과 인생의 전환기로만 해석.
+- 겁주지 말고 따뜻하지만 구체적으로. 단점도 '이렇게 하면 좋다'로 풀어준다.
+- 손바닥이 아니거나, 흐리거나, 선이 안 보이면 ok=false로 하고 다시 찍는 요령만 준다.
+- points는 이미지 기준 정규화 좌표 [x,y] (0~1, 왼쪽 위가 0,0). 선을 따라 5~8개 점. 실제 선 위치에 최대한 맞춘다. 보이지 않는 선은 lines에서 뺀다.
+
+아래 JSON만 출력(설명·코드펜스 없이):
+{"ok":true,"retake":"","handShape":"손 모양 유형 한 줄(예: 불의 손 — 손바닥이 길고 손가락이 짧은 실행가형)",
+"type":{"title":"손금 캐릭터 이름(예: 조용한 전략가형)","emoji":"이모지 1개","oneLine":"한 줄 요약"},
+"lines":[{"id":"life|head|heart|fate|sun 중 하나","points":[[0.4,0.5],[0.42,0.6]],"feature":"관찰한 생김새 한 줄","read":"풀이 2~3문장"}],
+"special":["막쥔손금·재물선·결혼선 등 눈에 띈 특이 무늬(없으면 빈 배열)"],
+"fortune":{"personality":"성격 3문장","love":"연애운 3문장","money":"재물운 3문장","career":"직업·진로 3문장"},
+"score":{"love":0~100,"money":0~100,"career":0~100,"energy":0~100},
+"lucky":{"color":"","number":"","item":""},
+"advice":"올해 한마디 조언 2문장",
+"speech":"점집에서 마주 앉아 말해주는 낭독 대본. ${state.focus}에 무게를 두고 손금을 하나씩 짚으며 35초 분량(약 300자). 진짜 사람 말투로: 짧은 문장, '음...', '자, 보자...', '어디 보자', '그런데 말이야' 같은 추임새를 2~3번, 놀라는 대목엔 '오!', 상대에게 묻는 문장 1번(예: '요즘 일 욕심 많죠?'), 쉼이 필요한 곳은 '...'과 쉼표로 표시. 반말 섞인 친근한 존댓말. 이모지·괄호·영문 금지."}`;
+
+async function readPhoto(){
+  if(!state.blob) return;
+  $('#readBtn').disabled=true; $('#scan').style.display='block';
+  const msgs=['손바닥의 결을 읽는 중…','생명선을 따라가는 중…','두뇌선과 감정선을 비교하는 중…','운명선을 찾는 중…','풀이를 정리하는 중…'];
+  let i=0; $('#pstatus').textContent=msgs[0]; $('#psub').textContent='보통 10~20초 걸려요';
+  const timer=setInterval(()=>{i=Math.min(i+1,msgs.length-1);$('#pstatus').textContent=msgs[i]},3200);
+  try{
+    const r = await askAI(PHOTO_PROMPT(), state.blob, 2500);
+    state.result=r; renderResult(r);
+  }catch(err){
+    $('#pstatus').textContent='풀이에 실패했어요'; $('#psub').textContent=err.message||String(err);
+    $('#readBtn').disabled=false;
+  }finally{ clearInterval(timer); $('#scan').style.display='none'; }
+}
+
+function pathD(pts){
+  if(!pts||pts.length<2) return '';
+  let d=`M${pts[0][0]},${pts[0][1]}`;
+  for(let i=1;i<pts.length-1;i++){
+    const mx=(pts[i][0]+pts[i+1][0])/2, my=(pts[i][1]+pts[i+1][1])/2;
+    d+=` Q${pts[i][0]},${pts[i][1]} ${mx},${my}`;
+  }
+  const l=pts[pts.length-1]; d+=` L${l[0]},${l[1]}`;
+  return d;
+}
+function drawLines(lines, only){
+  $('#ov').innerHTML = (lines||[]).filter(l=>LINE[l.id] && (!only||only===l.id)).map((l,i)=>
+    `<path d="${pathD(l.points)}" pathLength="1" vector-effect="non-scaling-stroke" stroke="${LINE[l.id].hex}" style="color:${LINE[l.id].hex};animation-delay:${i*.35}s"/>`
+  ).join('');
+}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function renderResult(r){
+  if(r.ok===false){
+    $('#pstatus').textContent='손금이 잘 안 보여요';
+    $('#psub').textContent='';
+    $('#readBtn').disabled=false;
+    $('#result').innerHTML=`<div class="retake">🙏 ${esc(r.retake||'밝은 곳에서 손바닥을 정면으로 다시 찍어주세요.')}</div>`;
+    speak(r.retake||'손금이 잘 안 보여요. 밝은 곳에서 다시 찍어주세요.');
+    return;
+  }
+  $('#pActions').style.display='none';
+  $('#pstatus').textContent=''; $('#psub').textContent='';
+  drawLines(r.lines);
+  const f=r.fortune||{}, s=r.score||{};
+  const lines=(r.lines||[]).filter(l=>LINE[l.id]);
+  $('#result').innerHTML=`
+    <div class="legend">${lines.map(l=>`<div class="lg" data-id="${l.id}" style="color:${LINE[l.id].hex}"><i style="background:${LINE[l.id].hex}"></i>${LINE[l.id].name}</div>`).join('')}<div class="lg on" data-id="" style="color:var(--gold2)">전체</div></div>
+    <div class="rtype">
+      <div class="em">${esc(r.type?.emoji||'🔮')}</div>
+      <h2>${esc(r.type?.title||'')}</h2>
+      <p>${esc(r.type?.oneLine||'')}</p>
+      <p style="margin-top:8px;color:var(--gold)">${esc(r.handShape||'')}</p>
+    </div>
+    <div class="speak" id="speakBtn"><div class="pl" id="speakIc">▶</div><div class="t">손금왕이 말로 풀어드려요<small>약 35초 · 소리를 켜주세요</small></div></div>
+    <div class="scores">
+      ${[['연애운','love'],['재물운','money'],['직업운','career'],['기운','energy']].map(([k,v])=>`<div class="sc"><div class="k">${k}<b>${Number(s[v])||0}</b></div><div class="bar"><i data-w="${Number(s[v])||0}"></i></div></div>`).join('')}
+    </div>
+    ${lines.map(l=>`<div class="card"><h4><i style="background:${LINE[l.id].hex}"></i>${LINE[l.id].name}<span style="font-weight:400;color:var(--sub);font-size:12px">${esc(l.feature)}</span></h4><p>${esc(l.read)}</p></div>`).join('')}
+    ${(r.special&&r.special.length)?`<div class="card"><h4>✨ 눈에 띄는 무늬</h4><div class="tags">${r.special.map(x=>`<span class="tag">${esc(x)}</span>`).join('')}</div></div>`:''}
+    ${[['🧭 성격','personality'],['💗 연애운','love'],['💰 재물운','money'],['💼 직업·진로','career']].map(([k,v])=>f[v]?`<div class="card"><h4>${k}</h4><p>${esc(f[v])}</p></div>`:'').join('')}
+    <div class="card"><h4>🍀 행운 포인트</h4><div class="tags"><span class="tag">색 · ${esc(r.lucky?.color)}</span><span class="tag">숫자 · ${esc(r.lucky?.number)}</span><span class="tag">물건 · ${esc(r.lucky?.item)}</span></div></div>
+    <div class="card" style="border:1px solid #e0bd7244"><h4>📜 손금왕의 한마디</h4><p>${esc(r.advice)}</p></div>
+    <div class="row"><button class="btn ghost" onclick="copyResult()">📋 결과 복사</button><button class="btn gold" onclick="resetPhoto()">다른 손 보기</button></div>
+    <p class="foot">재미로 보는 손금 풀이예요. 중요한 결정은 스스로의 판단을 믿으세요.</p>`;
+  setTimeout(()=>document.querySelectorAll('.bar i').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+  document.querySelectorAll('.lg').forEach(el=>el.onclick=()=>{
+    document.querySelectorAll('.lg').forEach(x=>x.classList.remove('on')); el.classList.add('on');
+    drawLines(r.lines, el.dataset.id||null);
+  });
+  let playing=false;
+  $('#speakBtn').onclick=async()=>{
+    if(playing){stopSpeak();playing=false;$('#speakIc').textContent='▶';return;}
+    playing=true; $('#speakIc').textContent='■';
+    await speak(r.speech||''); playing=false; $('#speakIc').textContent='▶';
+  };
+  $('#stage').scrollIntoView({behavior:'smooth'});
+}
+async function copyResult(){
+  const r=state.result; if(!r) return;
+  const f=r.fortune||{};
+  const t=`🔮 손금왕 풀이 — ${r.type?.title||''}\n${r.type?.oneLine||''}\n\n성격: ${f.personality||''}\n연애: ${f.love||''}\n재물: ${f.money||''}\n직업: ${f.career||''}\n\n한마디: ${r.advice||''}`;
+  try{await navigator.clipboard.writeText(t);toast('복사했어요')}catch{toast('복사가 막혀 있어요')}
+}
+
+/* ---------- LIVE MODE ---------- */
+const STEPS=[
+  {k:'shape',name:'손 모양',ask:'손 전체 모양과 손가락 길이 비율로 타고난 기질'},
+  {k:'life',name:'생명선',ask:'생명선(엄지 아래를 감싸는 선)의 길이·깊이·곡률로 활력과 인생 전환기(건강·수명 언급 금지)'},
+  {k:'head',name:'두뇌선',ask:'두뇌선(손바닥 가운데를 가로지르는 선)의 방향과 길이로 사고방식'},
+  {k:'heart',name:'감정선',ask:'감정선(새끼손가락 아래에서 시작하는 맨 위 가로선)으로 감정 표현과 연애 스타일'},
+  {k:'fate',name:'운명선',ask:'운명선(손목에서 중지 쪽으로 올라가는 세로선)으로 일과 진로의 흐름. 없거나 희미하면 그 의미로'},
+  {k:'end',name:'총평',ask:'지금까지 본 것을 묶어 총평과 올해의 조언'}
+];
+let stream=null, liveOn=false, liveCtl=null;
+function renderSteps(cur){
+  $('#steps').innerHTML=STEPS.map((s,i)=>`<span class="${i<cur?'done':i===cur?'now':''}" title="${s.name}"></span>`).join('');
+}
+async function initLive(){
+  renderSteps(-1);
+  if(stream) return;
+  try{
+    if(!navigator.mediaDevices?.getUserMedia) throw new Error('no');
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}},audio:false});
+    $('#vid').srcObject=stream; $('#liveWrap').style.display='block'; $('#liveNo').style.display='none';
+  }catch(e){
+    $('#liveWrap').style.display='none'; $('#liveNo').style.display='block';
+  }
+}
+function stopLive(){
+  liveOn=false; if(liveCtl) liveCtl.abort=true; stopSpeak();
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  const b=$('#liveBtn'); if(b) b.textContent='🎙 풀이 시작';
+  $('#liveTag')?.classList.remove('on');
+}
+function toggleLive(){
+  if(liveOn){ liveOn=false; if(liveCtl) liveCtl.abort=true; stopSpeak(); $('#liveBtn').textContent='🎙 다시 시작'; $('#liveTag').classList.remove('on'); return; }
+  runLive();
+}
+function subtitle(t){ const s=$('#liveSub'); s.textContent=t; s.classList.add('on'); }
+function logIt(name,t){ $('#liveLog').insertAdjacentHTML('beforeend',`<div class="it"><b>${esc(name)}</b>${esc(t)}</div>`) }
+
+async function runLive(){
+  liveOn=true; const ctl={abort:false}; liveCtl=ctl;
+  $('#liveBtn').textContent='■ 멈추기'; $('#liveTag').classList.add('on'); $('#liveLog').innerHTML='';
+  const said=[];
+  subtitle('자, 손바닥을 화면 가운데 점선에 맞춰 보여주세요.');
+  await speak('자, 손바닥을 화면 가운데 점선에 맞춰 보여주세요.');
+  for(let i=0;i<STEPS.length;i++){
+    if(ctl.abort) return;
+    const st=STEPS[i]; renderSteps(i);
+    let tries=0, done=false;
+    while(!done && tries<4 && !ctl.abort){
+      tries++;
+      const frame=await grabFrame($('#vid'));
+      if(!frame){ await new Promise(r=>setTimeout(r,800)); continue; }
+      subtitle('… 보는 중');
+      const prompt=`너는 한국 손금 명인 "손금왕"이고 지금 카메라로 상대 손바닥을 실시간으로 보며 말로 풀어주고 있다.
+사용자: ${state.hand}을 보여주는 중, ${state.dom}, 관심사=${state.focus}.
+지금 단계: ${st.name} — ${st.ask}.
+앞에서 이미 한 말: ${said.join(' / ')||'(처음)'}
+규칙: 사진에 손바닥이 충분히 보이고 선이 판별되면 visible=true로 하고, 실제 보이는 생김새를 짚으며(예: "생명선이 엄지 쪽으로 크게 휘어 있네요") 이 단계 풀이를 마주 앉아 말하듯 2~3문장 구어체로. 짧은 문장, '음...', '오!', '어디 보자' 같은 추임새를 자연스럽게 하나 정도, 쉼은 '...'과 쉼표로. 앞 내용 반복 금지. 건강·수명 단정 금지. 이모지 금지.
+손이 안 보이거나 흐리거나 너무 멀면 visible=false로 하고 어떻게 움직이면 되는지 한 문장 안내.
+JSON만: {"visible":true,"say":"..."}`;
+      let r;
+      try{ r=await askAI(prompt, frame, 400); }
+      catch(e){ subtitle('연결 문제: '+(e.message||e)); liveOn=false; $('#liveBtn').textContent='🎙 다시 시작'; $('#liveTag').classList.remove('on'); return; }
+      if(ctl.abort) return;
+      subtitle(r.say||'');
+      if(r.visible){ said.push(st.name+': '+r.say); logIt(st.name, r.say); done=true; }
+      await speak(r.say||'');
+      if(!r.visible) await new Promise(res=>setTimeout(res,1200));
+    }
+    if(!done && !ctl.abort){ logIt(st.name,'(잘 보이지 않아 건너뛰었어요)'); }
+  }
+  renderSteps(STEPS.length);
+  liveOn=false; $('#liveBtn').textContent='🎙 다시 보기'; $('#liveTag').classList.remove('on');
+  subtitle('오늘 풀이는 여기까지예요. 좋은 기운 가져가세요.');
+}
+
+/* boot */
+setTimeout(refreshAiChip, 0);
+</script>
+</body>
+</html>
