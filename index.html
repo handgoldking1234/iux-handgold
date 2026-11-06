@@ -270,16 +270,17 @@ label.drop{display:flex}
 <div class="modal" id="keyModal" onclick="if(event.target===this)closeKey()">
   <div class="sheet">
     <h3>🔮 AI 연결</h3>
-    <p id="keyDesc">Claude 안에서 열면 별도 설정 없이 동작해요. 직접 배포해서 열 때는 Anthropic API 키를 넣어주세요. 키는 이 기기 브라우저에만 저장돼요.</p>
+    <p id="keyDesc">Claude 안에서 열거나, Vercel 환경변수(ANTHROPIC_API_KEY)를 설정한 배포 주소에서는 키 없이 동작해요. 그 밖의 경우에만 아래에 개인 키를 넣어주세요(이 기기에만 저장).</p>
     <input id="keyInput" type="password" placeholder="sk-ant-...">
     <h3 style="margin-top:6px">🎙 목소리</h3>
     <p>기본은 휴대폰 내장 음성이에요. 사람 같은 목소리는 <b style="color:var(--gold2)">Azure 무료 음성</b>(월 50만 자 무료)을 켜세요. 직접 배포한 주소에서만 동작해요.</p>
     <select id="ttsEngine" class="sel">
       <option value="device">휴대폰 기본 음성 (무료·설정 없음)</option>
-      <option value="azure">Azure 자연 음성 (무료 키 필요)</option>
+      <option value="azure">자연 음성 (Azure 무료)</option>
     </select>
     <div id="azureBox" style="display:none">
-      <input id="azKey" type="password" placeholder="Azure Speech 키">
+      <p style="margin-bottom:8px">서버 환경변수(AZURE_SPEECH_KEY)가 있으면 키 칸은 비워두세요.</p>
+      <input id="azKey" type="password" placeholder="Azure Speech 키 (선택)">
       <input id="azRegion" placeholder="지역 (예: koreacentral)">
       <select id="azVoice" class="sel">
         <option value="ko-KR-SoonBokNeural">순복 — 할머니 점쟁이 느낌</option>
@@ -336,15 +337,25 @@ function getSample(){
   return samplePromise;
 }
 function getKey(){ try{return localStorage.getItem('sgw_key')||''}catch{return ''} }
+/* 배포 서버(Vercel) 함수 확인: /api/claude, /api/tts */
+const server = { ai:null, tts:null };
+async function checkServer(){
+  if(server.ai!==null) return server;
+  const probe = async p => { try{ const r=await fetch(p,{cache:'no-store'}); if(!r.ok) return false; const j=await r.json(); return !!j.configured; }catch{ return false; } };
+  [server.ai, server.tts] = await Promise.all([probe('/api/claude'), probe('/api/tts')]);
+  return server;
+}
 async function refreshAiChip(){
   const s = await getSample();
   if(s){ $('#aiState').textContent='Claude 연결됨'; return; }
+  await checkServer();
+  if(server.ai){ $('#aiState').textContent='AI 연결됨'; return; }
   $('#aiState').textContent = getKey() ? 'API 키 사용' : '키 입력 필요';
 }
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k)||''; localStorage.setItem(k,v); }catch{ return '' } }
 function openKey(){
   $('#keyInput').value=getKey();
-  $('#ttsEngine').value=ls('sgw_tts')||'device';
+  $('#ttsEngine').value=(ls('sgw_tts')==='device')?'device':'azure';
   $('#azKey').value=ls('sgw_azkey'); $('#azRegion').value=ls('sgw_azregion')||'koreacentral';
   $('#azVoice').value=ls('sgw_azvoice')||'ko-KR-SoonBokNeural';
   $('#azureBox').style.display=$('#ttsEngine').value==='azure'?'block':'none';
@@ -377,8 +388,16 @@ async function askAI(prompt, blob, maxTokens=2000){
     const out = await s(prompt,{images:imgs, modelTier:'default'});
     return parseJSON(out.text);
   }
+  await checkServer();
+  if(server.ai){
+    const r = await fetch('/api/claude',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({prompt, image: blob ? await blobToB64(blob) : null, maxTokens})});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(j.error || ('AI 호출 실패 ('+r.status+')'));
+    return parseJSON(j.text);
+  }
   const key = getKey();
-  if(!key){ openKey(); throw new Error('AI 연결이 필요해요 (API 키)'); }
+  if(!key){ openKey(); throw new Error('AI 연결이 필요해요 — Vercel 환경변수 ANTHROPIC_API_KEY를 설정하거나 ⚙에 키를 넣어주세요'); }
   const content=[];
   if(blob) content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:await blobToB64(blob)}});
   content.push({type:'text',text:prompt});
@@ -466,11 +485,23 @@ async function azureSpeak(text, token){
   if(token!==speakToken) return;
   await new Promise(r=>{ azAudio=new Audio(url); azAudio.onended=r; azAudio.onerror=r; azAudio.play().catch(r); });
 }
+async function serverSpeak(text, token){
+  const r=await fetch('/api/tts',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({text, voice: ls('sgw_azvoice')||'ko-KR-SoonBokNeural'})});
+  if(!r.ok) throw new Error('tts '+r.status);
+  const url=URL.createObjectURL(await r.blob());
+  if(token!==speakToken) return;
+  await new Promise(res=>{ azAudio=new Audio(url); azAudio.onended=res; azAudio.onerror=res; azAudio.play().catch(res); });
+}
 async function speak(text){
   const token=++speakToken;
-  if(!state.muted && ls('sgw_tts')==='azure' && ls('sgw_azkey')){
-    try{ await azureSpeak(text, token); return; }
-    catch(e){ if(token!==speakToken) return; toast('Azure 음성 연결 실패 — 기본 음성으로 읽을게요'); }
+  const engine = ls('sgw_tts') || 'auto';
+  if(!state.muted && engine!=='device'){
+    try{
+      if(ls('sgw_azkey')){ await azureSpeak(text, token); return; }
+      await checkServer();
+      if(server.tts){ await serverSpeak(text, token); return; }
+    }catch(e){ if(token!==speakToken) return; toast('자연 음성 연결 실패 — 기본 음성으로 읽을게요'); }
   }
   if(state.muted || !('speechSynthesis' in window)){ await new Promise(r=>setTimeout(r, Math.min(9000, String(text).length*90))); return; }
   try{
