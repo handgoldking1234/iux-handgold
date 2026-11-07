@@ -2011,7 +2011,7 @@ const _realign=realign; realign=function(){ _realign(); stageMode(); };
 const _switchHand=switchHand; switchHand=function(h){ if(h!==state.hand) state.thumbWarn=null; _switchHand(h); stageMode(); };
 const _go=go; go=function(id){ _go(id); if(id==='face'&&!state.face){ $('#fEmpty').style.display='block'; $('#fWork').style.display='none'; } };
 $('#fGuide').innerHTML=FACE_GUIDE;
-document.querySelectorAll('[data-ic]').forEach(e=>{ if(!e.querySelector('svg')) e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic,+e.dataset.s||0)); });
+document.querySelectorAll('[data-ic]').forEach(e=>{ const sv=e.querySelector('svg'); if(sv&&sv.innerHTML.trim()) return; if(sv) sv.remove(); e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic,+e.dataset.s||0)); });
 ['fFile','fCam'].forEach(id=>$('#'+id).addEventListener('change',e=>faceLoad(e.target.files[0])));
 
 function hasFace(){ return !!(state.face&&state.face.feat); }
