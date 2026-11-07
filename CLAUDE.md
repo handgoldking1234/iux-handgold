@@ -34,6 +34,14 @@
 - **전문가 상담:** `consultSteps` → `consult`
 - 원래 함수는 `const _detect=detect; detect=function(){...}` 식으로 감싸서 확장함 (index.html 아래쪽 "v2" 블록)
 
+## 2-2. v4 기능 (2026-11-07)
+- **화면:** 스포티파이식(둥근 알약 버튼·채워진 선택 칩·평평한 카드·큰 제목). 글꼴(Gowun Batang + Noto Sans KR)과 색(보라 배경 + 금색)은 그대로
+- **스크롤:** 분석이 끝나면 `#stage`에 `done` 클래스 → 사진 위에서도 위아래로 밀림 (`stageMode`)
+- **엄지 방향 자동 판별:** `thumbSide()`가 피부색 덩어리로 엄지 쪽을 찾아, 고른 손과 다르면 방향을 맞춰 읽고 "○손 칸으로 옮기기" 카드를 띄움 (`moveToOther`). 오른손 손바닥 정면 = 엄지 오른쪽. `flipThumb`을 누르면 자동 판별을 끔(`state.manualThumb`)
+- **사주 심화:** 격국(`GYEOK`, 월지 정기 십성), 신살(도화·역마·화개·천을귀인, `sinsal`), 지지 충·육합(`hapchung`), 올해 지지와 일지의 합충(`yearClash`)
+- **관상:** 홈 '관상 보기' → `#face` 화면. 타원 가이드에 맞추면 `faceMeasure`가 얼굴형(오행 5형)·이마·눈썹·눈·입·입술·턱을 대략 재고, 코·귀는 고치기 칩. 문장 `FACE_DB`, 점수 `faceScores`, 항목별 `facePart`
+- **3원 통합:** `fullReport`가 손금·사주·관상 중 있는 것으로 항목별 통합(`integrate3`). 근거는 접어 두고, 위쪽 항목 바로가기(`.catnav`)
+
 ## 3. 파일 구조
 ```
 index.html        앱 전체 (화면·영상처리·해석표·음성)

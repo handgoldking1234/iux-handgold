@@ -37,6 +37,14 @@ async def main():
         print('saju', sj); assert sj == '己卯 丙子 戊午', sj  # 2000-01-01 = 戊午일(기준값)
         for q in ['결혼은 언제쯤?', '이직해도 될까요?', '언제 죽어요?']:
             print(q, '→', (await pg.evaluate(f"answer({q!r})"))[:80])
+        # v4: 격국·신살, 관상, 3원 통합
+        g = await pg.evaluate("gyeokOf(currentSaju())"); print('격국', g); assert g == '정재', g
+        await pg.evaluate("go('face')")
+        await pg.set_input_files('#fFile', str(ROOT / 'tests/fixtures/face.png')); await pg.wait_for_timeout(600)
+        await pg.evaluate("faceAnalyze()")
+        print('관상', await pg.evaluate("state.face.feat.shape"))
+        srcs = await pg.evaluate("(()=>{const R=fullReport(); return [R.saju,!!R.hand,R.face]})()")
+        print('통합', srcs); assert srcs == [True, True, True], srcs
         await pg.evaluate("stopSpeak()")
         print('errors', errs)
         await b.close()

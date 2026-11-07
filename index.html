@@ -62,7 +62,7 @@ label.pick input{position:absolute;inset:0;width:100%;height:100%;opacity:0;curs
 .stage{position:relative;border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:3/4;touch-action:none;user-select:none}
 .stage canvas{width:100%;height:100%;display:block}
 .stage svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.guide path,.guide rect,.guide ellipse{fill:none;stroke:#f6dfa6;stroke-width:2.2;stroke-dasharray:7 6;opacity:.8}
+.guide path,.guide rect,.guide ellipse,.guide line{fill:none;stroke:#f6dfa6;stroke-width:2.2;stroke-dasharray:7 6;opacity:.8}
 .guide text{fill:#f6dfa6;font-size:13px;opacity:.85;font-family:'Noto Sans KR'}
 .ov path{fill:none;stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 4px currentColor);stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.2s ease forwards;transition:opacity .3s}
 .ov path.dim{opacity:.15}
@@ -148,6 +148,44 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
 .qin .btn{width:auto;flex:none;padding:0 14px}
 .qq{margin-top:10px;margin-left:auto;max-width:85%;width:fit-content;padding:9px 12px;border-radius:14px 14px 4px 14px;background:#e0bd7230;font-size:14px}
 .qa-a{margin-top:6px;max-width:92%;padding:10px 12px;border-radius:14px 14px 14px 4px;background:#ffffff0d;font-size:14px;line-height:1.65}
+.card summary{list-style:none;cursor:pointer}.card summary::-webkit-details-marker{display:none}
+.rp h4{display:flex;align-items:center}.rp-b{background:#e0bd7218;border:1px solid #e0bd7244;border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.rp-s{margin-top:8px}.rp-b b,.rp-s b{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gold2);margin-bottom:3px}.rp-s b{color:var(--sub)}
+
+/* ===== v4: 스포티파이식 화면 (글꼴·색은 그대로) ===== */
+body{background:linear-gradient(180deg,#2a2140 0,var(--bg) 340px)}
+.btn{border-radius:500px;font-weight:700;letter-spacing:.2px;transition:transform .1s,filter .15s}
+.btn:hover{filter:brightness(1.08);transform:scale(1.02)}
+.btn.gold{background:var(--gold);color:#1a1206}
+.btn.ghost{background:transparent;border:1px solid #ffffff3a}
+.btn.ghost:hover{border-color:var(--txt)}
+.chip,.opt{border-radius:500px;border:0;background:#ffffff12;color:var(--txt);font-weight:500}
+.opt:hover,.chip:hover{background:#ffffff22}
+.opt.on{background:var(--gold);color:#1a1206;border:0}
+.card,details.fix,.tips{background:var(--bg2);border-radius:10px;transition:background .15s}
+.card:hover{background:var(--card)}
+.card h4{font-size:15px;font-weight:700}
+.sect-t{font-size:20px;font-weight:700;color:var(--txt);margin:28px 0 12px}
+.sect-t::after{display:none}
+.mode{background:var(--bg2);border:0;border-radius:10px;transition:background .15s}
+.mode:hover{background:var(--card)}
+.mode .ic{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ffffff10;color:var(--gold2)}
+.mode.main{background:linear-gradient(135deg,#4a3518,#2a1f35);border:0}
+.mode.main .ic{background:var(--gold);color:#1a1206}
+.htab{border:0;background:var(--bg2);border-radius:500px;flex-direction:row;justify-content:center;gap:6px}
+.htab small{display:none} .htab.on{background:var(--gold);color:#1a1206} .htab.on b{color:#1a1206}
+.speak{background:var(--bg2);border:0;border-radius:10px}
+.speak .pl{background:var(--gold)!important;color:#1a1206!important}
+.stage{border-radius:10px}
+.stage.done,.stage.done canvas{touch-action:pan-y}
+.catnav{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin:0 -2px;background:linear-gradient(var(--bg) 70%,transparent);scrollbar-width:none}
+.catnav::-webkit-scrollbar{display:none}
+.catnav a{flex:none;font-size:13px;padding:7px 13px;border-radius:500px;background:#ffffff14;color:var(--txt);cursor:pointer}
+.catnav a:hover{background:var(--gold);color:#1a1206}
+.rp{scroll-margin-top:56px}
+details.ev{margin-top:8px} details.ev summary{cursor:pointer;font-size:12px;color:var(--sub);list-style:none}
+details.ev summary::after{content:" ▾"}
+#fstage{touch-action:none} #fstage.done,#fstage.done canvas{touch-action:pan-y}
 </style>
 </head>
 <body>
@@ -183,7 +221,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
         <div><h3>사진으로 손금 보기</h3><p>찍거나 고른 사진을 가이드에 맞추면 바로 풀이</p></div>
       </div>
       <div class="mode" onclick="go('live')"><div class="ic"><span class="li" data-ic="video" data-s="26"></span></div><h3>카메라로 보기</h3><p>화면 가이드에 손을 대고 찰칵, 말로 풀이</p></div>
-      <div class="mode" onclick="toast('궁합 손금은 다음 버전에 준비 중이에요')"><div class="ic"><span class="li" data-ic="handshake" data-s="26"></span></div><h3>궁합 손금</h3><p>두 사람 손으로 보는 궁합 (준비 중)</p></div>
+      <div class="mode" onclick="go('face')"><div class="ic"><span class="li" data-ic="user" data-s="26"></span></div><h3>관상 보기</h3><p>얼굴 사진으로 보는 오행형·삼정·부위 풀이</p></div>
     </div>
     <div class="sect-t">어느 손인가요?</div>
     <div class="opts" data-group="hand">
@@ -253,7 +291,33 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
       </div>
       <div class="status" id="pstatus"></div>
       <div id="result"></div>
-      <div id="combo"></div>
+    </div>
+    <div id="combo"></div>
+  </section>
+
+  <!-- FACE -->
+  <section class="screen" id="face">
+    <button class="back" onclick="go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
+    <div id="fEmpty">
+      <label class="drop" for="fFile">
+        <div class="big"><span class="li" data-ic="user" data-s="44"></span></div>
+        <div class="serif" style="font-size:18px;color:var(--gold2)">여기를 눌러 얼굴 사진 넣기</div>
+        <p>정면, 밝은 곳에서, 앞머리를 올리고 귀가 보이게</p>
+      </label>
+      <input type="file" id="fFile" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">
+      <div class="row"><label class="btn gold pick"><span class="li" data-ic="camera"></span>셀카 찍기<input type="file" id="fCam" accept="image/*" capture="user"></label></div>
+      <p class="foot">사진은 이 기기 안에서만 읽고 어디에도 보내지 않아요.</p>
+    </div>
+    <div id="fWork" style="display:none">
+      <div class="stage" id="fstage">
+        <canvas id="fcv" width="360" height="480"></canvas>
+        <svg viewBox="0 0 360 480" class="guide" id="fGuide"></svg>
+      </div>
+      <div id="fAlign">
+        <p class="hint"><span class="li" data-ic="pointer" data-s="15"></span>사진을 끌고 두 손가락으로 키우거나 돌려서<br><b style="color:var(--gold2)">점선 타원에 얼굴, 가로선에 눈·코끝·입을 맞춰 주세요</b></p>
+        <div class="row"><button class="btn ghost sm" onclick="faceReset()">다른 사진</button><button class="btn gold" onclick="faceAnalyze()"><span class="li" data-ic="sparkles"></span>관상 읽기</button></div>
+      </div>
+      <div id="fResult"></div>
     </div>
   </section>
 
@@ -866,13 +930,13 @@ function renderResult(){
   $('#result').innerHTML=`
     <div class="rtype"><div class="em">${ic(r.type.emoji,44)}</div><h2>${esc(r.type.title)}</h2><p>${esc(r.type.oneLine)}</p></div>
     <div class="speak" id="speakBtn"><div class="pl" id="speakIc">${ic('play',16)}</div><div class="t">손금왕이 선을 짚으며 말로 풀어드려요<small>소리를 켜주세요</small></div></div>
-    <div class="scores">${[['연애운','love'],['재물운','money'],['직업운','career'],['기운','energy']].map(([k,v])=>`<div class="sc"><div class="k">${k}<b>${r.score[v]}</b></div><div class="bar"><i data-w="${r.score[v]}"></i></div></div>`).join('')}</div>
+    <div class="scores">${[['직업운','career'],['연애운','love'],['재물운','money'],['기운','energy']].map(([k,v])=>`<div class="sc"><div class="k">${k}<b>${r.score[v]}</b></div><div class="bar"><i data-w="${r.score[v]}"></i></div></div>`).join('')}</div>
     <div class="card"><h4>${ic('hand',16)}${state.hand} · ${isDominant()?'주로 쓰는 손':'덜 쓰는 손'}</h4><p>${esc(r.domTxt)}</p></div>
     <div class="card"><h4>${ic(r.ht.emoji,16)}${r.ht.name} <span style="font-weight:400;color:var(--sub);font-size:12px">손 모양 4유형 · 자동 추정</span></h4><p>${esc(r.ht.say)}</p></div>
     ${L}
     <div class="card"><h4>${ic('mountain',16)}${r.mount.top}인 <span style="font-weight:400;color:var(--sub);font-size:12px">가장 발달한 언덕</span></h4><p>${esc(r.mount.txt)}</p><div class="scores" style="margin-top:10px">${mBars}</div></div>
     ${TL}
-    ${[['compass','성격','personality'],['heart','연애운','love'],['coins','재물운','money'],['briefcase','직업운','career']].map(([i,k,v])=>`<div class="card"><h4>${ic(i,16)}${k}</h4><p>${esc(r.fortune[v])}</p></div>`).join('')}
+    ${[['sparkles','총운','personality'],['briefcase','직업운','career'],['heart','연애운','love'],['coins','재물운','money']].map(([i,k,v])=>`<div class="card"><h4>${ic(i,16)}${k}</h4><p>${esc(r.fortune[v])}</p></div>`).join('')}
     <div class="card"><h4>${ic('clover',16)}행운 포인트</h4><div class="tags"><span class="tag">색 · ${r.lucky.color}</span><span class="tag">숫자 · ${r.lucky.number}</span><span class="tag">물건 · ${r.lucky.item}</span></div></div>
     <div class="card" style="border:1px solid #e0bd7244"><h4>${ic('scroll',16)}손금왕의 한마디</h4><p>${esc(r.advice)}</p></div>
     <details class="fix"><summary>${ic('pencil',15)} 선이 다르게 보이나요? 직접 고치기</summary><p style="font-size:12px;color:var(--sub);margin-top:8px">사진 속 내 손과 다르면 눌러서 바꾸세요. 손 모양과 언덕은 사진만으로는 어려워서 직접 골라주면 더 정확해요.</p>${fix}</details>
@@ -1185,7 +1249,7 @@ function renderTabs(){
 }
 function switchHand(h){
   if(h===state.hand){ renderTabs(); return; }
-  stopSpeak(); snapHand(); state.hand=h;
+  stopSpeak(); snapHand(); state.hand=h; ['fileCam','fileAlb','filePick'].forEach(id=>$('#'+id).value='');
   document.querySelectorAll('.opts[data-group="hand"] .opt').forEach(o=>o.classList.toggle('on',o.dataset.v===h));
   const d=state.hands[h];
   $('#lcv').style.display='none'; $('#stage').classList.remove('bw');
@@ -1536,7 +1600,7 @@ function answer(q){
     if(S) P.push(S.gw[0]>=3?'사주에 비겁이 강해 자존심 대결이 생기기 쉬워요. 이기는 것보다 같이 가는 걸 고르세요.':'사주상 사람들과 부딪힘이 크지 않은 편이에요.');
   } else if(it==='year'){
     const m=q.match(/(\d{4})년/), Y=m?+m[1]:(/내년/.test(q)?new Date().getFullYear()+1:new Date().getFullYear());
-    if(S){ const x=S.years.find(t=>t.Y===Y)||S.years[0]; P.push(`${x.Y}년은 ${pname(x.p)}년, 나에게는 ${GROUPS[x.gs]}과 ${GROUPS[x.gb]}의 해예요. ${YEAR_TXT[x.gs]} ${x.gb!==x.gs?YEAR_TXT[x.gb]:''}`); if(S.curDae) P.push(`큰 흐름인 대운은 ${pname(S.curDae.p)}이에요.`); }
+    if(S){ const x=S.years.find(t=>t.Y===Y)||S.years[0]; P.push(`${x.Y}년은 ${pname(x.p)}년, 나에게는 ${x.gs===x.gb?GROUPS[x.gs]:GROUPS[x.gs]+'과 '+GROUPS[x.gb]}의 해예요. ${YEAR_TXT[x.gs]} ${x.gb!==x.gs?YEAR_TXT[x.gb]:''}`); if(S.curDae) P.push(`큰 흐름인 대운은 ${pname(S.curDae.p)}이에요.`); }
     else if(r) P.push(r.advice);
   } else if(it==='lucky'){
     if(S){ const L=EL_LUCK[S.yong]; P.push(`보완하면 좋은 기운은 ${EL[S.yong]}이라 ${L.c}색, ${L.d} 방향, 숫자 ${L.n}이 행운이에요.`); }
@@ -1589,6 +1653,368 @@ async function consult(){
     await speak(s); if(my!==narrateId) break; await new Promise(r=>setTimeout(r,300)); }
   consulting=false; if(btn){ btn.querySelector('.pl').innerHTML=ic('play',16); btn.querySelector('small').textContent='사주 → 양손 → 종합 결론 → 올해 조언 순서로 말해 드려요'; }
 }
+
+/* ---------- v3: 총운 → 직업운 → 연애운 → 재물운 … 순서의 종합 리포트 (손금 / 사주 / 통합) ---------- */
+const CATS=[
+  {k:'total',name:'총운',icon:'sparkles'},
+  {k:'career',name:'직업운',icon:'briefcase'},
+  {k:'love',name:'연애운',icon:'heart'},
+  {k:'money',name:'재물운',icon:'coins'},
+  {k:'health',name:'건강운',icon:'sun'},
+  {k:'people',name:'대인관계운',icon:'user'},
+  {k:'year',name:'올해 운세',icon:'calendar'}
+];
+const hasB=w=>{const c=w.charCodeAt(w.length-1)-44032;return c>=0&&c<11172&&c%28>0}; const jo=(w,a,b)=>w+(hasB(w)?a:b);
+const clamp01=x=>Math.max(0,Math.min(1,x));
+const sc01=v=>clamp01((v-42)/55);
+const ILJI_TXT=['배우자 자리(일지)에 나와 같은 기운이 있어 친구 같은 동등한 관계가 잘 맞아요.','배우자 자리에 표현의 기운이 있어 다정하고 말이 잘 통하는 관계를 원해요.','배우자 자리에 재물의 기운이 있어 현실적으로 서로 챙겨 주는 관계가 편해요.','배우자 자리에 책임의 기운이 있어 서로 기대고 책임지는 단단한 관계를 원해요.','배우자 자리에 배움의 기운이 있어 배려하고 보살펴 주는 사람에게 끌려요.'];
+function palmPart(k,r,f,C){
+  const e=f.extra||{};
+  switch(k){
+    case 'total': return {t:`${r.type.title} — ${r.type.oneLine}. ${r.ht.say.split(/(?<=[.!?])\s/).slice(0,2).join(' ')} ${r.mount.txt.split(/(?<=[.!?])\s/).slice(0,2).join(' ')}${C?' '+C.lines[0]:''}`,s:(sc01(r.score.love)+sc01(r.score.money)+sc01(r.score.career)+sc01(r.score.energy))/4};
+    case 'career': return {t:r.fortune.career+(e.improve==='있음'?' '+DB3.improve:''),s:sc01(r.score.career)};
+    case 'love': return {t:r.fortune.love+(e.marriage?' '+[DB3.marriage[e.marriage],DB3.mshape[e.mshape]].filter(Boolean).join(' '):'')+(e.marriage&&e.marriage!=='없음'&&e.myear!=null?` 결혼선 위치로는 ${marriageAge(e.myear)}세 전후가 인연이 깊어지는 때예요.`:''),s:sc01(r.score.love)};
+    case 'money': return {t:r.fortune.money+(e.windfall==='있음'?' '+DB3.windfall:''),s:sc01(r.score.money)};
+    case 'health': return {t:[f.life.depth==='선명'?'생명선이 깊고 또렷해 기본 체력과 회복력이 좋은 손이에요.':f.life.depth==='희미'?'생명선이 옅은 편이라 무리하면 쉽게 지쳐요. 쉬는 시간을 일정에 먼저 넣으세요.':'생명선이 무난해 생활 리듬만 지키면 컨디션이 안정적이에요.',e.healthL==='있음'?DB3.healthL:'',e.fine==='많음'?'잔선이 많아 신경을 많이 쓰는 편이라 마음의 피로를 잘 풀어 주세요.':''].filter(Boolean).join(' '),s:sc01(r.score.energy)};
+    case 'people': { let s=0.5; const t=[];
+      if(f.marks.inbok==='많음'){s+=.25;t.push(DB2.inbok);} if(f.life.curve==='크게 휨'){s+=.15;t.push('생명선이 크게 휘어 사람을 좋아하고 어울리는 데서 힘을 얻어요.');} else t.push('혼자 충전하는 시간이 필요해서, 넓은 관계보다 깊은 관계가 맞아요.');
+      if(e.influence==='있음'){s+=.1;t.push(DB3.influence);} if(e.sorrow==='있음'){s-=.2;t.push(DB3.sorrow);}
+      return {t:t.join(' '),s:clamp01(s)}; }
+    case 'year': return {t:r.advice,s:(sc01(r.score.career)+sc01(r.score.energy))/2};
+  }
+}
+function sajuPart(k,S){
+  const tot=S.gw.reduce((a,b)=>a+b,0), g=i=>S.gw[i]/tot, y0=S.years[0], topG=S.gw.indexOf(Math.max(...S.gw));
+  const ilji=relOf(S.dm,BR_MAIN[S.P[2][1].b]);
+  switch(k){
+    case 'total': return {t:`${DAYMASTER[S.dm]} ${S.strength==='신강'?'내 기운이 강한 사주라 힘을 밖으로 써서 성과로 바꿀 때 운이 열려요.':S.strength==='신약'?'내 기운이 약한 편이라 도와주는 사람과 배움이 운을 키워요.':'기운이 고르게 섞인 중화 사주라 균형 감각이 좋아요.'}${S.curDae?` 지금은 ${pname(S.curDae.p)} 대운으로, ${YEAR_TXT[relOf(S.dm,S.curDae.p.s)]}`:''}`,s:S.strength==='중화'?0.8:0.62};
+    case 'career': { const ys=yearsWith(S,[3,1]); return {t:`${GROUP_TXT[topG]} ${ys.length?ys.join(', ')+'이 자리 이동·승진·새 일에 힘이 실리는 해예요.':''}`,s:clamp01((g(3)+g(1))*1.8+(topG===3||topG===1?0.2:0))}; }
+    case 'love': { const gi=S.gender==='남'?2:3, ys=yearsWith(S,[gi]); return {t:`${ILJI_TXT[ilji]}${S.dohwa?' 도화가 있어 사람을 끄는 매력이 있어요.':''} ${ys.length?`${S.gender==='남'?'재성':'관성'}이 들어오는 ${ys.join(', ')}이 인연이 맺어지기 좋은 때예요.`:'가까운 해엔 인연의 기운이 크지 않아 내가 먼저 움직여 기회를 만드는 게 좋아요.'}`,s:clamp01(g(gi)*2+(S.dohwa?0.3:0)+0.15)}; }
+    case 'money': { const ys=yearsWith(S,[2,1]); return {t:`${g(2)>=0.2?'재성이 있어 돈의 흐름을 읽는 감각이 좋은 사주예요.':'재성이 약한 편이라 크게 버는 것보다 새지 않게 모으는 습관이 재물을 만들어요.'}${g(1)>=0.15?' 식상이 재물을 낳아 주니 내 재주와 아이디어가 곧 돈이 돼요.':''} ${ys.length?ys.join(', ')+'에 돈이 크게 움직여요.':''}`,s:clamp01(g(2)*2.2+g(1)*0.8)}; }
+    case 'health': { const pts=S.cnt.map((c,i)=>c===0||c>=3?i:null).filter(x=>x!=null); return {t:pts.length?'오행이 치우친 곳이 있어 '+pts.map(i=>EL_CARE[i]).join(', ')+' 쪽을 챙기면 좋아요. (전통 관리 포인트, 진단 아님)':'오행이 고르게 있어 크게 치우친 곳은 없어요. 생활 리듬만 지키면 돼요.',s:clamp01(1-pts.length*0.2)}; }
+    case 'people': return {t:g(0)>=0.3?'비겁이 강해 자존심 대결이 생기기 쉬워요. 이기는 것보다 같이 가는 쪽을 고르면 사람이 남아요.':g(4)>=0.25?'인성이 있어 윗사람·스승의 도움을 받는 운이에요.':'사람과 크게 부딪히는 기운은 없어 무난한 관계를 이어 가요.',s:clamp01(0.85-Math.abs(g(0)-0.2))};
+    case 'year': return {t:`${y0.Y}년 ${pname(y0.p)}년은 나에게 ${y0.gs===y0.gb?GROUPS[y0.gs]:GROUPS[y0.gs]+'과 '+GROUPS[y0.gb]}의 해예요. ${YEAR_TXT[y0.gs]}${y0.gb!==y0.gs?' '+YEAR_TXT[y0.gb]:''} 내년 ${S.years[1].Y}년은 ${GROUPS[S.years[1].gs]}의 해예요.`,s:[0.6,0.75,0.8,0.7,0.65][y0.gs]};
+  }
+}
+const CAT_ADVICE={
+  total:'지금 가진 강점을 한 곳에 모으면 운이 커져요.',
+  career:'잘 맞는 일의 방향을 정하고, 1년 단위로 결과물을 쌓아 보세요.',
+  love:'마음은 행동으로 보여 줄 때 가장 잘 전해져요.',
+  money:'수입의 일정 부분을 먼저 떼어 두는 습관이 재물운을 키워요.',
+  health:'잠·식사·움직임, 세 가지 리듬이 운의 바탕이에요.',
+  people:'먼저 연락하고 먼저 고마움을 말하는 쪽이 인복을 얻어요.',
+  year:'올해의 흐름에 맞춰 시작할 것과 다질 것을 나눠 보세요.'
+};
+function integrate(k,name,P,Sj){
+  const hi=0.62, lo=0.42; let t;
+  if(P.s>=hi&&Sj.s>=hi) t=`손금과 사주가 똑같이 ${jo(name,'이','가')} 좋다고 말해요. 타고난 것과 살아온 것이 같은 방향이니 확실히 믿고 밀어도 되는 운이에요.`;
+  else if(P.s>=hi&&Sj.s<lo) t=`사주보다 손에서 ${jo(name,'이','가')} 더 강하게 드러나요. 타고난 것보다 살면서 노력으로 키운 운이라 더 단단해요.`;
+  else if(Sj.s>=hi&&P.s<lo) t=`사주에는 ${name}의 기운이 큰데 손에는 아직 덜 드러나요. 타고난 운을 아직 다 쓰지 않으셨다는 뜻이니, 움직이면 손금도 따라 바뀌어요.`;
+  else if(P.s<lo&&Sj.s<lo) t=`손금과 사주 모두 ${jo(name,'이','가')} 저절로 오는 편은 아니에요. 대신 작은 습관을 쌓으면 그만큼 정직하게 돌아오는 운이에요.`;
+  else t=`손금과 사주 모두 ${jo(name,'이','가')} 무난한 편이에요. 큰 굴곡 없이 꾸준히 쌓아 가는 흐름이에요.`;
+  return t+' '+CAT_ADVICE[k];
+}
+function fullReport(){
+  const dh=domHand(), h=(state.hands[dh]&&state.hands[dh].feat)?dh:((state.hands[otherHand(dh)]&&state.hands[otherHand(dh)].feat)?otherHand(dh):null);
+  const r=h?readingFor(h):null, f=h?state.hands[h].feat:null, C=compareHands();
+  const S0=currentSaju(), S=S0&&!S0.err?S0:null;
+  if(!r&&!S) return null;
+  return {hand:h,saju:!!S,items:CATS.map(c=>{ const P=r?palmPart(c.k,r,f,c.k==='total'?C:null):null, Sj=S?sajuPart(c.k,S):null;
+    return {...c,P,Sj,both:P&&Sj?integrate(c.k,c.name,P,Sj):null}; })};
+}
+function reportHTML(R){
+  return `<div class="sect-t" style="margin-top:22px">${ic('scroll',15)} 종합 풀이 ${R.saju&&R.hand?'· 사주 + 손금':R.saju?'· 사주':'· 손금'}</div>`+R.items.map(it=>`
+   <div class="card rp"><h4>${ic(it.icon,16)}${it.name}${(it.P||it.Sj)?`<span class="sub" style="margin-left:auto">${it.P?'손금 '+Math.round(it.P.s*100):''}${it.P&&it.Sj?' · ':''}${it.Sj?'사주 '+Math.round(it.Sj.s*100):''}</span>`:''}</h4>
+   ${it.both?`<div class="rp-b"><b>${ic('sparkles',13)} 사주 + 손금 통합</b><p>${esc(it.both)}</p></div>`:''}
+   ${it.P?`<div class="rp-s"><b>${ic('hand',13)} 손금으로 보면${R.hand?' ('+R.hand+')':''}</b><p>${esc(it.P.t)}</p></div>`:''}
+   ${it.Sj?`<div class="rp-s"><b>${ic('scroll',13)} 사주로 보면</b><p>${esc(it.Sj.t)}</p></div>`:''}
+   </div>`).join('')+(R.saju?'':`<p class="foot">생년월일을 넣으면 항목마다 사주 풀이와 사주+손금 통합 결론이 함께 나와요.</p>`);
+}
+renderCombo=function(){
+  const el=$('#combo'); if(!el) return;
+  const {R:hR,L:hL}=handsReady(); const anyHand=hR||hL;
+  const v=state.sajuIn||sajuInput()||{cal:'양력',leap:false,date:'',time:'',gender:'여',correct:true};
+  const S=v.date?currentSaju():null, Rp=fullReport(), C=compareHands();
+  let h=`<div class="sect-t" style="margin-top:28px">${ic('messages',15)} 손금왕 상담실</div>`;
+  h+=`<details class="card sj" ${v.date?'':'open'}><summary><h4 style="display:inline-flex">${ic('user',16)}사주 정보 ${v.date?`<span class="sub">${v.cal} ${v.date}${v.time?' '+v.time:''} · ${v.gender}</span>`:'<span class="sub">넣으면 사주+손금 통합 풀이</span>'}</h4></summary>
+   <div class="sjf" style="margin-top:10px"><select id="sjCal" class="sel"><option ${v.cal==='양력'?'selected':''}>양력</option><option ${v.cal==='음력'?'selected':''}>음력</option></select>
+   <label class="ck"><input type="checkbox" id="sjLeap" ${v.leap?'checked':''}> 윤달</label></div>
+   <input type="date" id="sjDate" value="${v.date}" class="sel">
+   <div class="sjf"><input type="time" id="sjTime" value="${v.time}" class="sel"><label class="ck"><input type="checkbox" id="sjUnknown" ${v.date&&!v.time?'checked':''}> 시간 모름</label></div>
+   <div class="sjf"><select id="sjGender" class="sel"><option ${v.gender==='여'?'selected':''}>여</option><option ${v.gender==='남'?'selected':''}>남</option></select>
+   <label class="ck"><input type="checkbox" id="sjCorrect" ${v.correct?'checked':''}> 서울 시차 보정(−32분)</label></div>
+   <button class="btn gold" onclick="runSaju()">${ic('scroll')}${v.date?'다시 세우기':'사주 세우기'}</button>
+   <p class="foot" style="margin-top:8px">생년월일은 이 기기에만 저장돼요. 1987·88년 서머타임은 자동 보정해요.</p></details>`;
+  if(anyHand||S||hasFace()) h+=`<div class="speak" id="consultBtn" onclick="consult()"><div class="pl">${ic('play',16)}</div><div class="t">전문가 상담 듣기<small>총운 → 직업운 → 연애운 → 재물운 순서로 말해 드려요</small></div></div>`;
+  if(Rp) h+=`<div id="sjResult">${reportHTML(Rp)}</div>`; else h+='<div id="sjResult"></div>';
+  if(C) h+=`<div class="card"><h4>${ic('hand',16)}양손 비교 <span class="sub">${C.nh}=타고난 것 · ${C.dh}=살아온 것</span></h4>${C.lines.map(x=>`<p style="margin-top:6px">${esc(x)}</p>`).join('')}</div>`;
+  if(S) h+=`<details class="card"><summary><h4 style="display:inline-flex">${ic('layers',16)}사주 원국 자세히 보기 <span class="sub">팔자·오행·십성·대운·세운</span></h4></summary><div style="margin-top:10px">${sajuHTML(S)}</div></details>`;
+  if(anyHand||S||hasFace()){
+    h+=`<div class="card qa"><h4>${ic('messages',16)}추가로 궁금한 것 물어보세요</h4><div id="qaLog">${(state.qa||[]).map(qaItem).join('')}</div>
+    <div class="qchips">${['결혼은 언제쯤?','이직해도 될까요?','돈은 언제 모여요?','어떤 일이 맞아요?','올해 조심할 건?','내년 운세는?','제 장점은 뭐예요?','건강은 어때요?'].map(q=>`<span class="opt" onclick="ask('${q}')">${q}</span>`).join('')}</div>
+    <div class="qin"><input id="qText" placeholder="예: 내년에 창업해도 될까요?" onkeydown="if(event.key==='Enter')ask()">${(window.SpeechRecognition||window.webkitSpeechRecognition)?`<button class="btn ghost sm" onclick="listen()">${ic('mic',16)}</button>`:''}<button class="btn gold sm" onclick="ask()">${ic('send',16)}</button></div></div>`;
+  }
+  el.innerHTML=h;
+  setTimeout(()=>el.querySelectorAll('.bar i').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+  if($('#sjUnknown')){ $('#sjUnknown').addEventListener('change',e=>{$('#sjTime').disabled=e.target.checked}); $('#sjTime').disabled=$('#sjUnknown').checked; }
+};
+consultSteps=function(){
+  const R=fullReport(); if(!R) return ['먼저 손 사진이나 생년월일을 넣어 주세요.'];
+  const st=[`반갑습니다. ${R.saju&&R.hand?'사주와 양손 손금을 함께 놓고':R.saju?'사주를 놓고':'손금을 놓고'} 총운부터 직업운, 연애운, 재물운 순서로 말씀드릴게요.`];
+  for(const it of R.items){
+    const parts=[it.P?'손금으로 보면, '+it.P.t:'', it.Sj?'사주로 보면, '+it.Sj.t:'', it.both?'그래서 통합하면, '+it.both:''].filter(Boolean);
+    st.push(`${jo(it.name,'이에요','예요')}. `+parts.join(' '));
+  }
+  st.push('손금은 노력하면 바뀌고, 사주는 흐름을 알려 줄 뿐 정답은 아니에요. 더 궁금한 게 있으면 아래에 편하게 물어보세요.');
+  return st;
+};
+/* 질문 답변: 해당 분야의 손금·사주·통합을 같은 순서로 붙여 줌 */
+const _answer=answer;
+answer=function(q){
+  const base=_answer(q);
+  if(/죽|사망|수명|명줄|얼마나\s*살/.test(q)) return base;
+  const map={love:/연애|사랑|애인|연인|썸|이성|결혼|배우자|인연/,career:/직업|일이|진로|적성|취업|승진|이직|창업|사업|퇴사/,money:/돈|재물|부자|투자|주식|재테크|수입/,health:/건강|몸|컨디션|체력/,people:/인간관계|친구|동료|상사|대인/,year:/올해|내년|운세|\d{4}년|조심/,total:/총운|전체|종합|장점|성격/};
+  const k=Object.keys(map).find(x=>map[x].test(q)); const R=fullReport();
+  if(!k||!R) return base;
+  const it=R.items.find(i=>i.k===k);
+  if(/조심/.test(q)&&R.saju){ const S=currentSaju(); const y0=S.years[0]; return `올해 조심할 건 이거예요. ${y0.gs===0||y0.gb===0?'경쟁과 돈 거래 — 보증·동업은 피하세요. ':''}${y0.gs===3||y0.gb===3?'책임이 몰리는 해라 무리한 약속은 줄이세요. ':''}${y0.gs===2||y0.gb===2?'돈이 들어오는 만큼 나가기도 쉬우니 큰 지출은 한 번 더 생각하세요. ':''}${y0.gs===1||y0.gb===1?'말이 앞서기 쉬우니 중요한 말은 글로 남기세요. ':''}${y0.gs===4||y0.gb===4?'생각만 하다 때를 놓치지 않게 마감일을 정하세요. ':''}${it&&it.both?it.both:''}`.replace(/\s+/g,' ').trim(); }
+  return it&&it.both? base+' 모두 합쳐 보면, '+it.both : base;
+};
+
+/* =====================================================================
+   v4 — 스크롤 · 엄지 방향 자동 판별 · 사주 심화(격국·신살·합충) · 관상 · 3원 통합
+   ===================================================================== */
+/* ---------- 1. 분석 후에는 사진 위에서도 화면이 스크롤되게 ---------- */
+function stageMode(){ $('#stage').classList.toggle('done',!!state.feat); }
+
+/* ---------- 2. 엄지 방향 자동 판별 (피부색 덩어리로) ---------- */
+function isSkin(r,g,b){ const y=0.299*r+0.587*g+0.114*b, cr=(r-y)*0.713+128, cb=(b-y)*0.564+128; return cr>133&&cr<180&&cb>77&&cb<130&&y>40; }
+function thumbSide(){
+  const c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d'); drawTo(ctx);
+  const d=ctx.getImageData(0,0,W,H).data; let L=0,Rr=0,n=0;
+  for(let y=Math.round(H*0.5);y<H*0.82;y+=3) for(const [x0,x1,side] of [[0.02,0.2,'L'],[0.8,0.98,'R']]) for(let x=Math.round(W*x0);x<W*x1;x+=3){
+    const i=(y*W+x)*4; n++; if(isSkin(d[i],d[i+1],d[i+2])) side==='L'?L++:Rr++; }
+  n/=2; const l=L/n, r=Rr/n; if(Math.abs(l-r)<0.12) return null; return l>r?'left':'right';
+}
+const _runAnalysis=runAnalysis;
+runAnalysis=function(){
+  if(!state.img) return;
+  const side=state.manualThumb?null:thumbSide(); state.thumbWarn=null;
+  if(side){ const wantRight=state.thumbRight, isRight=side==='right';
+    if(wantRight!==isRight){ state.thumbRight=isRight; drawGuide(); state.thumbWarn=isRight?'오른손':'왼손'; } }
+  _runAnalysis();
+};
+function moveToOther(){
+  const to=state.thumbWarn, from=state.hand; if(!to||to===from) return;
+  state.hands[to]={img:state.img,t:{...state.t},feat:state.feat,paths:state.paths,mountUp:state.mountUp||[],thumbRight:state.thumbRight,map:state._map};
+  Object.assign(state,{img:null,feat:null,paths:null,_map:null,thumbWarn:null});
+  switchHand(to); delete state.hands[from]; renderTabs(); renderCombo(); toast(`${to} 칸으로 옮겼어요`);
+}
+const _flipThumb=flipThumb; flipThumb=function(){ state.manualThumb=true; state.thumbWarn=null; _flipThumb(); };
+const _setImage=setImage; setImage=function(img,fit){ state.manualThumb=false; state.thumbWarn=null; return _setImage(img,fit); };
+/* ---------- 3. 사주 심화: 격국 · 신살 · 합충 ---------- */
+const GYEOK={비견:'건록격(비견) — 내 힘으로 서는 자수성가의 그릇. 독립된 일에서 크게 돼요.',겁재:'양인격(겁재) — 승부욕과 추진력이 강한 그릇. 경쟁이 있는 판에서 이겨요.',식신:'식신격 — 재능과 여유, 먹을 복을 타고난 그릇. 좋아하는 일을 오래 할수록 커져요.',상관:'상관격 — 표현과 개혁의 그릇. 말과 아이디어로 판을 바꾸는 힘이 있어요.',편재:'편재격 — 큰 돈과 사업의 그릇. 사람과 물건이 오가는 곳에서 재물을 모아요.',정재:'정재격 — 성실한 재물의 그릇. 꾸준히 모으고 지키는 힘이 커요.',편관:'편관격 — 권위와 도전의 그릇. 어려운 자리를 맡아 이겨 내며 올라가요.',정관:'정관격 — 명예와 원칙의 그릇. 조직에서 인정받고 자리를 얻는 정통파예요.',편인:'편인격 — 특별한 재능과 직관의 그릇. 남이 안 하는 분야의 전문가가 돼요.',정인:'정인격 — 학문과 인덕의 그릇. 배움과 자격, 좋은 윗사람이 운을 열어 줘요.'};
+const SAMHAP=[[8,0,4],[2,6,10],[5,9,1],[11,3,7]]; // 申子辰 寅午戌 巳酉丑 亥卯未
+const DOHWA=[9,3,6,0], YEOKMA=[2,8,11,5], HWAGAE=[4,10,1,7];
+const GWIIN={0:[1,7],4:[1,7],6:[1,7],1:[0,8],5:[0,8],2:[11,9],3:[11,9],7:[2,6],8:[5,3],9:[5,3]};
+const HAP6={0:1,1:0,2:11,11:2,3:10,10:3,4:9,9:4,5:8,8:5,6:7,7:6};
+function sinsal(S){
+  const brs=S.P.map(([,p])=>p.b), out=[];
+  const grp=b=>SAMHAP.findIndex(g=>g.includes(b));
+  for(const base of [S.P[0][1].b,S.P[2][1].b]){ const gi=grp(base);
+    if(brs.includes(DOHWA[gi])&&!out.includes('도화')) out.push('도화');
+    if(brs.includes(YEOKMA[gi])&&!out.includes('역마')) out.push('역마');
+    if(brs.includes(HWAGAE[gi])&&!out.includes('화개')) out.push('화개'); }
+  if(brs.some(b=>GWIIN[S.dm].includes(b))) out.push('천을귀인');
+  return out;
+}
+const SINSAL_TXT={도화:'도화 — 사람을 끄는 매력과 인기. 예술·서비스·대중을 상대하는 일에 유리해요.',역마:'역마 — 이동과 변화의 기운. 출장·해외·이사가 잦고, 움직일수록 운이 커져요.',화개:'화개 — 예술·종교·학문의 기운. 혼자 깊이 파고드는 시간에 재능이 꽃피어요.',천을귀인:'천을귀인 — 가장 귀한 길신. 어려울 때 꼭 도와주는 사람이 나타나요.'};
+function hapchung(S){
+  const brs=S.P.map(([n,p])=>[n,p.b]), out=[];
+  for(let i=0;i<brs.length;i++) for(let j=i+1;j<brs.length;j++){
+    const [a,x]=brs[i],[b,y]=brs[j];
+    if((x+6)%12===y) out.push(`${a}·${b} 충(${BR[x]}${BR[y]}) — 그 자리가 뜻하는 일에 변동이 잦아요.`);
+    if(HAP6[x]===y) out.push(`${a}·${b} 합(${BR[x]}${BR[y]}) — 그 자리끼리 잘 어울려 도움을 주고받아요.`);
+  }
+  return out;
+}
+function gyeokOf(S){ return tenGod(S.dm,BR_MAIN[S.P[1][1].b]); }
+function yearClash(S,x){ const il=S.P[2][1].b; return (x.p.b+6)%12===il?'충':HAP6[x.p.b]===il?'합':null; }
+const _sajuHTML=sajuHTML;
+sajuHTML=function(S){
+  if(S.err) return _sajuHTML(S);
+  const g=gyeokOf(S), ss=sinsal(S), hc=hapchung(S);
+  return _sajuHTML(S)+`<div class="card"><h4>${ic('gem',16)}격국 · 신살 · 합충</h4><p><b>${GYEOK[g]}</b></p>${ss.map(x=>`<p style="margin-top:6px">${SINSAL_TXT[x]}</p>`).join('')}${hc.map(x=>`<p style="margin-top:6px">${x}</p>`).join('')}${!ss.length&&!hc.length?'<p style="margin-top:6px">특별한 신살이나 충은 없어 흐름이 무난한 사주예요.</p>':''}</div>`;
+};
+const _sajuPart=sajuPart;
+sajuPart=function(k,S){
+  const o=_sajuPart(k,S), ss=sinsal(S), y0=S.years[0], yc=yearClash(S,y0);
+  if(k==='total') o.t=`${GYEOK[gyeokOf(S)]} `+o.t+(ss.includes('천을귀인')?' 천을귀인이 있어 고비마다 귀인이 돕는 사주예요.':'');
+  if(k==='career'&&ss.includes('역마')) o.t+=' 역마가 있어 이동·출장·해외가 많은 일에서 더 잘 풀려요.';
+  if(k==='love'){ if(yc==='합') { o.t+=` 올해 지지가 배우자 자리와 합을 이뤄 인연이 맺어지기 좋은 해예요.`; o.s=Math.min(1,o.s+0.15); } if(yc==='충') o.t+=' 올해는 배우자 자리를 치는 해라 관계에 변화가 생기기 쉬워요. 서두르지 말고 대화를 늘리세요.'; }
+  if(k==='year'&&yc) o.t+=yc==='충'?' 올해는 일지를 치는 충의 해라 이사·이직 같은 변동이 오기 쉬워요. 큰 결정은 충분히 따져 보세요.':' 올해는 일지와 합이 드는 해라 사람과 일이 잘 엮여요.';
+  return o;
+};
+
+/* ---------- 4. 관상 ---------- */
+state.face=null;
+const FACE_GUIDE=`<ellipse cx="180" cy="235" rx="118" ry="160"/><line x1="70" y1="205" x2="290" y2="205"/><line x1="150" y1="285" x2="210" y2="285"/><line x1="140" y1="330" x2="220" y2="330"/>
+ <text x="300" y="209" text-anchor="end" style="font-size:11px">눈</text><text x="222" y="289" style="font-size:11px">코끝</text><text x="232" y="334" style="font-size:11px">입</text><text x="180" y="410" text-anchor="middle" style="font-size:11px">턱끝</text>`;
+const FACE_OPT={shape:['목형(긴)','화형(역삼각)','토형(두툼)','금형(각진)','수형(둥근)'],forehead:['좁음','보통','넓음'],brow:['옅음','보통','진함'],eye:['작음','보통','큼'],nose:['작음','보통','큼'],mouth:['작음','보통','큼'],lips:['얇음','보통','두툼'],chin:['뾰족','보통','넓음'],ear:['작음','보통','큼']};
+const FACE_LABEL={shape:'얼굴형',forehead:'이마',brow:'눈썹',eye:'눈',nose:'코',mouth:'입',lips:'입술',chin:'턱',ear:'귀'};
+const FACE_DB={
+  shape:{'목형(긴)':'얼굴이 갸름하고 긴 목형(木形)이에요. 생각이 곧고 인품을 중시해 교육·연구·기획처럼 사람을 키우고 뜻을 세우는 일에 맞아요. 서두르기보다 늦게 크게 피는 상이에요.',
+   '화형(역삼각)':'이마가 넓고 턱이 갸름한 화형(火形)이에요. 두뇌 회전이 빠르고 감각과 열정이 뛰어나 기획·예술·표현하는 일에서 빛나요. 초년에 일찍 두각을 나타내는 상이에요.',
+   '토형(두툼)':'얼굴이 넓고 살집이 두툼한 토형(土形)이에요. 믿음직하고 끈기가 있어 재물을 모으고 지키는 힘이 커요. 중년 이후 재산과 지위가 쌓이는 상이에요.',
+   '금형(각진)':'턱과 광대가 반듯하게 각진 금형(金形)이에요. 결단력과 실행력이 강하고 원칙이 분명해 관리자·전문직·조직의 리더에 어울려요.',
+   '수형(둥근)':'얼굴이 둥글고 부드러운 수형(水形)이에요. 친화력과 유연함이 커서 사람이 따르고 인복이 많아요. 사람을 상대하는 일에서 크게 돼요.'},
+  forehead:{넓음:'이마(관록궁)가 넓고 시원해요. 머리가 좋고 초년운이 밝으며 윗사람과 부모의 덕을 받는 상이에요.',좁음:'이마가 좁은 편이에요. 일찍 스스로 길을 찾는 자수성가형이고, 이론보다 실전에서 강해요.',보통:''},
+  brow:{진함:'눈썹(형제궁)이 진하고 힘이 있어요. 의리와 추진력이 있고 형제·친구의 도움을 받아요.',옅음:'눈썹이 옅고 부드러워요. 섬세하고 독립적이라 혼자 해내는 힘이 있어요. 사람 관계는 넓기보다 깊게 가져가세요.',보통:''},
+  eye:{큼:'눈(감찰관)이 크고 시원해요. 감수성이 풍부하고 표현이 솔직해 사람의 마음을 잘 얻어요.',작음:'눈이 작고 깊어요. 관찰력과 신중함이 뛰어나 속을 쉽게 드러내지 않고 실수가 적어요.',보통:''},
+  nose:{큼:'코(재백궁)가 크고 콧방울이 두툼해요. 재물을 모으고 지키는 힘이 강하고 중년운이 좋아요.',작음:'코가 작고 콧날이 섬세해요. 감각이 좋고 깔끔하지만 재물은 새지 않게 관리가 필요해요.',보통:''},
+  mouth:{큼:'입(출납관)이 커요. 활동적이고 통이 커서 사람을 이끌고, 말로 버는 일에 재능이 있어요.',작음:'입이 작고 단정해요. 신중하고 실속을 챙기며 약속을 잘 지켜 신뢰를 얻어요.',보통:''},
+  lips:{두툼:'입술이 두툼해요. 정이 많고 애정 표현이 따뜻하며 먹을 복이 있어요.',얇음:'입술이 얇아요. 말이 분명하고 이성적이라 감정에 휘둘리지 않아요.',보통:''},
+  chin:{넓음:'턱(지각)이 넓고 든든해요. 말년운이 안정되고 아랫사람과 가족의 덕이 있으며 끈기가 강해요.',뾰족:'턱이 갸름해요. 감각이 예민하고 세련됐지만, 말년을 위해 일찍부터 기반(집·저축)을 다져 두세요.',보통:''},
+  ear:{큼:'귀(채청관)가 크고 귓불이 두툼해요. 타고난 복과 기반이 좋고 남의 말을 잘 들어 사람을 얻어요.',작음:'귀가 작은 편이에요. 듣기보다 실천으로 증명하는 행동파예요.',보통:''}
+};
+function faceRender(){
+  const c=$('#fcv'), ctx=c.getContext('2d'), F=state.face; ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H); if(!F||!F.img) return;
+  const w=F.img.naturalWidth||F.img.width, h=F.img.naturalHeight||F.img.height, t=F.t;
+  ctx.save(); ctx.translate(W/2+t.x,H/2+t.y); ctx.rotate(t.r*Math.PI/180); ctx.scale(t.s,t.s); ctx.drawImage(F.img,-w/2,-h/2); ctx.restore();
+}
+function faceLoad(f){ if(!f) return; const img=new Image(); img.onload=()=>{ const w=img.naturalWidth,h=img.naturalHeight; state.face={img,t:{x:0,y:0,s:Math.max(W/w,H/h),r:0},feat:null};
+  $('#fEmpty').style.display='none'; $('#fWork').style.display='block'; $('#fGuide').style.display='block'; $('#fAlign').style.display='block'; $('#fResult').innerHTML=''; $('#fstage').classList.remove('done'); faceRender(); }; img.src=URL.createObjectURL(f); }
+function faceReset(){ state.face=null; ['fFile','fCam'].forEach(id=>$('#'+id).value=''); $('#fEmpty').style.display='block'; $('#fWork').style.display='none'; renderCombo(); }
+(function(){
+  const cv=()=>$('#fcv'); const ptr=new Map(); let gs=null;
+  document.addEventListener('pointerdown',e=>{ if(e.target.id!=='fcv'||!state.face||state.face.feat) return; e.target.setPointerCapture(e.pointerId); ptr.set(e.pointerId,{x:e.clientX,y:e.clientY}); gs=null; });
+  document.addEventListener('pointermove',e=>{ if(!ptr.has(e.pointerId)||!state.face) return; const k=W/cv().getBoundingClientRect().width, p=ptr.get(e.pointerId), t=state.face.t;
+    if(ptr.size===1){ t.x+=(e.clientX-p.x)*k; t.y+=(e.clientY-p.y)*k; ptr.set(e.pointerId,{x:e.clientX,y:e.clientY}); faceRender(); return; }
+    ptr.set(e.pointerId,{x:e.clientX,y:e.clientY}); const [a,b]=[...ptr.values()], d=Math.hypot(b.x-a.x,b.y-a.y), an=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+    if(gs){ t.s*=d/gs.d; t.r+=an-gs.a; faceRender(); } gs={d,a:an}; });
+  ['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,e=>{ptr.delete(e.pointerId);gs=null}));
+  document.addEventListener('wheel',e=>{ if(e.target.id!=='fcv'||!state.face||state.face.feat) return; e.preventDefault(); state.face.t.s*=e.deltaY<0?1.05:0.95; faceRender(); },{passive:false});
+})();
+function faceMeasure(){
+  const c=$('#fcv'), d=c.getContext('2d').getImageData(0,0,W,H).data;
+  const px=(x,y)=>{ const i=(Math.round(y)*W+Math.round(x))*4; return [d[i],d[i+1],d[i+2]]; };
+  const sk=(x,y)=>isSkin(...px(x,y)), lum=(x,y)=>{const [r,g,b]=px(x,y);return 0.299*r+0.587*g+0.114*b;};
+  const widthAt=y=>{ let l=180,r=180; while(l>10&&sk(l-2,y)) l-=2; while(r<W-10&&sk(r+2,y)) r+=2; return r-l; };
+  let top=205; for(let y=205;y>20;y-=2){ let n=0; for(let x=160;x<=200;x+=4) if(sk(x,y)) n++; if(n>=6) top=y; else if(205-y>30) break; }
+  const wF=widthAt(Math.max(top+20,130)), wC=widthAt(250), wJ=widthAt(360), faceH=400-top;
+  const dark=(x0,x1,y0,y1,th)=>{ let n=0,h=0, base=lum(180,250); for(let y=y0;y<y1;y+=2) for(let x=x0;x<x1;x+=2){ n++; if(lum(x,y)<base*th) h++; } return h/n; };
+  const red=(x0,x1,y0,y1)=>{ let n=0,h=0; for(let y=y0;y<y1;y+=2) for(let x=x0;x<x1;x+=2){ n++; const [r,g,b]=px(x,y); if(r>g*1.35&&r>b*1.25) h++; } return h/n; };
+  const brow=(dark(95,155,170,195,0.6)+dark(205,265,170,195,0.6))/2, eye=(dark(100,160,196,216,0.55)+dark(200,260,196,216,0.55))/2;
+  const mouthR=red(130,230,318,345), lipsR=red(150,210,312,350);
+  const ratio=faceH/Math.max(1,wC), jawR=wJ/Math.max(1,wC), foreR=wF/Math.max(1,wJ);
+  let shape='토형(두툼)';
+  if(ratio>1.55) shape='목형(긴)'; else if(foreR>1.22&&jawR<0.78) shape='화형(역삼각)'; else if(jawR>0.9&&ratio<1.45) shape='금형(각진)'; else if(ratio<1.3) shape='수형(둥근)';
+  const fh=(205-25-top)/Math.max(1,faceH);
+  const lv=(v,a,b,lo,mid,hi)=>v<a?lo:v>b?hi:mid;
+  return {shape,forehead:lv(fh,0.2,0.3,'좁음','보통','넓음'),brow:lv(brow,0.12,0.3,'옅음','보통','진함'),eye:lv(eye,0.06,0.16,'작음','보통','큼'),nose:'보통',mouth:lv(mouthR,0.08,0.2,'작음','보통','큼'),lips:lv(lipsR,0.1,0.25,'얇음','보통','두툼'),chin:lv(jawR,0.72,0.88,'뾰족','보통','넓음'),ear:'보통',_m:{top,wF,wC,wJ,ratio:+ratio.toFixed(2)}};
+}
+function faceAnalyze(){ if(!state.face) return; $('#fGuide').style.display='none'; $('#fAlign').style.display='none'; state.face.feat=faceMeasure(); $('#fstage').classList.add('done'); faceResult(); renderCombo(); }
+function faceSamjeong(F){ return F.forehead==='넓음'?'상정(이마)이 넉넉해 초년운이 밝아요.':F.forehead==='좁음'?'상정이 짧아 초년엔 스스로 개척하고, 중년 이후에 힘이 붙어요.':'상정이 고른 편이에요.'; }
+function faceScores(F){
+  const v={큼:1,넓음:1,진함:1,두툼:1,보통:.5,작음:0,좁음:0,옅음:0,얇음:0,뾰족:0};
+  const sh={'목형(긴)':[.7,.75,.5,.45,.55,.55],'화형(역삼각)':[.7,.8,.65,.5,.5,.6],'토형(두툼)':[.75,.6,.5,.85,.75,.6],'금형(각진)':[.7,.8,.45,.65,.7,.5],'수형(둥근)':[.75,.6,.75,.6,.65,.85]}[F.shape];
+  const c=x=>Math.max(0,Math.min(1,x));
+  return {total:sh[0],career:c(sh[1]*.6+v[F.forehead]*.2+v[F.brow]*.2),love:c(sh[2]*.5+v[F.eye]*.2+v[F.lips]*.3),money:c(sh[3]*.5+v[F.nose]*.3+v[F.chin]*.2),health:c(sh[4]*.7+v[F.ear]*.3),people:c(sh[5]*.5+v[F.mouth]*.2+v[F.ear]*.3)};
+}
+function facePart(k,F){
+  const s=faceScores(F), T=f=>FACE_DB[f][F[f]]||'';
+  const map={total:[FACE_DB.shape[F.shape],faceSamjeong(F),T('ear')],career:[T('forehead'),T('brow'),F.shape==='금형(각진)'||F.shape==='화형(역삼각)'?'얼굴형도 일에서 앞장서는 상이에요.':''],love:[T('eye'),T('lips'),F.shape==='수형(둥근)'?'둥근 얼굴이라 첫인상이 편안해 호감을 사요.':''],money:[T('nose'),T('chin'),F.shape==='토형(두툼)'?'두툼한 얼굴형이 재물을 모으는 상이에요.':''],health:[F.shape==='토형(두툼)'||F.shape==='수형(둥근)'?'얼굴에 살집과 혈색이 있으면 기본 기력이 좋은 상으로 봐요.':'얼굴이 갸름한 편이라 체력을 아껴 쓰고 잘 쉬어야 기운이 유지돼요.',T('ear')],people:[T('mouth'),T('brow'),F.shape==='수형(둥근)'?'사람이 먼저 다가오는 인상이에요.':'']};
+  if(!map[k]) return null;
+  return {t:map[k].filter(Boolean).join(' ')||'관상에서는 이 부분이 무난하게 나와요.',s:s[k]};
+}
+function faceResult(){
+  const F=state.face.feat, el=$('#fResult');
+  const chips=Object.entries(FACE_OPT).map(([k,opts])=>`<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><span style="font-size:11px;color:var(--mute);width:44px;flex:none">${FACE_LABEL[k]}</span><div class="opts">${opts.map(o=>`<div class="opt ${F[k]===o?'on':''}" data-fk="${k}" data-v="${o}">${o}</div>`).join('')}</div></div>`).join('');
+  el.innerHTML=`
+   <div class="rtype"><div class="em">${ic('user',44)}</div><h2>${esc(F.shape)}</h2><p>${esc(FACE_DB.shape[F.shape].split(/(?<=[.!?])\s/)[0])}</p></div>
+   ${['shape','forehead','brow','eye','nose','mouth','lips','chin','ear'].map(k=>{ const t=k==='shape'?FACE_DB.shape[F.shape]:FACE_DB[k][F[k]]; return t?`<div class="card"><h4>${ic('user',16)}${FACE_LABEL[k]} <span class="sub">${F[k]}</span></h4><p>${esc(t)}</p></div>`:''; }).join('')}
+   <div class="card"><h4>${ic('layers',16)}삼정 — 초년·중년·말년</h4><p>${faceSamjeong(F)} ${F.nose==='큼'?'중정(코)이 실해 중년에 재물과 자리가 커져요.':''} ${F.chin==='넓음'?'하정(턱)이 든든해 말년이 편안해요.':F.chin==='뾰족'?'하정이 갸름해 말년 기반은 미리 다져 두세요.':''}</p></div>
+   <details class="fix"><summary>${ic('pencil',15)} 실제 얼굴과 다르면 직접 고치기</summary><p style="font-size:12px;color:var(--sub);margin-top:8px">사진만으로는 코·귀처럼 정면에서 재기 어려운 곳이 있어요. 눌러서 고치면 풀이가 바로 바뀌어요.</p>${chips}</details>
+   <div class="row"><button class="btn ghost" onclick="faceRealign()">${ic('rotate',16)}다시 맞추기</button><button class="btn gold" onclick="go('photo');setTimeout(()=>$('#combo').scrollIntoView({behavior:'smooth'}),200)">${ic('sparkles',16)}상담실에서 통합 풀이</button></div>
+   <p class="foot">관상은 전통 해석을 재미로 풀어 본 것이에요. 얼굴로 사람을 판단하지 마세요.</p>`;
+  el.querySelectorAll('.opt[data-fk]').forEach(o=>o.onclick=()=>{ F[o.dataset.fk]=o.dataset.v; const op=el.querySelector('.fix').open; faceResult(); el.querySelector('.fix').open=op; renderCombo(); toast('관상 풀이를 다시 썼어요'); });
+}
+function faceRealign(){ if(!state.face) return; state.face.feat=null; $('#fGuide').style.display='block'; $('#fAlign').style.display='block'; $('#fResult').innerHTML=''; $('#fstage').classList.remove('done'); renderCombo(); }
+
+/* ---------- 5. 손금 · 사주 · 관상 3원 통합 ---------- */
+function integrate3(k,name,src){
+  const hi=0.62, lo=0.42, H=src.filter(x=>x.s>=hi), L=src.filter(x=>x.s<lo), nm=a=>a.map(x=>x.n).join('·');
+  let t;
+  if(src.length>1&&H.length===src.length) t=`${nm(src)} ${src.length}가지가 모두 ${jo(name,'이','가')} 좋다고 말해요. 타고난 것, 살아온 것, 남에게 보이는 모습이 같은 방향이니 확실히 믿고 밀어도 되는 운이에요.`;
+  else if(src.length>1&&L.length===src.length) t=`${nm(src)} 모두 ${jo(name,'이','가')} 저절로 오는 편은 아니에요. 대신 작은 습관을 쌓으면 그만큼 정직하게 돌아오는 운이에요.`;
+  else if(H.length&&L.length){
+    const why={사주:'타고난 운',손금:'살면서 키운 힘',관상:'남에게 비치는 인상'}, hw=H.map(x=>why[x.n]).join('과 ');
+    const fix={사주:'때를 기다리기보다 직접 움직이고',손금:'아직 덜 쓴 재능을 실제로 써 보고',관상:'첫인상과 태도를 다듬으면'};
+    const fx=L.map(x=>fix[x.n]).join(', ').replace(/고$/,'면');
+    t=`${nm(H)}에서는 ${jo(name,'이','가')} 강하게, ${nm(L)}에서는 약하게 나와요. ${jo(hw,'은','는')} 충분하니, ${fx} 균형이 맞춰져요.`;
+  } else t=`${nm(src)}${src.length>1?' 모두':'에서'} ${jo(name,'이','가')} 무난한 편이에요. 큰 굴곡 없이 꾸준히 쌓아 가는 흐름이에요.`;
+  return t+' '+CAT_ADVICE[k];
+}
+const _fullReport=fullReport;
+fullReport=function(){
+  const F=state.face&&state.face.feat?state.face.feat:null;
+  const R=_fullReport(); if(!R&&!F) return null;
+  const base=R||{hand:null,saju:false,items:CATS.map(c=>({...c,P:null,Sj:null,both:null}))};
+  base.face=!!F;
+  base.items.forEach(it=>{ it.F=F?facePart(it.k,F):null;
+    const src=[it.P&&{n:'손금',s:it.P.s},it.Sj&&{n:'사주',s:it.Sj.s},it.F&&{n:'관상',s:it.F.s}].filter(Boolean);
+    it.both=src.length>=2?integrate3(it.k,it.name,src):null; });
+  return base;
+};
+reportHTML=function(R){
+  const srcs=[R.saju&&'사주',R.hand&&'손금',R.face&&'관상'].filter(Boolean).join(' + ');
+  return `<div class="sect-t" style="margin-top:22px">${ic('scroll',15)} 종합 풀이 · ${srcs}</div>
+  <div class="catnav">${R.items.map(it=>`<a onclick="document.getElementById('cat-${it.k}').scrollIntoView({behavior:'smooth',block:'start'})">${it.name}</a>`).join('')}</div>`+
+  R.items.map(it=>{ const sc=[it.P&&'손금 '+Math.round(it.P.s*100),it.Sj&&'사주 '+Math.round(it.Sj.s*100),it.F&&'관상 '+Math.round(it.F.s*100)].filter(Boolean).join(' · ');
+   const ev=[it.P&&`<div class="rp-s"><b>${ic('hand',13)} 손금${R.hand?' ('+R.hand+')':''}</b><p>${esc(it.P.t)}</p></div>`,it.Sj&&`<div class="rp-s"><b>${ic('scroll',13)} 사주</b><p>${esc(it.Sj.t)}</p></div>`,it.F&&`<div class="rp-s"><b>${ic('user',13)} 관상</b><p>${esc(it.F.t)}</p></div>`].filter(Boolean);
+   const lead=it.both?`<div class="rp-b"><b>${ic('sparkles',13)} ${[it.Sj&&'사주',it.P&&'손금',it.F&&'관상'].filter(Boolean).join(' + ')} 통합</b><p>${esc(it.both)}</p></div>`:'';
+   return `<div class="card rp" id="cat-${it.k}"><h4>${ic(it.icon,16)}${it.name}<span class="sub" style="margin-left:auto">${sc}</span></h4>${lead}${it.both?`<details class="ev"><summary>근거 보기 (${ev.length})</summary>${ev.join('')}</details>`:ev.join('')}</div>`; }).join('')+
+  (R.saju&&R.hand&&R.face?'':`<p class="foot">${[!R.saju&&'생년월일',!R.hand&&'손 사진',!R.face&&'얼굴 사진'].filter(Boolean).join(', ')}을 더하면 항목마다 통합 결론이 더 정확해져요.</p>`);
+};
+consultSteps=function(){
+  const R=fullReport(); if(!R) return ['먼저 손 사진, 얼굴 사진, 생년월일 중 하나를 넣어 주세요.'];
+  const srcs=[R.saju&&'사주',R.hand&&'양손 손금',R.face&&'관상'].filter(Boolean);
+  const st=[`반갑습니다. 오늘은 ${srcs.join(', ')}을 함께 놓고, 총운부터 직업운, 연애운, 재물운 순서로 말씀드릴게요.`];
+  for(const it of R.items){
+    const parts=[it.Sj&&'사주로는, '+it.Sj.t,it.P&&'손금으로는, '+it.P.t,it.F&&'관상으로는, '+it.F.t,it.both&&'그래서 종합하면, '+it.both].filter(Boolean);
+    st.push(`${jo(it.name,'이에요','예요')}. `+parts.join(' '));
+  }
+  st.push('사주는 흐름을, 손금은 살아온 길을, 관상은 지금의 모습을 보여 줄 뿐 정답은 아니에요. 더 궁금한 게 있으면 아래에 편하게 물어보세요.');
+  return st;
+};
+const _answer2=answer;
+answer=function(q){
+  const hasR=!!mainReading(), S0=currentSaju(), hasS=S0&&!S0.err, F=state.face&&state.face.feat;
+  if(!hasR&&!hasS&&F&&!/죽|사망|수명|명줄/.test(q)){
+    const map={love:/연애|사랑|결혼|인연|이성/,career:/직업|일|진로|이직|창업|사업/,money:/돈|재물|부자|투자/,health:/건강|몸/,people:/관계|친구|사람/};
+    const k=Object.keys(map).find(x=>map[x].test(q))||'total'; return '관상으로 보면 '+facePart(k,F).t+' 생년월일과 손 사진을 더하면 더 정확히 말씀드릴게요.';
+  }
+  return _answer2(q);
+};
+
+/* ---------- 6. 연결 ---------- */
+const _renderResult2=renderResult;
+renderResult=function(){
+  _renderResult2(); stageMode();
+  if(state.thumbWarn&&state.thumbWarn!==state.hand){
+    const n=document.createElement('div'); n.className='card next';
+    n.innerHTML=`<h4>${ic('hand',16)}이 사진은 ${state.thumbWarn} 같아요</h4><p>엄지가 ${state.thumbWarn==='오른손'?'오른쪽':'왼쪽'}에 있어 방향을 맞춰서 읽었어요. 셀카 카메라는 좌우가 뒤집혀 찍히기도 해요.</p><div class="row"><button class="btn gold sm" onclick="moveToOther()">${state.thumbWarn} 칸으로 옮기기</button><button class="btn ghost sm" onclick="flipThumb()">원래 방향으로</button></div>`;
+    $('#result').insertBefore(n,$('#result').firstChild);
+  }
+};
+const _realign=realign; realign=function(){ _realign(); stageMode(); };
+const _switchHand=switchHand; switchHand=function(h){ if(h!==state.hand) state.thumbWarn=null; _switchHand(h); stageMode(); };
+const _go=go; go=function(id){ _go(id); if(id==='face'&&!state.face){ $('#fEmpty').style.display='block'; $('#fWork').style.display='none'; } };
+$('#fGuide').innerHTML=FACE_GUIDE;
+document.querySelectorAll('[data-ic]').forEach(e=>{ if(!e.querySelector('svg')) e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic,+e.dataset.s||0)); });
+['fFile','fCam'].forEach(id=>$('#'+id).addEventListener('change',e=>faceLoad(e.target.files[0])));
+
+function hasFace(){ return !!(state.face&&state.face.feat); }
 
 renderTabs(); renderCombo();
 
