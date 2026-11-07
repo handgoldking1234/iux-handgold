@@ -1,0 +1,7 @@
+tests/out_*
+node_modules/
+.vercel/
+.env*
+# 책 촬영 사진은 저작권 때문에 저장소에 올리지 않음
+book/
+*.jpg
