@@ -201,6 +201,46 @@ details.ev summary::after{content:" ▾"}
 .flive{position:relative;border-radius:10px;overflow:hidden;background:#000;aspect-ratio:3/4}
 .flive video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
 .flive svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* ===== v7 다시 설계 ===== */
+.app{padding-bottom:96px}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;gap:0;background:linear-gradient(transparent,var(--bg) 30%);padding:18px 8px calc(8px + env(safe-area-inset-bottom))}
+.bnav a{position:relative;flex:1;max-width:96px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--mute);font-size:11px;cursor:pointer;padding:4px 0}
+.bnav a.on{color:var(--txt)} .bnav a.on svg{color:var(--gold)}
+.bnav a i{position:absolute;top:2px;right:calc(50% - 18px);width:7px;height:7px;border-radius:50%;background:var(--gold)}
+.hero{padding:14px 0 6px}.hero .palm{width:110px;height:110px}.hero h1{font-size:26px}
+.modes3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 6px}
+.m3{background:var(--bg2);border-radius:12px;padding:16px 8px 14px;text-align:center;cursor:pointer;transition:background .15s}
+.m3:hover{background:var(--card)}.m3:active{transform:scale(.97)}
+.m3 .ic{width:52px;height:52px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--gold);color:#1a1206}
+.m3 h3{font-size:16px}.m3 p{font-size:11px;color:var(--sub);margin-top:3px}
+.scard{background:var(--bg2);border-radius:12px;padding:6px 14px 14px}
+.srow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #ffffff0d;cursor:pointer;color:var(--sub)}
+.sic{width:36px;height:36px;border-radius:50%;background:#ffffff12;display:flex;align-items:center;justify-content:center;color:var(--sub);flex:none}
+.sic.ok{background:var(--gold);color:#1a1206}
+.srow .stx{flex:1;display:flex;flex-direction:column}.srow .stx b{color:var(--txt);font-size:15px}.srow .stx small{font-size:12px;color:var(--sub)}
+.ptitle{display:flex;align-items:center;gap:8px;font-size:24px;font-weight:700;margin:6px 0 14px}
+.ptitle svg{color:var(--gold)}
+.psets summary{list-style:none;cursor:pointer}.pset{margin-top:12px}.pset b{display:block;font-size:12px;color:var(--sub);font-weight:500;margin-bottom:6px}
+.srcs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.src{display:inline-flex;align-items:center;gap:4px;font-size:12px;padding:6px 11px;border-radius:500px;background:#ffffff10;color:var(--sub);cursor:pointer}
+.src.ok{background:#e0bd7226;color:var(--gold2)}.src.age{background:#ffffff1c;color:var(--txt)}
+.ctabs{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin-bottom:4px;background:var(--bg);scrollbar-width:none;scroll-margin-top:0}
+.ctabs::-webkit-scrollbar{display:none}
+.ctabs a{flex:none;font-size:14px;padding:8px 14px;border-radius:500px;background:#ffffff12;color:var(--txt);cursor:pointer;font-weight:500}
+.ctabs a.on{background:var(--gold);color:#1a1206;font-weight:700}
+.hero2{background:linear-gradient(160deg,#3a2a52,var(--bg2));border-radius:12px;padding:18px 16px;margin-top:6px}
+.h2top{display:flex;align-items:center;gap:8px;font-size:18px}.h2top svg{color:var(--gold)}
+.gauge{flex:1;height:6px;border-radius:9px;background:#ffffff18;overflow:hidden;margin-left:8px}.gauge i{display:block;height:100%;background:var(--gold);border-radius:9px}
+.h2top em{font-style:normal;font-weight:700;color:var(--gold2);font-size:15px}
+.lead{font-size:15.5px;line-height:1.85;margin-top:12px;color:var(--txt)}
+.mini{display:flex;gap:12px;margin-top:10px;font-size:12px;color:var(--sub)}.mini b{color:var(--gold2)}
+.sect-s{font-size:13px;color:var(--sub);margin:18px 0 2px}
+.evc summary{list-style:none;cursor:pointer}.evc summary h4::after{content:"▾";margin-left:auto;color:var(--mute)}
+.evc p{font-size:14px;line-height:1.8;color:var(--sub)}
+.card p{line-height:1.8}
+.empty{text-align:center;color:var(--sub);padding:40px 10px}.empty svg{color:var(--gold);margin-bottom:10px}.empty p{line-height:1.7;margin-bottom:16px}
+.nextrow{margin-top:16px}
+#photo .back,#face .back{display:none}
 </style>
 </head>
 <body>
@@ -212,6 +252,7 @@ details.ev summary::after{content:" ▾"}
     </div>
     <div class="chip" onclick="openSet()"><span class="li" data-ic="mic" data-s="14"></span>목소리</div>
   </header>
+  <nav class="bnav" id="bnav"></nav>
 
   <!-- HOME -->
   <section class="screen on" id="home">
@@ -227,17 +268,15 @@ details.ev summary::after{content:" ▾"}
           <path d="M106 168c-2-20 0-40 4-58" stroke="#b6f07f" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </div>
-      <h1>손바닥에 새겨진<br>당신의 이야기</h1>
-      <p>사진을 손 모양 가이드에 맞추면<br>손금왕이 선을 찾아 말로 풀어드려요.</p>
+      <h1>손금 · 사주 · 관상<br>한 번에 풀어 드려요</h1>
+      <p>하나만 넣어도 되고, 셋을 다 넣으면<br>하나의 이야기로 묶어 말로 들려드려요.</p>
     </div>
-    <div class="modes">
-      <div class="mode main" onclick="go('photo')">
-        <div class="ic"><span class="li" data-ic="camera" data-s="28"></span></div>
-        <div><h3>사진으로 손금 보기</h3><p>찍거나 고른 사진을 가이드에 맞추면 바로 풀이</p></div>
-      </div>
-      <div class="mode" onclick="go('live')"><div class="ic"><span class="li" data-ic="video" data-s="26"></span></div><h3>카메라로 보기</h3><p>화면 가이드에 손을 대고 찰칵, 말로 풀이</p></div>
-      <div class="mode" onclick="go('face')"><div class="ic"><span class="li" data-ic="user" data-s="26"></span></div><h3>관상 보기</h3><p>얼굴 사진으로 보는 오행형·삼정·부위 풀이</p></div>
+    <div class="modes3">
+      <div class="m3" onclick="go('photo')"><div class="ic"><span class="li" data-ic="hand" data-s="26"></span></div><h3>손금</h3><p>사진·카메라</p></div>
+      <div class="m3" onclick="go('saju')"><div class="ic"><span class="li" data-ic="scroll" data-s="26"></span></div><h3>사주</h3><p>생년월일 8자리</p></div>
+      <div class="m3" onclick="go('face')"><div class="ic"><span class="li" data-ic="user" data-s="26"></span></div><h3>관상</h3><p>얼굴 사진·카메라</p></div>
     </div>
+    <div id="homeStat"></div>
     <div class="sect-t">어느 손인가요?</div>
     <div class="opts" data-group="hand">
       <div class="opt on" data-v="오른손">오른손</div>
@@ -266,8 +305,9 @@ details.ev summary::after{content:" ▾"}
 
   <!-- PHOTO -->
   <section class="screen" id="photo">
-    <button class="back" onclick="go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
+    <h2 class="ptitle"><span class="li" data-ic="hand" data-s="22"></span>손금<button class="chip" style="margin-left:auto" onclick="go('live')"><span class="li" data-ic="video" data-s="14"></span>카메라로 보기</button></h2>
     <div class="htabs" id="htabs"></div>
+    <details class="psets card"><summary><h4><span class="li" data-ic="pencil" data-s="15"></span>손 설정 <span class="sub">주로 쓰는 손 · 궁금한 것</span></h4></summary><div id="psets"></div></details>
     <div id="pEmpty">
       <label class="drop" for="filePick">
         <div class="big"><span class="li" data-ic="hand" data-s="44"></span></div>
@@ -307,12 +347,13 @@ details.ev summary::after{content:" ▾"}
       <div class="status" id="pstatus"></div>
       <div id="result"></div>
     </div>
-    <div id="combo"></div>
   </section>
+  <section class="screen" id="saju"><div id="sajuView"></div></section>
+  <section class="screen" id="report"><div id="reportView"></div></section>
 
   <!-- FACE -->
   <section class="screen" id="face">
-    <button class="back" onclick="go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
+    <h2 class="ptitle"><span class="li" data-ic="user" data-s="22"></span>관상</h2>
     <div id="fEmpty">
       <label class="drop" for="fFile">
         <div class="big"><span class="li" data-ic="user" data-s="44"></span></div>
@@ -343,7 +384,7 @@ details.ev summary::after{content:" ▾"}
 
   <!-- LIVE -->
   <section class="screen" id="live">
-    <button class="back" onclick="stopCam();go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
+    <button class="back" onclick="stopCam();go('photo')"><span class="li" data-ic="left" data-s="16"></span>손금 사진으로</button>
     <div id="liveWrap">
       <div class="cam">
         <video id="vid" playsinline muted autoplay></video>
@@ -1965,7 +2006,7 @@ function faceRealign(){ if(!state.face) return; state.face.feat=null; $('#fGuide
 function integrate3(k,name,src){
   const hi=0.62, lo=0.42, H=src.filter(x=>x.s>=hi), L=src.filter(x=>x.s<lo), nm=a=>a.map(x=>x.n).join('·');
   let t;
-  if(src.length>1&&H.length===src.length) t=`${nm(src)} ${src.length}가지가 모두 ${jo(name,'이','가')} 좋다고 말해요. 타고난 것, 살아온 것, 남에게 보이는 모습이 같은 방향이니 확실히 믿고 밀어도 되는 운이에요.`;
+  if(src.length>1&&H.length===src.length) t=`${nm(src)} ${src.length}가지가 모두 ${jo(name,'이','가')} 좋다고 말해요. ${src.map(x=>({사주:'타고난 것',손금:'살아온 것',관상:'남에게 보이는 모습'})[x.n]).join(', ')}이 같은 방향이니 확실히 믿고 밀어도 되는 운이에요.`;
   else if(src.length>1&&L.length===src.length) t=`${nm(src)} 모두 ${jo(name,'이','가')} 저절로 오는 편은 아니에요. 대신 작은 습관을 쌓으면 그만큼 정직하게 돌아오는 운이에요.`;
   else if(H.length&&L.length){
     const why={사주:'타고난 운',손금:'살면서 키운 힘',관상:'남에게 비치는 인상'}, hw=H.map(x=>why[x.n]).join('과 ');
@@ -2305,6 +2346,108 @@ reportHTML=function(R){
 const _consultSteps6b=consultSteps;
 consultSteps=function(){ const st=_consultSteps6b(), R=fullReport(); if(!R) return st; const td=totalDetail(R);
   const i=st.findIndex(s=>/^총운/.test(s)); if(i>=0&&td.length) st.splice(i+1,0,'총운을 조금 더 자세히 말씀드리면, '+td.map(([n,t])=>t).join(' ')); return st; };
+
+/* =====================================================================
+   v7 — 다시 설계: 아래 탭(홈·손금·사주·관상·종합), 사주 독립 화면, 종합은 항목 하나씩
+   ===================================================================== */
+ICONS.home='<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>';
+ICONS.check='<path d="M20 6 9 17l-5-5"/>';
+ICONS.chev='<path d="m9 18 6-6-6-6"/>';
+state.cat=state.cat||'total';
+function haveHand(){ const {R,L}=handsReady(); return !!(R||L||state.feat); }
+function haveSaju(){ const S=currentSaju(); return !!(S&&!S.err); }
+function status(){ const {R,L}=handsReady(), cur=state.feat?state.hand:null;
+  const hands=[...new Set([R&&'오른손',L&&'왼손',cur].filter(Boolean))];
+  const v=state.sajuIn||sajuInput(), a=ageNow();
+  return {hand:hands.length?hands.join('·')+' 완료':'', saju:v&&v.date?`${v.cal} ${v.date.replace(/-/g,'.')}`:a!=null?`만 ${a}세 (나이만)`:'', face:hasFace()?state.face.feat.shape:''}; }
+function renderNav(){
+  const el=$('#bnav'); if(!el) return; const st=status(), cur=document.querySelector('.screen.on')?.id;
+  const tabs=[['home','home','홈'],['photo','hand','손금',st.hand],['saju','scroll','사주',st.saju],['face','user','관상',st.face],['report','sparkles','종합']];
+  el.innerHTML=tabs.map(([id,icn,n,done])=>`<a class="${cur===id||(id==='photo'&&cur==='live')?'on':''}" onclick="go('${id}')">${ic(icn,22)}<span>${n}</span>${done?'<i></i>':''}</a>`).join('');
+}
+function renderHome(){
+  const el=$('#homeStat'); if(!el) return; const st=status(), any=st.hand||st.saju||st.face;
+  const row=(id,icn,n,v,empty)=>`<div class="srow" onclick="go('${id}')"><div class="sic ${v?'ok':''}">${ic(v?'check':icn,18)}</div><div class="stx"><b>${n}</b><small>${v||empty}</small></div>${ic('chev',18)}</div>`;
+  el.innerHTML=`<div class="sect-t">나의 풀이</div><div class="scard">
+    ${row('photo','hand','손금',st.hand,'손바닥 사진 한 장 · 양손이면 더 정확')}
+    ${row('saju','scroll','사주',st.saju,'생년월일 8자리 또는 나이만')}
+    ${row('face','user','관상',st.face,'정면 얼굴 사진 한 장')}
+    <button class="btn ${any?'gold':'ghost'}" style="margin-top:12px" onclick="go('report')">${ic('sparkles',18)}${any?'종합 풀이 보기':'하나만 넣어도 종합 풀이가 시작돼요'}</button></div>`;
+}
+/* ---------- 사주 화면 ---------- */
+function sajuViewHTML(){
+  const v=state.sajuIn||sajuInput()||{}, S=currentSaju(), a=ageNow(), set=!!(v.date||a!=null);
+  let h=`<h2 class="ptitle">${ic('scroll',22)}사주</h2>`;
+  h+=`<details class="card sj" ${set?'':'open'}><summary><h4>${ic('calendar',16)}${set?(v.date?`${v.cal} ${v.date.replace(/-/g,'.')}${v.time?' '+v.time:''} · ${v.gender==='남'?'남자':'여자'}`:`만 ${a}세`):'생년월일 넣기'}<span class="sub" style="margin-left:auto">${set?'고치기':''}</span></h4></summary></details>`;
+  if(S&&!S.err){
+    h+=`<div id="sajuRes">${sajuHTML(S)}</div>`;
+  } else if(S&&S.err) h+=`<div class="card"><p>${esc(S.err)}</p></div>`;
+  else if(a!=null) h+=`<div class="card"><p>나이만 넣으셔서 나이에 맞춘 풀이만 해 드려요. 사주 여덟 글자를 보려면 생년월일 8자리를 넣어 주세요.</p></div>`;
+  else h+=`<div class="tips"><b>${ic('bulb',15)} 이렇게 넣으세요</b><br>· 생년월일 8자리만 치면 돼요 (예: 19900515)<br>· 태어난 시간은 '○시' 칸에서 고르거나 '모름'<br>· 생일을 몰라도 나이(예: 36)만 넣으면 나이에 맞춰 풀어 드려요</div>`;
+  if(set) h+=`<button class="btn gold" style="margin-top:14px" onclick="go('report')">${ic('sparkles',18)}종합 풀이 보기</button>`;
+  return h;
+}
+/* ---------- 종합 화면 ---------- */
+function reportViewHTML(){
+  const R=fullReport(), st=status(); const AR=ageReport();
+  const src=(id,n,v)=>`<span class="src ${v?'ok':''}" onclick="go('${id}')">${ic(v?'check':'pencil',13)}${n}</span>`;
+  let h=`<h2 class="ptitle">${ic('sparkles',22)}종합 풀이</h2><div class="srcs">${src('photo','손금',st.hand)}${src('saju','사주',st.saju&&haveSaju())}${src('face','관상',st.face)}${AR?`<span class="src age" onclick="go('saju')">${ic('calendar',13)}만 ${AR.age}세</span>`:`<span class="src" onclick="go('saju')">${ic('calendar',13)}나이 넣기</span>`}</div>`;
+  if(!R){ return h+`<div class="empty">${ic('sparkles',40)}<p>손금·사주·관상 중 하나만 넣어도<br>여기에 종합 풀이가 나와요.</p><div class="row"><button class="btn gold sm" onclick="go('photo')">손금 보기</button><button class="btn ghost sm" onclick="go('saju')">사주 넣기</button><button class="btn ghost sm" onclick="go('face')">관상 보기</button></div></div>`; }
+  h+=`<div class="speak" id="consultBtn" onclick="consult()"><div class="pl">${ic('play',16)}</div><div class="t">전문가 상담 듣기<small>총운부터 차례로 말해 드려요</small></div></div>`;
+  h+=`<div class="ctabs" id="ctabs">${R.items.map(it=>`<a class="${state.cat===it.k?'on':''}" onclick="state.cat='${it.k}';renderCombo();document.getElementById('ctabs').scrollIntoView({block:'start'})">${it.name}</a>`).join('')}</div>`;
+  const it=R.items.find(x=>x.k===state.cat)||R.items[0];
+  const scs=[it.Sj&&['사주',it.Sj.s],it.P&&['손금',it.P.s],it.F&&['관상',it.F.s]].filter(Boolean);
+  const avg=scs.length?Math.round(scs.reduce((a,b)=>a+b[1],0)/scs.length*100):null;
+  const main=it.both||(it.Sj||it.P||it.F).t;
+  h+=`<div class="hero2"><div class="h2top">${ic(it.icon,20)}<b>${it.name}</b>${avg!=null?`<span class="gauge"><i style="width:${avg}%"></i></span><em>${avg}</em>`:''}</div>
+    <p class="lead">${esc(main)}</p>
+    ${it.now?`<p class="nowt">${ic('calendar',12)} 만 ${R.ageR.age}세라면 — ${esc(it.now)}</p>`:''}
+    ${scs.length>1?`<div class="mini">${scs.map(([n,s])=>`<span>${n} <b>${Math.round(s*100)}</b></span>`).join('')}</div>`:''}</div>`;
+  if(it.k==='total'){
+    if(AR) h+=`<div class="card"><h4>${ic('calendar',16)}지금 나이에 맞춘 풀이 <span class="sub">${AR.stage}</span></h4>${AR.lines.slice(1).map(l=>`<div class="rp-s"><b>${l.n}</b><p>${esc(l.t)}</p></div>`).join('')||`<p>${esc(AR.lines[0].t)}</p>`}</div>`;
+    const td=totalDetail(R); if(td.length) h+=td.map(([n,t])=>`<div class="card"><h4>${n}</h4><p>${esc(t)}</p></div>`).join('');
+    const C=compareHands(); if(C) h+=`<div class="card"><h4>${ic('hand',16)}양손 비교 <span class="sub">${C.nh}=타고난 것 · ${C.dh}=살아온 것</span></h4>${C.lines.map(x=>`<p style="margin-top:6px">${esc(x)}</p>`).join('')}</div>`;
+  }
+  const ev=[it.Sj&&['scroll','사주',it.Sj.t],it.P&&['hand','손금'+(R.hand?' ('+R.hand+')':''),it.P.t],it.F&&['user','관상',it.F.t]].filter(Boolean);
+  if(it.both) h+=`<div class="sect-s">근거</div>`+ev.map(([icn,n,t])=>`<details class="card evc"><summary><h4>${ic(icn,15)}${n}에서 본 ${it.name}</h4></summary><p style="margin-top:8px">${esc(t)}</p></details>`).join('');
+  const i=R.items.indexOf(it), nx=R.items[i+1];
+  if(nx) h+=`<button class="btn ghost" style="margin-top:12px" onclick="state.cat='${nx.k}';renderCombo();document.getElementById('ctabs').scrollIntoView({block:'start'})">다음 · ${nx.name} ${ic('chev',16)}</button>`;
+  h+=`<div class="card qa" style="margin-top:22px"><h4>${ic('messages',16)}더 궁금한 것 물어보세요</h4><div id="qaLog">${(state.qa||[]).map(qaItem).join('')}</div>
+    <div class="qchips">${['결혼은 언제쯤?','이직해도 될까요?','돈은 언제 모여요?','어떤 일이 맞아요?','올해 조심할 건?','내년 운세는?','제 장점은 뭐예요?','건강은 어때요?'].map(q=>`<span class="opt" onclick="ask('${q}')">${q}</span>`).join('')}</div>
+    <div class="qin"><input id="qText" placeholder="예: 내년에 창업해도 될까요?" onkeydown="if(event.key==='Enter')ask()">${(window.SpeechRecognition||window.webkitSpeechRecognition)?`<button class="btn ghost sm" onclick="listen()">${ic('mic',16)}</button>`:''}<button class="btn gold sm" onclick="ask()">${ic('send',16)}</button></div></div>
+    <p class="foot">재미로 보는 풀이예요. 수명·사망 시기는 말하지 않고, 건강은 진단하지 않아요.</p>`;
+  return h;
+}
+renderCombo=function(){
+  const sv=$('#sajuView'), rv=$('#reportView');
+  if(sv){ sv.innerHTML=sajuViewHTML(); const det=sv.querySelector('details.sj'); if(det){ det.insertAdjacentHTML('beforeend',sjFormHTML(state.sajuIn||sajuInput()||{})); sjHint(); } }
+  if(rv) rv.innerHTML=reportViewHTML();
+  renderNav(); renderHome();
+};
+runSaju=function(){
+  const v=readSajuForm(); if(!v){ return; }
+  saveSajuInput(v); state.sajuIn=v; renderCombo(); toast('사주를 세웠어요');
+  setTimeout(()=>$('#sajuRes')&&$('#sajuRes').scrollIntoView({behavior:'smooth',block:'start'}),100);
+};
+/* 나이만 넣었을 때: v6 경로가 #sjResult로 스크롤하므로 사주 화면 결과로 */
+const _go7=go;
+go=function(id){
+  _go7(id); window.scrollTo(0,0);
+  if(id==='saju'||id==='report'||id==='home') renderCombo(); else { renderNav(); }
+};
+/* 손금·관상 결과 뒤 다음 단계 버튼 */
+const _renderResult7=renderResult;
+renderResult=function(){ _renderResult7(); const r=$('#result'); if(r&&state.feat) r.insertAdjacentHTML('beforeend',`<div class="row nextrow"><button class="btn ghost sm" onclick="go('saju')">${ic('scroll',16)}사주 넣기</button><button class="btn gold sm" onclick="go('report')">${ic('sparkles',16)}종합 풀이</button></div>`); renderNav(); };
+const _faceResult7=faceResult;
+faceResult=function(){ _faceResult7(); const b=[...document.querySelectorAll('#fResult .btn.gold')].find(x=>/통합/.test(x.textContent)); if(b){ b.onclick=()=>go('report'); b.lastChild.textContent='종합 풀이'; } renderNav(); };
+/* 홈에 있던 손 설정을 손금 화면으로 옮김 */
+(function(){
+  const ps=$('#psets'); if(!ps) return;
+  ['dom','focus'].forEach(g=>{ const o=document.querySelector(`.opts[data-group="${g}"]`); if(!o) return; const t=o.previousElementSibling;
+    const w=document.createElement('div'); w.className='pset'; w.innerHTML=`<b>${g==='dom'?'주로 쓰는 손':'가장 궁금한 것'}</b>`; w.appendChild(o); ps.appendChild(w); if(t&&t.classList.contains('sect-t')) t.remove(); });
+  const hg=document.querySelector('.opts[data-group="hand"]'); if(hg){ const t=hg.previousElementSibling; if(t&&t.classList.contains('sect-t')) t.remove(); hg.style.display='none'; }
+  const tips=document.querySelector('#home .tips'); if(tips) $('#pEmpty').appendChild(tips);
+})();
 
 renderTabs(); renderCombo();
 

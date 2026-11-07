@@ -42,6 +42,14 @@
 - **관상:** 홈 '관상 보기' → `#face` 화면. 타원 가이드에 맞추면 `faceMeasure`가 얼굴형(오행 5형)·이마·눈썹·눈·입·입술·턱을 대략 재고, 코·귀는 고치기 칩. 문장 `FACE_DB`, 점수 `faceScores`, 항목별 `facePart`
 - **3원 통합:** `fullReport`가 손금·사주·관상 중 있는 것으로 항목별 통합(`integrate3`). 근거는 접어 두고, 위쪽 항목 바로가기(`.catnav`)
 
+## 2-3. v5~v7 (2026-11-07)
+- **화면 구조(v7):** 아래 탭 `#bnav` = 홈 · 손금(`#photo`) · 사주(`#saju`) · 관상(`#face`) · 종합(`#report`). 홈은 세 갈래 타일 + '나의 풀이' 현황(`renderHome`). `renderCombo`가 `#sajuView`·`#reportView`를 그림
+- **종합 화면:** 항목 탭(`.ctabs`, `state.cat`)으로 **한 항목씩** 보여 줌 → 통합 결론 크게, 나이 한 줄, 근거는 접기, '다음' 버튼. 총운 탭에는 나이 풀이·총운 자세히(`totalDetail`)·양손 비교
+- **입력(v5):** 생년월일 8자리 숫자 한 칸(`sjNum`, 6자리도 됨), 시간은 12시진 칩 또는 '정확히 앎', 성별·양력/음력 알약. 두세 자리만 넣으면 **나이만** 저장(`state.ageOnly`, localStorage `sgw_age`)
+- **나이 맞춤(v6):** `ageNow`(만 나이) → `STAGE`(6단계)·`STAGE_TXT` 항목별 문장, `ageReport`(손금 유년법 지난/지금/다가올 시기, 관상 유년 부위 `facePartByAge`, 현재·다음 대운 `DAE_TXT`). 질문 답에도 붙음
+- **손금선(v6):** `refinePath`를 2단계 최적 경로(`dpFit`) + 끝 다듬기(`trimEnds`)로 교체, 주름이 약하면 후보선 유지. 선은 곡선으로 그림
+- **관상 카메라(v6):** `faceCam`·`faceSnap` (전면 카메라, 찰칵하면 바로 풀이)
+
 ## 3. 파일 구조
 ```
 index.html        앱 전체 (화면·영상처리·해석표·음성)
