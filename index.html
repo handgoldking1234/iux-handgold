@@ -241,6 +241,10 @@ details.ev summary::after{content:" ▾"}
 .empty{text-align:center;color:var(--sub);padding:40px 10px}.empty svg{color:var(--gold);margin-bottom:10px}.empty p{line-height:1.7;margin-bottom:16px}
 .nextrow{margin-top:16px}
 #photo .back,#face .back{display:none}
+.thumbseg{margin-top:12px;text-align:center}.thumbseg b{display:block;font-size:13px;color:var(--sub);font-weight:500;margin-bottom:8px}
+.tseg{display:inline-flex;background:#ffffff12;border-radius:500px;padding:4px}.tseg span{display:inline-flex;align-items:center;gap:4px;padding:9px 18px;border-radius:500px;font-size:14px;cursor:pointer;color:var(--sub)}
+.tseg span.on{background:var(--gold);color:#1a1206;font-weight:700}.thumbseg small{display:block;font-size:11px;color:var(--mute);margin-top:6px}
+.guide path,.guide ellipse,.guide line,.guide rect{filter:drop-shadow(0 0 1.5px #000) drop-shadow(0 0 1px #000);opacity:.95}
 </style>
 </head>
 <body>
@@ -2572,6 +2576,93 @@ faceResult=function(){
   const deep=`<div class="card"><h4>${ic('sparkles',16)}${F.shape.split('(')[0]} 얼굴로 본 운 자세히</h4>${sec('총운',d.total)}${sec('일·직업',d.career)}${sec('연애·결혼',d.love)}${sec('재물',d.money)}${sec('건강 관리',d.health+' 의학 진단이 아니에요.')}${sec('사람 관계',d.people)}</div>`;
   const firstCard=el.querySelector('.card'); if(firstCard) firstCard.insertAdjacentHTML('afterend',deep+add);
 };
+
+/* =====================================================================
+   v9 — 엄지 방향을 손금선으로 판별(흑백·종이 사진에도 동작), 선 덜 흔들리게
+   ===================================================================== */
+function orientScore(){
+  const {M}=responseMap(), {mu,sd}=baseline(M), T=templates();
+  const z=k=>Math.max(...T[k].map(t=>(scoreVals(sampleVals(M,t.pts)).raw-mu)/sd));
+  return 1.6*z('life')+z('head')+z('heart');
+}
+function bestThumb(){
+  const keep=state.thumbRight, sc={};
+  for(const o of [true,false]){ state.thumbRight=o; sc[o]=orientScore(); }
+  state.thumbRight=keep;
+  const d=sc[true]-sc[false];
+  return {right:d>0, margin:Math.abs(d), sc};
+}
+runAnalysis=function(){
+  if(!state.img) return;
+  state.thumbWarn=null;
+  if(!state.manualThumb){
+    const skin=thumbSide();            // 피부색으로 본 엄지 쪽 (컬러 사진에서만)
+    const ln=bestThumb();              // 손금선 모양으로 본 엄지 쪽
+    let right=state.thumbRight;
+    if(ln.margin>1.2) right=ln.right; else if(skin) right=skin==='right';
+    state._orient={skin,line:ln.right,margin:+ln.margin.toFixed(2)};
+    if(right!==state.thumbRight){ state.thumbRight=right; drawGuide(); state.thumbWarn=right?'오른손':'왼손'; }
+  }
+  _runAnalysis();
+};
+/* 선 추적: 덜 흔들리게 (한 걸음에 1칸만, 더 크게 다듬기) */
+dpFit=function(p,F,rng,jump,prior){
+  const N=normals(p), n=p.length, K=2*rng+1, sc=new Float32Array(n*K), bk=new Int8Array(n*K);
+  const val=(i,o)=>bil(F,p[i][0]+N[i][0]*o,p[i][1]+N[i][1]*o)-prior*Math.abs(o)/rng;
+  for(let k=0;k<K;k++) sc[k]=val(0,k-rng);
+  for(let i=1;i<n;i++) for(let k=0;k<K;k++){ let bv=-1e9,bj=0;
+    for(let d=-jump;d<=jump;d++){ const j=k+d; if(j<0||j>=K) continue; const v=sc[(i-1)*K+j]-0.12*Math.abs(d); if(v>bv){bv=v;bj=d} }
+    sc[i*K+k]=bv+val(i,k-rng); bk[i*K+k]=bj; }
+  let k=0,bv=-1e9; for(let j=0;j<K;j++) if(sc[(n-1)*K+j]>bv){bv=sc[(n-1)*K+j];k=j}
+  const off=new Array(n); for(let i=n-1;i>=0;i--){ off[i]=k-rng; if(i>0) k+=bk[i*K+k]; }
+  const sm=off.map((_,i)=>{ let s=0,w=0; for(let d=-7;d<=7;d++){ const j=i+d; if(j>=0&&j<n){ const ww=Math.exp(-d*d/18); s+=off[j]*ww; w+=ww; } } return s/w; });
+  return p.map((q,i)=>[q[0]+N[i][0]*sm[i],q[1]+N[i][1]*sm[i]]);
+};
+refinePath=function(pts,R){
+  if(!pts||pts.length<3) return pts;
+  const mp=state._map||{}, fine=mp.fine;
+  let F=R; if(fine){ F=new Float32Array(W*H); for(let i=0;i<W*H;i++) F[i]=0.6*R[i]+0.4*Math.min(1.5,fine[i]); }
+  let p=dpFit(resample(pts,3),R,9,1,0.35);
+  p=dpFit(resample(p,2.5),F,3,1,0.2);
+  if(mp.fMean==null){ let s=0,n=0; for(let y=0;y<H;y+=3) for(let x=0;x<W;x+=3) if(inPalm(x,y)){ s+=F[y*W+x]; n++; } mp.fMean=s/Math.max(1,n); }
+  const along=p.reduce((a,[x,y])=>a+bil(F,x,y),0)/p.length;
+  if(along<mp.fMean*1.8) return resample(pts,2.5);
+  return trimEnds(p,F);
+};
+/* 손바닥 가운데 색과 닮은 픽셀이 어느 옆쪽에 더 많은지 (흑백 사진도 됨) */
+function toneSide(){
+  const c=document.createElement('canvas'); c.width=W; c.height=H; const ctx=c.getContext('2d'); drawTo(ctx);
+  const d=ctx.getImageData(0,0,W,H).data, px=(x,y)=>{ const i=(y*W+x)*4; return [d[i],d[i+1],d[i+2]]; };
+  let m=[0,0,0],n=0; for(let y=H*.55|0;y<H*.8;y+=3) for(let x=W*.4|0;x<W*.66;x+=3){ const p=px(x,y); m[0]+=p[0];m[1]+=p[1];m[2]+=p[2];n++; }
+  m=m.map(v=>v/n); let sd=0; for(let y=H*.55|0;y<H*.8;y+=3) for(let x=W*.4|0;x<W*.66;x+=3){ const p=px(x,y); sd+=Math.hypot(p[0]-m[0],p[1]-m[1],p[2]-m[2])**2; } sd=Math.sqrt(sd/n);
+  const tol=Math.max(22,sd*2.2), cnt=(x0,x1)=>{ let h=0,t=0; for(let y=H*.4|0;y<H*.82;y+=3) for(let x=W*x0|0;x<W*x1;x+=3){ t++; const p=px(x,y); if(Math.hypot(p[0]-m[0],p[1]-m[1],p[2]-m[2])<tol) h++; } return h/t; };
+  const l=cnt(.03,.2), r=cnt(.8,.97);
+  return Math.abs(l-r)<0.15?null:(l>r?'left':'right');
+}
+runAnalysis=function(){
+  if(!state.img) return;
+  state.thumbWarn=null;
+  if(!state.manualThumb){
+    const skin=thumbSide(), tone=toneSide(), ln=bestThumb();
+    let right=state.thumbRight;
+    if(skin) right=skin==='right'; else if(tone) right=tone==='right'; else if(ln.margin>1.2) right=ln.right;
+    state._orient={skin,tone,line:ln.right,margin:+ln.margin.toFixed(2)};
+    if(right!==state.thumbRight){ state.thumbRight=right; drawGuide(); }
+  }
+  if(state.thumbRight!==(state.hand==='오른손')) state.thumbWarn=state.thumbRight?'오른손':'왼손';
+  _runAnalysis();
+};
+/* 사진을 넣자마자 엄지 쪽을 짐작해 점선 손을 맞춰 둠 */
+const _setImage9=setImage; setImage=function(img,fit){ const r=_setImage9(img,fit); setTimeout(()=>{ if(state.manualThumb||state.feat) return; const sd=thumbSide()||toneSide(); if(sd){ state.thumbRight=sd==='right'; drawGuide(); } },30); return r; };
+/* 엄지 위치를 눈에 보이게 고르는 칸 */
+function renderThumbSeg(){
+  const el=$('#thumbSeg'); if(!el) return;
+  el.innerHTML=`<b>사진 속 엄지는 어느 쪽?</b><div class="tseg"><span class="${!state.thumbRight?'on':''}" onclick="setThumb(false)">${ic('left',15)} 왼쪽</span><span class="${state.thumbRight?'on':''}" onclick="setThumb(true)">오른쪽 <i style="display:inline-block;transform:scaleX(-1)">${ic('left',15)}</i></span></div><small>점선 손 모양의 엄지가 사진 속 엄지와 같은 쪽이어야 선이 맞아요</small>`;
+}
+function setThumb(r){ state.manualThumb=true; state.thumbRight=r; drawGuide(); renderThumbSeg(); if(state.feat) _runAnalysis(); }
+const _drawGuide9=drawGuide; drawGuide=function(){ _drawGuide9(); renderThumbSeg(); };
+(function(){ const ui=$('#alignUI'); if(!ui) return; const fb=[...ui.querySelectorAll('button')].find(b=>/엄지 방향/.test(b.textContent)); if(fb) fb.remove();
+  const row=ui.querySelector('.ctrl'); const d=document.createElement('div'); d.id='thumbSeg'; d.className='thumbseg'; row.insertAdjacentElement('afterend',d); renderThumbSeg(); })();
 
 renderTabs(); renderCombo();
 
