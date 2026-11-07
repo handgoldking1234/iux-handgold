@@ -118,6 +118,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
 .sheet input,.sel{width:100%;padding:13px;border-radius:12px;border:1px solid var(--line);background:#00000040;color:var(--txt);font-size:14px;margin-bottom:12px;font-family:inherit}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#2a2140;color:var(--gold2);padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:60;border:1px solid var(--line)}
 .toast.on{opacity:1;transform:translateX(-50%)}
+.li{display:inline-flex;vertical-align:-3px;margin-right:6px}.li:empty{display:none}.ic .li,.big .li,.rtype .em .lc{margin:0}.lc{flex:none}.ic{color:var(--gold2)}.rtype .em{color:var(--gold2)}.card h4 .lc{color:var(--gold2)}.drop .big{color:var(--gold2)}
 </style>
 </head>
 <body>
@@ -127,7 +128,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
       <svg viewBox="0 0 32 32" fill="none" stroke="#e0bd72" stroke-width="1.6"><circle cx="16" cy="16" r="14.5"/><path d="M9 21c3-2 5-6 6-11M11 14c4 1 8 0 11-3M13 24c3-3 7-4 10-4"/></svg>
       손금왕
     </div>
-    <div class="chip" onclick="openSet()">🎙 목소리</div>
+    <div class="chip" onclick="openSet()"><span class="li" data-ic="mic" data-s="14"></span>목소리</div>
   </header>
 
   <!-- HOME -->
@@ -149,11 +150,11 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
     </div>
     <div class="modes">
       <div class="mode main" onclick="go('photo')">
-        <div class="ic">📸</div>
+        <div class="ic"><span class="li" data-ic="camera" data-s="28"></span></div>
         <div><h3>사진으로 손금 보기</h3><p>찍거나 고른 사진을 가이드에 맞추면 바로 풀이</p></div>
       </div>
-      <div class="mode" onclick="go('live')"><div class="ic">🎥</div><h3>카메라로 보기</h3><p>화면 가이드에 손을 대고 찰칵, 말로 풀이</p></div>
-      <div class="mode" onclick="toast('궁합 손금은 다음 버전에 준비 중이에요')"><div class="ic">🤝</div><h3>궁합 손금</h3><p>두 사람 손으로 보는 궁합 (준비 중)</p></div>
+      <div class="mode" onclick="go('live')"><div class="ic"><span class="li" data-ic="video" data-s="26"></span></div><h3>카메라로 보기</h3><p>화면 가이드에 손을 대고 찰칵, 말로 풀이</p></div>
+      <div class="mode" onclick="toast('궁합 손금은 다음 버전에 준비 중이에요')"><div class="ic"><span class="li" data-ic="handshake" data-s="26"></span></div><h3>궁합 손금</h3><p>두 사람 손으로 보는 궁합 (준비 중)</p></div>
     </div>
     <div class="sect-t">어느 손인가요?</div>
     <div class="opts" data-group="hand">
@@ -173,7 +174,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
       <div class="opt" data-v="직업운">직업운</div>
     </div>
     <div class="tips">
-      <b>✋ 잘 나오게 찍는 법</b><br>
+      <b><span class="li" data-ic="hand" data-s="15"></span>잘 나오게 찍는 법</b><br>
       · 밝은 곳에서, 그림자 없이 손바닥 정면으로<br>
       · 손가락은 붙이지 말고 자연스럽게 펴기<br>
       · 손목까지 화면에 들어오게
@@ -183,18 +184,18 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
 
   <!-- PHOTO -->
   <section class="screen" id="photo">
-    <button class="back" onclick="go('home')">← 처음으로</button>
+    <button class="back" onclick="go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
     <div id="pEmpty">
       <label class="drop" for="filePick">
-        <div class="big">✋</div>
+        <div class="big"><span class="li" data-ic="hand" data-s="44"></span></div>
         <div class="serif" style="font-size:18px;color:var(--gold2)">여기를 눌러 손바닥 사진 넣기</div>
         <p>손바닥을 화면 가득, 밝은 곳에서 정면으로</p>
         <p style="font-size:12px;color:var(--mute)">PC에서는 사진을 복사해 <b style="color:var(--gold2)">Ctrl+V</b> 또는 끌어다 놓기</p>
       </label>
       <input type="file" id="filePick" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0">
       <div class="row">
-        <label class="btn gold pick">📷 촬영하기<input type="file" id="fileCam" accept="image/*" capture="environment"></label>
-        <label class="btn ghost pick">🖼 앨범·카메라<input type="file" id="fileAlb" accept="image/*"></label>
+        <label class="btn gold pick"><span class="li" data-ic="camera"></span>촬영하기<input type="file" id="fileCam" accept="image/*" capture="environment"></label>
+        <label class="btn ghost pick"><span class="li" data-ic="image"></span>앨범·카메라<input type="file" id="fileAlb" accept="image/*"></label>
       </div>
       <p class="hint">촬영하기가 안 열리면 앨범·카메라를 눌러 '사진 찍기'를 고르세요.</p>
     </div>
@@ -208,16 +209,16 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
         <div class="sub-cap" id="cap"></div>
       </div>
       <div id="alignUI">
-        <p class="hint">👆 사진을 끌고 두 손가락으로 키우거나 돌려서<br><b style="color:var(--gold2)">점선 손 모양에 내 손을 맞춰주세요</b></p>
+        <p class="hint"><span class="li" data-ic="pointer" data-s="15"></span>사진을 끌고 두 손가락으로 키우거나 돌려서<br><b style="color:var(--gold2)">점선 손 모양에 내 손을 맞춰주세요</b></p>
         <div class="ctrl">
           <span>크기</span><input type="range" id="zoom" min="0.3" max="4" step="0.01">
           <span>회전</span><input type="range" id="rot" min="-60" max="60" step="0.5" value="0">
         </div>
         <div class="row">
-          <button class="btn ghost sm" onclick="flipThumb()">↔ 엄지 방향 바꾸기</button>
+          <button class="btn ghost sm" onclick="flipThumb()"><span class="li" data-ic="swap" data-s="16"></span>엄지 방향 바꾸기</button>
           <button class="btn ghost sm" onclick="resetPhoto()">다른 사진</button>
         </div>
-        <div class="row"><button class="btn gold" onclick="runAnalysis()">🔮 손금 읽기</button></div>
+        <div class="row"><button class="btn gold" onclick="runAnalysis()"><span class="li" data-ic="sparkles"></span>손금 읽기</button></div>
       </div>
       <div class="status" id="pstatus"></div>
       <div id="result"></div>
@@ -226,7 +227,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
 
   <!-- LIVE -->
   <section class="screen" id="live">
-    <button class="back" onclick="stopCam();go('home')">← 처음으로</button>
+    <button class="back" onclick="stopCam();go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
     <div id="liveWrap">
       <div class="cam">
         <video id="vid" playsinline muted autoplay></video>
@@ -234,23 +235,23 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
       </div>
       <p class="hint">점선 손 모양에 손바닥을 맞추고 찰칵 누르세요.</p>
       <div class="row">
-        <button class="btn gold" onclick="snap()">📸 찰칵</button>
-        <button class="btn ghost sm" style="flex:.5" onclick="flipThumb(true)">↔ 엄지</button>
+        <button class="btn gold" onclick="snap()"><span class="li" data-ic="camera"></span>찰칵</button>
+        <button class="btn ghost sm" style="flex:.5" onclick="flipThumb(true)"><span class="li" data-ic="swap" data-s="16"></span>엄지</button>
       </div>
     </div>
     <div id="liveNo" style="display:none">
       <div class="notice">
-        <b>📵 이 화면에서는 카메라를 직접 켤 수 없어요</b><br><br>
+        <b><span class="li" data-ic="camoff" data-s="15"></span>이 화면에서는 카메라를 직접 켤 수 없어요</b><br><br>
         배포한 주소(https)나 휴대폰 브라우저에서 열면 카메라 모드가 동작해요. 지금은 <b>사진 모드</b>로 촬영해도 똑같이 말로 풀어드려요.
       </div>
-      <div class="row"><button class="btn gold" onclick="go('photo')">📸 사진 모드로 보기</button></div>
+      <div class="row"><button class="btn gold" onclick="go('photo')"><span class="li" data-ic="camera"></span>사진 모드로 보기</button></div>
     </div>
   </section>
 </div>
 
 <div class="modal" id="setModal" onclick="if(event.target===this)closeSet()">
   <div class="sheet">
-    <h3>🎙 목소리</h3>
+    <h3><span class="li" data-ic="mic"></span>목소리</h3>
     <p>기본은 휴대폰 내장 음성이에요. 사람 같은 목소리는 Azure 무료 음성(월 50만 자)을 쓰세요. 배포 서버에 AZURE_SPEECH_KEY를 넣었거나, 아래에 키를 넣으면 동작해요.</p>
     <select id="ttsEngine" class="sel">
       <option value="device">휴대폰 기본 음성</option>
@@ -268,7 +269,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
         <option value="ko-KR-JiMinNeural">지민 — 밝은 여성</option>
       </select>
     </div>
-    <button class="btn ghost sm" style="margin-bottom:12px" onclick="testVoice()">▶ 목소리 들어보기</button>
+    <button class="btn ghost sm" style="margin-bottom:12px" onclick="testVoice()"><span class="li" data-ic="play" data-s="14"></span>목소리 들어보기</button>
     <div class="row" style="margin-top:0">
       <button class="btn ghost" onclick="closeSet()">닫기</button>
       <button class="btn gold" onclick="saveSet()">저장</button>
@@ -279,6 +280,11 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
 
 <script>
 const $ = s => document.querySelector(s);
+/* Lucide 아이콘 (ISC 라이선스, lucide.dev) */
+const ICONS={"mic": "<path d=\"M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z\"/><path d=\"M19 10v2a7 7 0 0 1-14 0v-2\"/><line x1=\"12\" x2=\"12\" y1=\"19\" y2=\"22\"/>", "camera": "<path d=\"M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z\"/><circle cx=\"12\" cy=\"13\" r=\"3\"/>", "video": "<path d=\"m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5\"/><rect x=\"2\" y=\"6\" width=\"14\" height=\"12\" rx=\"2\"/>", "handshake": "<path d=\"m11 17 2 2a1 1 0 1 0 3-3\"/><path d=\"m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4\"/><path d=\"m21 3 1 11h-2\"/><path d=\"M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3\"/><path d=\"M3 4h8\"/>", "hand": "<path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/><path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"/><path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"/><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/>", "image": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/>", "pointer": "<path d=\"M22 14a8 8 0 0 1-8 8\"/><path d=\"M18 11v-1a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/><path d=\"M14 10V9a2 2 0 0 0-2-2a2 2 0 0 0-2 2v1\"/><path d=\"M10 9.5V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v10\"/><path d=\"M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/>", "swap": "<path d=\"M8 3 4 7l4 4\"/><path d=\"M4 7h16\"/><path d=\"m16 21 4-4-4-4\"/><path d=\"M20 17H4\"/>", "sparkles": "<path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"/><path d=\"M20 3v4\"/><path d=\"M22 5h-4\"/><path d=\"M4 17v2\"/><path d=\"M5 18H3\"/>", "camoff": "<line x1=\"2\" x2=\"22\" y1=\"2\" y2=\"22\"/><path d=\"M7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16\"/><path d=\"M9.5 4h5L17 7h3a2 2 0 0 1 2 2v7.5\"/><path d=\"M14.121 15.121A3 3 0 1 1 9.88 10.88\"/>", "play": "<polygon points=\"6 3 20 12 6 21 6 3\"/>", "stop": "<rect width=\"14\" height=\"14\" x=\"5\" y=\"5\" rx=\"2\"/>", "sprout": "<path d=\"M7 20h10\"/><path d=\"M10 20c5.5-2.5.8-6.4 3-10\"/><path d=\"M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z\"/><path d=\"M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z\"/>", "droplet": "<path d=\"M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z\"/>", "flame": "<path d=\"M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z\"/>", "wind": "<path d=\"M12.8 19.6A2 2 0 1 0 14 16H2\"/><path d=\"M17.5 8a2.5 2.5 0 1 1 2 4H2\"/><path d=\"M9.8 4.4A2 2 0 1 1 11 8H2\"/>", "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"12\" r=\"6\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/>", "layers": "<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"/><path d=\"m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65\"/><path d=\"m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65\"/>", "palette": "<circle cx=\"13.5\" cy=\"6.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"17.5\" cy=\"10.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"8.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"6.5\" cy=\"12.5\" r=\".5\" fill=\"currentColor\"/><path d=\"M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z\"/>", "bulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"/><path d=\"M9 18h6\"/><path d=\"M10 22h4\"/>", "gem": "<path d=\"M6 3h12l4 6-10 13L2 9Z\"/><path d=\"M11 3 8 9l4 13 4-13-3-6\"/><path d=\"M2 9h20\"/>", "hammer": "<path d=\"m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9\"/><path d=\"m18 15 4-4\"/><path d=\"m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5\"/>", "compass": "<path d=\"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z\"/><circle cx=\"12\" cy=\"12\" r=\"10\"/>", "zap": "<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>", "moon": "<path d=\"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z\"/>", "calendar": "<path d=\"M8 2v4\"/><path d=\"M16 2v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/>", "mountain": "<path d=\"m8 3 4 8 5-5 5 15H2L8 3z\"/>", "heart": "<path d=\"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z\"/>", "coins": "<circle cx=\"8\" cy=\"8\" r=\"6\"/><path d=\"M18.09 10.37A6 6 0 1 1 10.34 18\"/><path d=\"M7 6h1v4\"/><path d=\"m16.71 13.88.7.71-2.82 2.82\"/>", "briefcase": "<path d=\"M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"/><rect width=\"20\" height=\"14\" x=\"2\" y=\"6\" rx=\"2\"/>", "clover": "<path d=\"M16.17 7.83 2 22\"/><path d=\"M4.02 12a2.827 2.827 0 1 1 3.81-4.17A2.827 2.827 0 1 1 12 4.02a2.827 2.827 0 1 1 4.17 3.81A2.827 2.827 0 1 1 19.98 12a2.827 2.827 0 1 1-3.81 4.17A2.827 2.827 0 1 1 12 19.98a2.827 2.827 0 1 1-4.17-3.81A1 1 0 1 1 4 12\"/><path d=\"m7.83 7.83 8.34 8.34\"/>", "scroll": "<path d=\"M15 12h-5\"/><path d=\"M15 8h-5\"/><path d=\"M19 17V5a2 2 0 0 0-2-2H4\"/><path d=\"M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3\"/>", "pencil": "<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\"/><path d=\"m15 5 4 4\"/>", "copy": "<rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/>", "rotate": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>", "left": "<path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/>"};
+function ic(n,s){return `<svg class="lc" xmlns="http://www.w3.org/2000/svg" width="${s||18}" height="${s||18}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[n]||''}</svg>`}
+document.querySelectorAll('[data-ic]').forEach(e=>e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic,+e.dataset.s||0)));
+
 const W = 360, H = 480;
 const state = { hand:'오른손', dom:'오른손잡이', mountUp:[], focus:'종합', thumbRight:true, img:null, t:{x:0,y:0,s:1,r:0}, muted:false, feat:null, paths:null, reading:null };
 const COLORS = { life:'#ff8a7a', head:'#7fc8ff', heart:'#ff7fc1', fate:'#b6f07f', sun:'#ffd36b', simian:'#ffb86b', biz:'#7fe3cf', girdle:'#d6a3ff', dhead:'#a9dcff', dheart:'#ffa9d6', cross:'#ffffff', solomon:'#ffe08a', gaeun:'#ffb0a0', inbok:'#ff8a7a', marks:'#ffe08a', hand:'#e0bd72' };
@@ -601,10 +607,10 @@ const DB2={
 };
 /* 손 모양 4유형 (손바닥 모양 × 손가락 길이) */
 const HANDTYPE={
-  '네모|짧음':{name:'땅의 손',emoji:'🌳',say:'네모난 손바닥에 손가락이 짧고 굵은 땅의 손이에요. 성실하고 현실적이라 한번 맡은 일은 끝까지 해내고, 가족과 자연을 아끼는 사람이에요. 선이 굵고 단순한 편이라 생각도 담백해요.'},
-  '길쭉|김':{name:'물의 손',emoji:'💧',say:'길쭉한 손바닥에 길고 가는 손가락, 물의 손이에요. 감수성이 풍부하고 창의적이라 예술이나 마음을 다루는 일에 재능이 있어요. 잔선이 많은 만큼 마음도 섬세해서 상처를 잘 받으니, 나를 지키는 연습이 필요해요.'},
-  '길쭉|짧음':{name:'불의 손',emoji:'🔥',say:'길쭉한 손바닥에 손가락이 짧은 불의 손이에요. 열정과 행동력이 넘치고 모험을 즐기는 리더 타입이에요. 다만 마음이 급해질 때 한 박자 쉬어가면 더 크게 이뤄요.'},
-  '네모|김':{name:'공기의 손',emoji:'🌬',say:'네모난 손바닥에 긴 손가락, 공기의 손이에요. 지적이고 분석적이며 말과 글로 소통하는 데 강해요. 호기심이 많아서 배우는 걸 멈추지 않는 사람이에요.'}
+  '네모|짧음':{name:'땅의 손',emoji:'sprout',say:'네모난 손바닥에 손가락이 짧고 굵은 땅의 손이에요. 성실하고 현실적이라 한번 맡은 일은 끝까지 해내고, 가족과 자연을 아끼는 사람이에요. 선이 굵고 단순한 편이라 생각도 담백해요.'},
+  '길쭉|김':{name:'물의 손',emoji:'droplet',say:'길쭉한 손바닥에 길고 가는 손가락, 물의 손이에요. 감수성이 풍부하고 창의적이라 예술이나 마음을 다루는 일에 재능이 있어요. 잔선이 많은 만큼 마음도 섬세해서 상처를 잘 받으니, 나를 지키는 연습이 필요해요.'},
+  '길쭉|짧음':{name:'불의 손',emoji:'flame',say:'길쭉한 손바닥에 손가락이 짧은 불의 손이에요. 열정과 행동력이 넘치고 모험을 즐기는 리더 타입이에요. 다만 마음이 급해질 때 한 박자 쉬어가면 더 크게 이뤄요.'},
+  '네모|김':{name:'공기의 손',emoji:'wind',say:'네모난 손바닥에 긴 손가락, 공기의 손이에요. 지적이고 분석적이며 말과 글로 소통하는 데 강해요. 호기심이 많아서 배우는 걸 멈추지 않는 사람이에요.'}
 };
 /* 10개의 구(언덕) — 위치는 엄지 왼쪽 기준 정규화 좌표 */
 const MOUNTS={
@@ -687,16 +693,16 @@ function buildReading(f){
 
   // 유형
   let type;
-  if(f.simian==='있음') type={emoji:'🐯',title:'한 번 쥐면 놓지 않는 승부사형',oneLine:'목표가 생기면 누구보다 무섭게 몰입해요'};
-  else if(f.marks.dhead==='있음') type={emoji:'🎭',title:'두 가지 재능 멀티형',oneLine:'두 갈래 길을 동시에 걸어도 둘 다 해내요'};
-  else if(f.head.dir==='아래로 휨' && (f.heart.end==='검지 아래'||f.heart.end==='손끝까지'||f.girdle.has==='있음')) type={emoji:'🎨',title:'꿈꾸는 예술가형',oneLine:'감성과 상상력으로 세상을 다르게 보는 사람'};
-  else if(f.head.dir==='아래로 휨') type={emoji:'💡',title:'자유로운 아이디어형',oneLine:'남들이 못 본 길을 먼저 찾아내요'};
-  else if(f.biz.has==='있음'&&f.sun.has==='있음') type={emoji:'💎',title:'돈길이 열린 사업가형',oneLine:'사람과 거래 속에서 재물이 따라와요'};
-  else if(f.fate.has==='뚜렷'&&f.fate.len==='길게') type={emoji:'🛠',title:'한 우물 장인형',oneLine:'꾸준함이 결국 이기는 손'};
-  else if(f.head.len==='김') type={emoji:'🦉',title:'치밀한 전략가형',oneLine:'한 수 앞을 내다보고 움직여요'};
-  else if(f.head.len==='짧음') type={emoji:'⚡',title:'즉시 실행형',oneLine:'생각보다 몸이 먼저 움직이는 추진력'};
-  else if(f.life.curve==='크게 휨') type={emoji:'☀️',title:'사람 부자 인싸형',oneLine:'사람이 모이고, 사람에게서 운이 와요'};
-  else type={emoji:'🌙',title:'단단한 균형형',oneLine:'흔들려도 금방 중심을 잡는 사람'};
+  if(f.simian==='있음') type={emoji:'target',title:'한 번 쥐면 놓지 않는 승부사형',oneLine:'목표가 생기면 누구보다 무섭게 몰입해요'};
+  else if(f.marks.dhead==='있음') type={emoji:'layers',title:'두 가지 재능 멀티형',oneLine:'두 갈래 길을 동시에 걸어도 둘 다 해내요'};
+  else if(f.head.dir==='아래로 휨' && (f.heart.end==='검지 아래'||f.heart.end==='손끝까지'||f.girdle.has==='있음')) type={emoji:'palette',title:'꿈꾸는 예술가형',oneLine:'감성과 상상력으로 세상을 다르게 보는 사람'};
+  else if(f.head.dir==='아래로 휨') type={emoji:'bulb',title:'자유로운 아이디어형',oneLine:'남들이 못 본 길을 먼저 찾아내요'};
+  else if(f.biz.has==='있음'&&f.sun.has==='있음') type={emoji:'gem',title:'돈길이 열린 사업가형',oneLine:'사람과 거래 속에서 재물이 따라와요'};
+  else if(f.fate.has==='뚜렷'&&f.fate.len==='길게') type={emoji:'hammer',title:'한 우물 장인형',oneLine:'꾸준함이 결국 이기는 손'};
+  else if(f.head.len==='김') type={emoji:'compass',title:'치밀한 전략가형',oneLine:'한 수 앞을 내다보고 움직여요'};
+  else if(f.head.len==='짧음') type={emoji:'zap',title:'즉시 실행형',oneLine:'생각보다 몸이 먼저 움직이는 추진력'};
+  else if(f.life.curve==='크게 휨') type={emoji:'sun',title:'사람 부자 인싸형',oneLine:'사람이 모이고, 사람에게서 운이 와요'};
+  else type={emoji:'moon',title:'단단한 균형형',oneLine:'흔들려도 금방 중심을 잡는 사람'};
 
   // 운세
   const personality=[ht.say.split(/(?<=[.!?])\s/).slice(1,2).join(''),
@@ -743,7 +749,7 @@ function buildReading(f){
   for(const k in sc) sc[k]=Math.max(42,Math.min(97,sc[k]+Math.floor(r()*7)-3));
 
   const lucky={color:pick(['금색','남색','버건디','에메랄드','라벤더','아이보리','코랄']),number:String(1+Math.floor(r()*9)),item:pick(['손목시계','작은 노트','은반지','향수','머플러','텀블러','만년필'])};
-  const advice=({'🐯':'올해는 하나만 고르세요. 집중하면 남들 3년 걸릴 일을 1년에 해내요.','🎭':'두 가지를 다 놓지 마세요. 둘이 만나는 지점에 나만의 자리가 있어요.','🎨':'떠오른 아이디어를 메모해 두세요. 그중 하나가 올해 큰 기회가 돼요.','💡':'완벽하게 준비하기보다 작게 먼저 시작하세요. 시작이 운을 불러요.','💎':'계약서는 꼼꼼히, 사람은 따뜻하게. 그 균형이 재물을 지켜줘요.','🛠':'지금 하는 일을 믿고 밀고 가세요. 쌓인 시간이 곧 실력으로 보상받아요.','🦉':'생각이 길어질 땐 마감을 정하세요. 계획이 실행으로 바뀌는 순간 운이 열려요.','⚡':'속도는 이미 충분해요. 중요한 결정 하나만 하룻밤 자고 정하세요.','☀️':'만나는 사람이 곧 기회예요. 오랜만에 연락하고 싶은 사람에게 먼저 연락해 보세요.','🌙':'급하게 바꾸지 않아도 돼요. 지금의 균형이 올해 가장 큰 무기예요.'})[type.emoji]
+  const advice=({'target':'올해는 하나만 고르세요. 집중하면 남들 3년 걸릴 일을 1년에 해내요.','layers':'두 가지를 다 놓지 마세요. 둘이 만나는 지점에 나만의 자리가 있어요.','palette':'떠오른 아이디어를 메모해 두세요. 그중 하나가 올해 큰 기회가 돼요.','bulb':'완벽하게 준비하기보다 작게 먼저 시작하세요. 시작이 운을 불러요.','gem':'계약서는 꼼꼼히, 사람은 따뜻하게. 그 균형이 재물을 지켜줘요.','hammer':'지금 하는 일을 믿고 밀고 가세요. 쌓인 시간이 곧 실력으로 보상받아요.','compass':'생각이 길어질 땐 마감을 정하세요. 계획이 실행으로 바뀌는 순간 운이 열려요.','zap':'속도는 이미 충분해요. 중요한 결정 하나만 하룻밤 자고 정하세요.','sun':'만나는 사람이 곧 기회예요. 오랜만에 연락하고 싶은 사람에게 먼저 연락해 보세요.','moon':'급하게 바꾸지 않아도 돼요. 지금의 균형이 올해 가장 큰 무기예요.'})[type.emoji]
     +' 손금은 노력하면 바뀌어요. 좋은 선은 키우고, 아쉬운 선은 마음먹기로 채워가세요.';
 
   // 말로 풀이 (단계별)
@@ -816,21 +822,21 @@ function renderResult(){
     `<div class="attr"><div class="k" style="color:${COLORS.simian}">● 막쥔손금 (감정선·두뇌선이 한 줄)</div><div class="opts">${['없음','있음'].map(o=>`<div class="opt ${f.simian===o?'on':''}" data-k="simian" data-v="${o}">${o}</div>`).join('')}</div></div>`+
     `<div class="attr"><div class="k" style="color:#e0bd72">● 도톰하게 솟은 언덕 (손바닥을 만져보고 여러 개 골라도 돼요)</div><div class="opts">${Object.keys(MOUNTS).map(m=>`<div class="opt ${(state.mountUp||[]).includes(m)?'on':''}" data-mount="${m}">${m}</div>`).join('')}</div></div>`;
   const mBars=r.mount.rank.slice(0,5).map(([k,v])=>`<div class="sc"><div class="k">${k}<b>${Math.min(99,v)}</b></div><div class="bar"><i data-w="${Math.min(99,v)}"></i></div></div>`).join('');
-  const TL=r.timeline.length?`<div class="card"><h4>📅 나이로 보는 흐름 <span style="font-weight:400;color:var(--sub);font-size:12px">유년법</span></h4>${r.timeline.map(([a,t])=>`<p style="margin-top:6px"><b style="color:var(--gold,#e0bd72)">${a}세 즈음</b> · ${esc(t)}</p>`).join('')}<p style="font-size:11px;color:var(--mute);margin-top:8px">선 위의 위치를 나이로 바꾼 대략값이에요.</p></div>`:'';
+  const TL=r.timeline.length?`<div class="card"><h4>${ic('calendar',16)}나이로 보는 흐름 <span style="font-weight:400;color:var(--sub);font-size:12px">유년법</span></h4>${r.timeline.map(([a,t])=>`<p style="margin-top:6px"><b style="color:var(--gold,#e0bd72)">${a}세 즈음</b> · ${esc(t)}</p>`).join('')}<p style="font-size:11px;color:var(--mute);margin-top:8px">선 위의 위치를 나이로 바꾼 대략값이에요.</p></div>`:'';
   $('#result').innerHTML=`
-    <div class="rtype"><div class="em">${r.type.emoji}</div><h2>${esc(r.type.title)}</h2><p>${esc(r.type.oneLine)}</p></div>
-    <div class="speak" id="speakBtn"><div class="pl" id="speakIc">▶</div><div class="t">손금왕이 선을 짚으며 말로 풀어드려요<small>소리를 켜주세요</small></div></div>
+    <div class="rtype"><div class="em">${ic(r.type.emoji,44)}</div><h2>${esc(r.type.title)}</h2><p>${esc(r.type.oneLine)}</p></div>
+    <div class="speak" id="speakBtn"><div class="pl" id="speakIc">${ic('play',16)}</div><div class="t">손금왕이 선을 짚으며 말로 풀어드려요<small>소리를 켜주세요</small></div></div>
     <div class="scores">${[['연애운','love'],['재물운','money'],['직업운','career'],['기운','energy']].map(([k,v])=>`<div class="sc"><div class="k">${k}<b>${r.score[v]}</b></div><div class="bar"><i data-w="${r.score[v]}"></i></div></div>`).join('')}</div>
-    <div class="card"><h4>✋ ${state.hand} · ${isDominant()?'주로 쓰는 손':'덜 쓰는 손'}</h4><p>${esc(r.domTxt)}</p></div>
-    <div class="card"><h4>${r.ht.emoji} ${r.ht.name} <span style="font-weight:400;color:var(--sub);font-size:12px">손 모양 4유형 · 자동 추정</span></h4><p>${esc(r.ht.say)}</p></div>
+    <div class="card"><h4>${ic('hand',16)}${state.hand} · ${isDominant()?'주로 쓰는 손':'덜 쓰는 손'}</h4><p>${esc(r.domTxt)}</p></div>
+    <div class="card"><h4>${ic(r.ht.emoji,16)}${r.ht.name} <span style="font-weight:400;color:var(--sub);font-size:12px">손 모양 4유형 · 자동 추정</span></h4><p>${esc(r.ht.say)}</p></div>
     ${L}
-    <div class="card"><h4>⛰ ${r.mount.top}인 <span style="font-weight:400;color:var(--sub);font-size:12px">가장 발달한 언덕</span></h4><p>${esc(r.mount.txt)}</p><div class="scores" style="margin-top:10px">${mBars}</div></div>
+    <div class="card"><h4>${ic('mountain',16)}${r.mount.top}인 <span style="font-weight:400;color:var(--sub);font-size:12px">가장 발달한 언덕</span></h4><p>${esc(r.mount.txt)}</p><div class="scores" style="margin-top:10px">${mBars}</div></div>
     ${TL}
-    ${[['🧭 성격','personality'],['💗 연애운','love'],['💰 재물운','money'],['💼 직업운','career']].map(([k,v])=>`<div class="card"><h4>${k}</h4><p>${esc(r.fortune[v])}</p></div>`).join('')}
-    <div class="card"><h4>🍀 행운 포인트</h4><div class="tags"><span class="tag">색 · ${r.lucky.color}</span><span class="tag">숫자 · ${r.lucky.number}</span><span class="tag">물건 · ${r.lucky.item}</span></div></div>
-    <div class="card" style="border:1px solid #e0bd7244"><h4>📜 손금왕의 한마디</h4><p>${esc(r.advice)}</p></div>
-    <details class="fix"><summary>✏️ 선이 다르게 보이나요? 직접 고치기</summary><p style="font-size:12px;color:var(--sub);margin-top:8px">사진 속 내 손과 다르면 눌러서 바꾸세요. 손 모양과 언덕은 사진만으로는 어려워서 직접 골라주면 더 정확해요.</p>${fix}</details>
-    <div class="row"><button class="btn ghost" onclick="copyResult()">📋 결과 복사</button><button class="btn ghost" onclick="realign()">↺ 다시 맞추기</button></div>
+    ${[['compass','성격','personality'],['heart','연애운','love'],['coins','재물운','money'],['briefcase','직업운','career']].map(([i,k,v])=>`<div class="card"><h4>${ic(i,16)}${k}</h4><p>${esc(r.fortune[v])}</p></div>`).join('')}
+    <div class="card"><h4>${ic('clover',16)}행운 포인트</h4><div class="tags"><span class="tag">색 · ${r.lucky.color}</span><span class="tag">숫자 · ${r.lucky.number}</span><span class="tag">물건 · ${r.lucky.item}</span></div></div>
+    <div class="card" style="border:1px solid #e0bd7244"><h4>${ic('scroll',16)}손금왕의 한마디</h4><p>${esc(r.advice)}</p></div>
+    <details class="fix"><summary>${ic('pencil',15)} 선이 다르게 보이나요? 직접 고치기</summary><p style="font-size:12px;color:var(--sub);margin-top:8px">사진 속 내 손과 다르면 눌러서 바꾸세요. 손 모양과 언덕은 사진만으로는 어려워서 직접 골라주면 더 정확해요.</p>${fix}</details>
+    <div class="row"><button class="btn ghost" onclick="copyResult()">${ic('copy',16)}결과 복사</button><button class="btn ghost" onclick="realign()">${ic('rotate',16)}다시 맞추기</button></div>
     <div class="row"><button class="btn gold" onclick="resetPhoto()">다른 손 보기</button></div>
     <p class="foot">재미로 보는 손금 풀이예요. 손금은 노력에 따라 바뀌고, 중요한 결정은 스스로의 판단을 믿으세요.</p>`;
   setTimeout(()=>document.querySelectorAll('.bar i').forEach(b=>b.style.width=b.dataset.w+'%'),80);
@@ -854,7 +860,7 @@ async function copyResult(){
 let narrating=false;
 async function narrate(){
   const r=state.reading; if(!r) return;
-  narrating=true; const my=++narrateId; $('#speakIc').textContent='■';
+  narrating=true; const my=++narrateId; $('#speakIc').innerHTML=ic('stop',14);
   $('#stage').scrollIntoView({behavior:'smooth'});
   for(const s of r.steps){
     if(my!==narrateId) break;
@@ -864,7 +870,7 @@ async function narrate(){
     if(my!==narrateId) break;
     await new Promise(res=>setTimeout(res,350));
   }
-  if(my===narrateId){ narrating=false; $('#speakIc').textContent='▶'; $('#cap').classList.remove('on'); drawPaths(); }
+  if(my===narrateId){ narrating=false; $('#speakIc').innerHTML=ic('play',16); $('#cap').classList.remove('on'); drawPaths(); }
 }
 let narrateId=0;
 
@@ -933,7 +939,7 @@ async function speak(text){
 function stopSpeak(){
   speakToken++; narrateId++; narrating=false;
   try{speechSynthesis.cancel()}catch{} try{ if(azAudio){azAudio.pause();azAudio=null} }catch{}
-  const ic=$('#speakIc'); if(ic) ic.textContent='▶';
+  const ic=$('#speakIc'); if(ic) ic.innerHTML=window.ic?window.ic('play',16):'';
   const cap=$('#cap'); if(cap) cap.classList.remove('on');
   if(state.feat) drawPaths();
 }
