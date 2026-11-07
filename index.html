@@ -119,6 +119,35 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#2a2140;color:var(--gold2);padding:10px 16px;border-radius:99px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:60;border:1px solid var(--line)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .li{display:inline-flex;vertical-align:-3px;margin-right:6px}.li:empty{display:none}.ic .li,.big .li,.rtype .em .lc{margin:0}.lc{flex:none}.ic{color:var(--gold2)}.rtype .em{color:var(--gold2)}.card h4 .lc{color:var(--gold2)}.drop .big{color:var(--gold2)}
+.htabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 12px}
+.htab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px;border-radius:14px;border:1px solid var(--line);background:#ffffff08;cursor:pointer;color:var(--sub)}
+.htab b{font-size:15px;color:var(--text,#fff)} .htab small{font-size:11px} .htab.on{border-color:var(--gold);background:#e0bd7218;color:var(--gold2)}
+.stage .lcv{position:absolute;inset:0;width:100%;height:100%}
+.stage.bw .ov path{stroke-width:2.2;filter:none}
+.card .sub{font-weight:400;color:var(--sub);font-size:12px}
+.card.next{border:1px dashed #e0bd7288}
+.sj .sel,.sj input[type=date],.sj input[type=time]{width:100%;margin-bottom:8px}
+.sjf{display:flex;gap:8px;align-items:center}.sjf .sel{flex:1}
+.ck{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub);white-space:nowrap;margin-bottom:8px}
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.pcol{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--sub)}
+.pcol em{font-style:normal;font-size:11px;color:var(--gold2)}
+.pl8{display:flex;flex-direction:column;gap:4px;width:100%}
+.st{border-radius:10px;padding:6px 0;text-align:center;font-size:24px;font-weight:700;line-height:1.1;background:#ffffff0d}
+.st small{display:block;font-size:11px;font-weight:400;opacity:.8}
+.e0{color:#7fe08a}.e1{color:#ff7f7f}.e2{color:#e8c46a}.e3{color:#e6e6e6}.e4{color:#7fb6ff}
+.b0{background:#7fe08a}.b1{background:#ff7f7f}.b2{background:#e8c46a}.b3{background:#d9d9d9}.b4{background:#7fb6ff}
+.elb{display:grid;grid-template-columns:28px 1fr 20px;gap:8px;align-items:center;margin-top:6px;font-size:13px}
+.elb i{display:block;height:8px;border-radius:9px;min-width:4px}
+.daes{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.dae{flex:none;width:52px;text-align:center;border:1px solid var(--line);border-radius:10px;padding:6px 0;font-size:16px}
+.dae small{display:block;font-size:10px;color:var(--sub)} .dae.on{border-color:var(--gold);background:#e0bd7218}
+.yr{font-size:13px;margin-top:6px;line-height:1.6}
+.qchips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.qin{display:flex;gap:6px}.qin input{flex:1;min-width:0;padding:12px;border-radius:12px;border:1px solid var(--line);background:#ffffff0a;color:inherit;font-family:inherit;font-size:15px}
+.qin .btn{width:auto;flex:none;padding:0 14px}
+.qq{margin-top:10px;margin-left:auto;max-width:85%;width:fit-content;padding:9px 12px;border-radius:14px 14px 4px 14px;background:#e0bd7230;font-size:14px}
+.qa-a{margin-top:6px;max-width:92%;padding:10px 12px;border-radius:14px 14px 14px 4px;background:#ffffff0d;font-size:14px;line-height:1.65}
 </style>
 </head>
 <body>
@@ -185,6 +214,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
   <!-- PHOTO -->
   <section class="screen" id="photo">
     <button class="back" onclick="go('home')"><span class="li" data-ic="left" data-s="16"></span>처음으로</button>
+    <div class="htabs" id="htabs"></div>
     <div id="pEmpty">
       <label class="drop" for="filePick">
         <div class="big"><span class="li" data-ic="hand" data-s="44"></span></div>
@@ -203,6 +233,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
     <div id="pWork" style="display:none">
       <div class="stage" id="stage">
         <canvas id="cv" width="360" height="480"></canvas>
+        <canvas id="lcv" class="lcv" width="360" height="480" style="display:none"></canvas>
         <svg viewBox="0 0 360 480" class="guide" id="guide"></svg>
         <svg viewBox="0 0 360 480" class="ov" id="ov"></svg>
         <div class="scan" id="scan" style="display:none"></div>
@@ -222,6 +253,7 @@ details.fix summary::after{content:" ▾";color:var(--sub)}
       </div>
       <div class="status" id="pstatus"></div>
       <div id="result"></div>
+      <div id="combo"></div>
     </div>
   </section>
 
@@ -300,7 +332,8 @@ document.querySelectorAll('.opts[data-group]').forEach(g=>g.addEventListener('cl
   const o=e.target.closest('.opt'); if(!o) return;
   g.querySelectorAll('.opt').forEach(x=>x.classList.remove('on')); o.classList.add('on');
   state[g.dataset.group]=o.dataset.v;
-  if(g.dataset.group==='hand'){ state.thumbRight = o.dataset.v==='오른손'; drawGuide(); }
+  if(g.dataset.group==='hand'){ state.hand=o.dataset.v==='오른손'?'왼손':'오른손'; switchHand(o.dataset.v); return; }
+  if(g.dataset.group==='dom' && typeof renderTabs==='function'){ renderTabs(); renderCombo(); }
   if(state.feat) renderResult();
 }));
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2200)}
@@ -430,7 +463,14 @@ function responseMap(){
   const R=new Float32Array(W*H);
   for(let i=0;i<W*H;i++) R[i]=Math.min(1,Math.max(0,(resp[i]-mean)/(sd*3)));
   let lum=0; for(let i=0;i<W*H;i+=7) lum+=g[i]; lum/=W*H/7;
-  return { M:maxFilter(R,2), lum, sd };
+  // 세밀한 선 지도(흑백 보기·선 따기용): 작은 반경으로 가는 주름까지 살림
+  const b2=boxBlur(g,3), fineR=new Float32Array(W*H); let fs=0,fq=0,fn=0;
+  for(let i=0;i<W*H;i++){ const v=Math.max(0,b2[i]-g[i]); fineR[i]=v; }
+  for(let y=0;y<H;y+=2) for(let x=0;x<W;x+=2) if(inPalm(x,y)){ const v=fineR[y*W+x]; fn++; fs+=v; fq+=v*v; }
+  const fm=fs/fn, fsd=Math.sqrt(Math.max(1e-6,fq/fn-fm*fm));
+  for(let i=0;i<W*H;i++) fineR[i]=Math.min(1,Math.max(0,(fineR[i]-fm)/(fsd*3.2)));
+  const Mx=maxFilter(R,2); state._map={M:Mx,R,fine:fineR};
+  return { M:Mx, lum, sd };
 }
 
 
@@ -816,7 +856,7 @@ function renderResult(){
   const f=state.feat, r=buildReading(f); state.reading=r;
   drawPaths();
   const L=r.lines.map(l=>`<div class="card"><h4><i style="background:${COLORS[l.id]}"></i>${NAMES[l.id]}<span style="font-weight:400;color:var(--sub);font-size:12px">${esc(l.feature)}</span></h4><p>${esc(l.read)}</p></div>`).join('');
-  const fix=['hand','life','head','heart','fate','sun','biz','girdle','marks'].map(k=>`
+  const fix=['hand','life','head','heart','fate','sun','biz','girdle','marks','extra'].map(k=>`
     <div class="attr"><div class="k" style="color:${COLORS[k]}">● ${NAMES[k]}</div>
     ${Object.entries(OPTIONS[k]).map(([a,opts])=>`<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><span style="font-size:11px;color:var(--mute);width:58px;flex:none">${ATTR_LABEL[a]}</span><div class="opts">${opts.map(o=>`<div class="opt ${f[k][a]===o?'on':''}" data-k="${k}" data-a="${a}" data-v="${o}">${o}</div>`).join('')}</div></div>`).join('')}</div>`).join('')+
     `<div class="attr"><div class="k" style="color:${COLORS.simian}">● 막쥔손금 (감정선·두뇌선이 한 줄)</div><div class="opts">${['없음','있음'].map(o=>`<div class="opt ${f.simian===o?'on':''}" data-k="simian" data-v="${o}">${o}</div>`).join('')}</div></div>`+
@@ -979,6 +1019,579 @@ function snap(){
   runAnalysis();
   setTimeout(()=>narrate(),700);
 }
+
+/* =====================================================================
+   v2 — 양손 · 흑백 선 지도 · 세밀한 선 따기 · 보조선 · 사주명리 · 종합 · 질문
+   ===================================================================== */
+state.hands={}; state._map=null;
+
+/* ---------- 1. 보조선 자동 추정 (엄지 왼쪽 좌표계) ---------- */
+function extraTemplates(){
+  const T={marriage:[],improve:[],travel:[],healthL:[]};
+  for(const y of [0.36,0.38,0.40,0.42]) for(const [dy,shape] of [[0,'곧음'],[-0.018,'위로'],[0.02,'아래로']]){
+    const S=[0.815,y],E=[0.735,y+dy]; T.marriage.push({pts:quad(S,mid(S,E),E,20),a:{y,shape}}); }
+  for(const sx of [0.29,0.31]) for(const ex of [0.32,0.36]){ const S=[sx,0.60],E=[ex,0.445]; T.improve.push({pts:quad(S,mid(S,E,[0.02,0]),E,24),a:{}}); }
+  for(const sy of [0.82,0.88]) for(const ex of [0.58,0.64]){ const S=[0.37,sy],E=[ex,sy+0.05]; T.travel.push({pts:quad(S,mid(S,E,[0,0.02]),E,24),a:{}}); }
+  for(const sx of [0.44,0.50]) for(const ey of [0.50,0.56]){ const S=[sx,0.88],E=[0.74,ey]; T.healthL.push({pts:quad(S,mid(S,E,[0.02,0.02]),E,32),a:{}}); }
+  return T;
+}
+function baseline(M){
+  const R=rng(7), base=[];
+  for(let i=0;i<60;i++){ let S,E,tries=0;
+    do{ S=[0.25+R()*0.55,0.42+R()*0.5]; const a=R()*Math.PI, L=0.12+R()*0.3; E=[S[0]+Math.cos(a)*L*0.75,S[1]+Math.sin(a)*L]; tries++; }
+    while((!inPalm(S[0]*W,S[1]*H)||!inPalm(E[0]*W,E[1]*H))&&tries<30);
+    base.push(scoreVals(sampleVals(M,quad(S,mid(S,E),E,32))).raw); }
+  const mu=base.reduce((a,b)=>a+b,0)/base.length, sd=Math.max(0.02,Math.sqrt(base.reduce((a,b)=>a+(b-mu)**2,0)/base.length));
+  return {mu,sd};
+}
+/* 실제 주름을 따라 선을 다시 따기: 각 점에서 수직 방향으로 가장 진한 곳으로 붙임 */
+function refinePath(pts,R){
+  const n=pts.length, off=new Array(n).fill(0); let prev=0;
+  for(let i=0;i<n;i++){
+    const a=pts[Math.max(0,i-1)], b=pts[Math.min(n-1,i+1)];
+    const tx=b[0]-a[0], ty=b[1]-a[1], L=Math.hypot(tx,ty)||1, nx=-ty/L, ny=tx/L;
+    let best=prev, bv=-1;
+    for(let o=-8;o<=8;o++){
+      if(i>0 && Math.abs(o-prev)>2) continue;
+      const x=Math.round(pts[i][0]+nx*o), y=Math.round(pts[i][1]+ny*o);
+      if(x<0||y<0||x>=W||y>=H) continue;
+      const v=R[y*W+x]-0.012*Math.abs(o);
+      if(v>bv){bv=v;best=o}
+    }
+    off[i]=best; prev=best;
+  }
+  const sm=off.map((_,i)=>{ let s=0,c=0; for(let k=-2;k<=2;k++){ const j=i+k; if(j>=0&&j<n){s+=off[j];c++} } return s/c; });
+  return pts.map((p,i)=>{ const a=pts[Math.max(0,i-1)], b=pts[Math.min(n-1,i+1)];
+    const tx=b[0]-a[0], ty=b[1]-a[1], L=Math.hypot(tx,ty)||1; return [p[0]-ty/L*sm[i], p[1]+tx/L*sm[i]]; });
+}
+const _detect=detect;
+detect=function(){
+  const out=_detect();
+  const mp=state._map; if(!mp) return out;
+  const {M,R}=mp, {mu,sd}=baseline(M);
+  const zOf=pts=>(scoreVals(sampleVals(M,pts)).raw-mu)/sd;
+  const T=extraTemplates(), best={};
+  for(const k in T){ best[k]=T[k].map(t=>({...t,z:zOf(t.pts)})).sort((a,b)=>b.z-a.z); }
+  const mar=best.marriage.filter(t=>t.z>2.3), ys=[...new Set(mar.map(t=>t.a.y))];
+  const ex={
+    marriage: ys.length>=2?'2개 이상':ys.length===1?'1개':'없음',
+    mshape: mar[0]?mar[0].a.shape:'곧음',
+    myear: mar[0]?mar[0].a.y:null,
+    improve: best.improve[0].z>2.4?'있음':'없음',
+    travel: best.travel[0].z>2.4?'있음':'없음',
+    healthL: best.healthL[0].z>2.2?'있음':'없음',
+    influence:'없음', fine:'보통',
+    sorrow:'없음', windfall:'없음', island:'없음', star:'없음', jhash:'없음'
+  };
+  // 영향선: 생명선을 엄지 쪽으로 평행 이동한 선
+  const lp=out.paths.life, inf=lp.map(([x,y])=>[x-11,y]).slice(8,40);
+  if(zOf(inf)>2.3) { ex.influence='있음'; out.paths.influence=inf; }
+  // 잔선: 주요선에서 떨어진 곳의 진한 픽셀 비율
+  const mains=['life','head','heart','fate'].map(k=>out.paths[k]).filter(Boolean);
+  let n=0,h=0;
+  for(let y=0;y<H;y+=3) for(let x=0;x<W;x+=3){ if(!inPalm(x,y)) continue;
+    if(mains.some(p=>p.some(q=>Math.abs(q[0]-x)<7&&Math.abs(q[1]-y)<7))) continue;
+    n++; if(R[y*W+x]>0.5) h++; }
+  const fr=h/Math.max(1,n); ex.fine= fr>0.13?'많음':fr>0.06?'보통':'적음'; ex.fineRatio=+fr.toFixed(3);
+  out.f.extra=ex;
+  if(mar[0]) out.paths.marriage=mar[0].pts;
+  if(ex.improve==='있음') out.paths.improve=best.improve[0].pts;
+  if(ex.travel==='있음') out.paths.travel=best.travel[0].pts;
+  if(ex.healthL==='있음') out.paths.healthL=best.healthL[0].pts;
+  // 주요선은 실제 주름을 따라 가늘게 다시 딴다
+  for(const k of ['life','head','heart','fate','sun','biz','simian','girdle','dhead','dheart','marriage','improve','travel','healthL','influence'])
+    if(out.paths[k]) out.paths[k]=refinePath(out.paths[k],R);
+  return out;
+};
+Object.assign(COLORS,{marriage:'#ff9de2',improve:'#9be7ff',travel:'#c7b2ff',healthL:'#9ff0b8',influence:'#ffcf9e',extra:'#ff9de2'});
+Object.assign(NAMES,{marriage:'결혼선',improve:'향상선',travel:'여행선',healthL:'건강선',influence:'영향선',extra:'보조선·문양'});
+OPTIONS.extra={marriage:['없음','1개','2개 이상'],mshape:['곧음','위로','아래로','갈라짐'],influence:['없음','있음'],improve:['없음','있음'],travel:['없음','있음'],healthL:['없음','있음'],fine:['적음','보통','많음'],sorrow:['없음','있음'],windfall:['없음','있음'],island:['없음','있음'],star:['없음','있음'],jhash:['없음','있음']};
+Object.assign(ATTR_LABEL,{marriage:'결혼선',mshape:'결혼선 끝',influence:'영향선',improve:'향상선',travel:'여행선',healthL:'건강선',fine:'잔선',sorrow:'비애선',windfall:'횡재선',island:'섬 문양',star:'태양구 별',jhash:'목성구 #'});
+
+const DB3={
+  marriage:{'1개':'결혼선이 하나로 또렷해요. 한 사람과 깊고 오래 가는 인연이에요.','2개 이상':'결혼선이 여러 개예요. 마음을 크게 움직인 인연이 여럿 있다는 뜻이고, 그중 가장 진한 선이 중심 인연이에요.','없음':'결혼선이 옅어요. 지금은 결혼보다 내 생활과 일에 마음이 가는 손이고, 인연은 서두르지 않을 때 와요.'},
+  mshape:{'위로':'끝이 위로 올라가서 이성에게 인기가 많고 매력이 있어요.','아래로':'끝이 감정선 쪽으로 처져요. 관계에서 서운함이 쌓이지 않게 그때그때 대화로 푸는 게 중요해요.','갈라짐':'끝이 갈라져요. 둘의 생활 리듬이 달라 거리감이 생기기 쉬우니, 함께하는 시간을 일부러 만들어 주세요.','곧음':''},
+  influence:'생명선 안쪽으로 나란히 가는 영향선이 있어요. 가족이나 배우자처럼 곁에서 힘이 되어 주는 사람이 있다는 표시예요.',
+  improve:'생명선에서 검지 쪽으로 오르는 향상선이 있어요. 목표를 세우면 스스로 공부하고 노력해서 올라가는 힘, 시험·자격증 운이에요.',
+  travel:'생명선 아래에서 손날 쪽 언덕으로 뻗는 여행선이 보여요. 멀리 이동하거나 해외와 인연이 있어 활동 무대가 넓어지는 손이에요.',
+  healthL:'손목에서 새끼손가락 쪽으로 오르는 건강선이 보여요. 몸이 보내는 신호에 민감한 편이라, 바쁠수록 잠과 식사 리듬을 지키면 운도 같이 안정돼요.',
+  fine:{'많음':'잔선이 많아요. 감각이 섬세하고 생각이 많은 손이라 남이 못 보는 걸 먼저 알아채는 대신 마음이 쉽게 지쳐요. 생각을 글로 정리하는 습관이 큰 도움이 돼요.','적음':'잔선이 적고 선이 깔끔해요. 단순하고 담백하게 결정하는 편이라 실행이 빨라요.','보통':''},
+  sorrow:'약지 아래에서 감정선으로 내려오는 비애선이 있어요. 믿는 사람에게 서운한 일을 겪기 쉬운 표시라, 돈 거래와 중요한 약속은 글로 남겨 두세요.',
+  windfall:'새끼손가락 아래 횡재선이 있어요. 뜻밖의 수입이나 생각지 못한 기회가 들어오는 운이에요.',
+  island:'선 위에 섬 모양이 보여요. 그 선이 뜻하는 분야에서 한동안 정체되는 시기가 있다는 표시예요. 쉬어 가는 때로 받아들이면 지나가요.',
+  star:'약지 아래 태양구에 별 모양이 있어요. 큰 성취나 이름이 알려지는 순간을 뜻하는 귀한 표시예요.',
+  jhash:'검지 아래 목성구에 우물 정(#) 자 문양이 있어요. 사람을 이끄는 지도자 자질과 명예운이에요.'
+};
+const marriageAge=y=>y==null?null:Math.round(24+(0.42-y)/0.02*4);
+function extraLines(f){
+  const e=f.extra; if(!e) return [];
+  const L=[];
+  const mt=[DB3.marriage[e.marriage],DB3.mshape[e.mshape]].filter(Boolean).join(' ')+(e.marriage!=='없음'&&e.myear!=null?` 선의 위치로 보면 ${marriageAge(e.myear)}세 전후가 인연이 깊어지는 때예요.`:'');
+  L.push({id:'marriage',feature:e.marriage==='없음'?'옅음':`${e.marriage} · ${e.mshape}`,read:mt});
+  for(const k of ['influence','improve','travel','healthL']) if(e[k]==='있음') L.push({id:k,feature:'있음',read:DB3[k]});
+  if(DB3.fine[e.fine]) L.push({id:'extra',feature:`잔선 ${e.fine}`,read:DB3.fine[e.fine],name:'잔선'});
+  for(const k of ['sorrow','windfall','island','star','jhash']) if(e[k]==='있음') L.push({id:'extra',feature:ATTR_LABEL[k],read:DB3[k],name:ATTR_LABEL[k]});
+  return L;
+}
+const _mountScores=mountScores;
+mountScores=function(f){ const s=_mountScores(f), e=f.extra||{};
+  if(e.star==='있음') s['태양구']+=15; if(e.jhash==='있음') s['목성구']+=12; if(e.windfall==='있음') s['수성구']+=6; if(e.travel==='있음') s['월구']+=5; if(e.improve==='있음') s['목성구']+=5;
+  return s; };
+const _buildReading=buildReading;
+buildReading=function(f){
+  const r=_buildReading(f), xl=extraLines(f);
+  r.lines.push(...xl);
+  const i=r.steps.findIndex(s=>s.mount); const add=xl.filter(l=>l.read).map(l=>({id:l.id==='extra'?null:l.id,say:l.read}));
+  r.steps.splice(i<0?r.steps.length-1:i,0,...add);
+  r.extraLines=xl; return r;
+};
+const _visibleKeys=visibleKeys;
+visibleKeys=function(f){ const k=_visibleKeys(f); for(const x of ['marriage','improve','travel','healthL','influence']) if(state.paths&&state.paths[x]&&(x!=='marriage'||(f.extra&&f.extra.marriage!=='없음'))) k.push(x); return k; };
+
+/* ---------- 2. 흑백 선 지도 ---------- */
+function lineViewOn(){ return $('#lcv') && $('#lcv').style.display==='block'; }
+function drawLineView(){
+  const mp=state._map; if(!mp) return;
+  const c=$('#lcv'), ctx=c.getContext('2d'), id=ctx.createImageData(W,H), F=mp.fine;
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    const sx=state.thumbRight?W-1-x:x, v=F[y*W+sx];
+    let g=255*(1-Math.min(1,Math.pow(v,0.8)*1.15));
+    if(!inPalm(sx,y)) g=180+g*0.25;
+    const i=(y*W+x)*4; id.data[i]=id.data[i+1]=id.data[i+2]=g; id.data[i+3]=255;
+  }
+  ctx.putImageData(id,0,0);
+}
+function toggleLineView(){
+  const c=$('#lcv'); if(!state._map){ toast('먼저 손금 읽기를 해 주세요'); return; }
+  const on=!lineViewOn(); c.style.display=on?'block':'none';
+  $('#stage').classList.toggle('bw',on);
+  if(on) drawLineView();
+  $('#lvBtn').innerHTML=ic(on?'image':'contrast',16)+(on?'원래 사진 보기':'흑백 선 지도 보기');
+}
+ICONS.contrast='<circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/>';
+ICONS.send='<path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/>';
+ICONS.messages='<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>';
+ICONS.star='<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>';
+ICONS.user='<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>';
+
+/* ---------- 3. 양손 ---------- */
+function snapHand(){ state.hands[state.hand]={img:state.img,t:{...state.t},feat:state.feat,paths:state.paths,mountUp:state.mountUp||[],thumbRight:state.thumbRight,map:state._map}; }
+function otherHand(h){ return h==='오른손'?'왼손':'오른손'; }
+function renderTabs(){
+  const el=$('#htabs'); if(!el) return;
+  el.innerHTML=['오른손','왼손'].map(h=>{ const d=h===state.hand?{feat:state.feat}:state.hands[h]||{};
+    const dom=((h==='오른손')===(state.dom!=='왼손잡이'))?'주로 쓰는 손':'덜 쓰는 손';
+    return `<div class="htab ${h===state.hand?'on':''}" onclick="switchHand('${h}')">${ic('hand',15)}<b>${h}</b><small>${dom}${d.feat?' · 분석 완료':''}</small></div>`; }).join('');
+}
+function switchHand(h){
+  if(h===state.hand){ renderTabs(); return; }
+  stopSpeak(); snapHand(); state.hand=h;
+  document.querySelectorAll('.opts[data-group="hand"] .opt').forEach(o=>o.classList.toggle('on',o.dataset.v===h));
+  const d=state.hands[h];
+  $('#lcv').style.display='none'; $('#stage').classList.remove('bw');
+  if(d&&d.img){
+    Object.assign(state,{img:d.img,t:{...d.t},feat:d.feat,paths:d.paths,mountUp:d.mountUp||[],thumbRight:d.thumbRight,_map:d.map});
+    $('#pEmpty').style.display='none'; $('#pWork').style.display='block'; drawGuide(); render();
+    $('#zoom').value=state.t.s; $('#rot').value=state.t.r;
+    if(state.feat){ $('#guide').style.display='none'; $('#alignUI').style.display='none'; renderResult(); }
+    else { $('#guide').style.display='block'; $('#alignUI').style.display='block'; $('#ov').innerHTML=''; $('#result').innerHTML=''; }
+  } else {
+    Object.assign(state,{img:null,feat:null,paths:null,mountUp:[],thumbRight:h==='오른손',_map:null});
+    drawGuide(); $('#pEmpty').style.display='block'; $('#pWork').style.display='none'; $('#result').innerHTML=''; $('#ov').innerHTML='';
+  }
+  renderTabs(); renderCombo();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const _resetPhoto=resetPhoto;
+resetPhoto=function(){ _resetPhoto(); state._map=null; state.paths=null; delete state.hands[state.hand]; $('#lcv').style.display='none'; $('#stage').classList.remove('bw'); renderTabs(); renderCombo(); };
+const _renderResult=renderResult;
+renderResult=function(){
+  _renderResult(); snapHand(); renderTabs();
+  const box=document.createElement('div'); box.className='row';
+  box.innerHTML=`<button class="btn ghost" id="lvBtn" onclick="toggleLineView()">${ic(lineViewOn()?'image':'contrast',16)}${lineViewOn()?'원래 사진 보기':'흑백 선 지도 보기'}</button>`;
+  $('#result').insertBefore(box,$('#result').children[1]);
+  const o=otherHand(state.hand);
+  if(!(state.hands[o]&&state.hands[o].feat)){
+    const n=document.createElement('div'); n.className='card next';
+    n.innerHTML=`<h4>${ic('hand',16)}${o}도 찍어 주세요</h4><p>손금은 양손을 같이 봐야 정확해요. 주로 쓰는 손엔 살아온 모습이, 덜 쓰는 손엔 타고난 기질이 담겨 있거든요. ${o}을 찍으면 두 손을 비교하고 사주와 묶어 종합 결론을 드릴게요.</p><button class="btn gold" style="margin-top:10px" onclick="switchHand('${o}')">${ic('camera')}${o} 찍으러 가기</button>`;
+    $('#result').insertBefore(n,$('#result').children[2]);
+  }
+  if(lineViewOn()) drawLineView();
+  renderCombo();
+};
+
+/* ---------- 4. 사주명리 ---------- */
+const STEM='甲乙丙丁戊己庚辛壬癸', BR='子丑寅卯辰巳午未申酉戌亥', STEM_K='갑을병정무기경신임계', BR_K='자축인묘진사오미신유술해';
+const EL=['목','화','토','금','수'], EL_H=['木','火','土','金','水'];
+const stemEl=s=>Math.floor(s/2), BR_EL=[4,2,0,0,2,1,1,2,3,3,2,4], BR_MAIN=[9,5,0,1,4,2,3,5,6,7,4,8];
+const GROUPS=['비겁','식상','재성','관성','인성'];
+const TEN=[['비견','겁재'],['식신','상관'],['편재','정재'],['편관','정관'],['편인','정인']];
+function relOf(dm,s){ return (stemEl(s)-stemEl(dm)+5)%5; }
+function tenGod(dm,s){ return TEN[relOf(dm,s)][(dm%2)===(s%2)?0:1]; }
+function julian(y,m,d,h){ if(m<=2){y--;m+=12} const A=Math.floor(y/100),B=2-A+Math.floor(A/4); return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+h/24; }
+function sunLon(JD){
+  const T=(JD-2451545)/36525, rad=Math.PI/180;
+  const L0=280.46646+36000.76983*T+0.0003032*T*T, M=357.52911+35999.05029*T-0.0001537*T*T;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(M*rad)+(0.019993-0.000101*T)*Math.sin(2*M*rad)+0.000289*Math.sin(3*M*rad);
+  const om=125.04-1934.136*T; let l=L0+C-0.00569-0.00478*Math.sin(om*rad); return ((l%360)+360)%360;
+}
+const sec=l=>Math.floor(((l-315)%360+360)%360/30);
+function lunarToSolar(y,m,d,leap){
+  let f; try{ f=new Intl.DateTimeFormat('en-u-ca-dangi',{year:'numeric',month:'numeric',day:'numeric',timeZone:'UTC'}); }catch{ return null; }
+  const want=String(m)+(leap?'bis':'');
+  for(let i=0;i<420;i++){ const dt=new Date(Date.UTC(y,0,1)+i*864e5);
+    const p=Object.fromEntries(f.formatToParts(dt).map(x=>[x.type,x.value]));
+    if(+p.relatedYear===y && p.month===want && +p.day===d) return {y:dt.getUTCFullYear(),m:dt.getUTCMonth()+1,d:dt.getUTCDate()}; }
+  return null;
+}
+function isKDST(y,m,d){ const v=m*100+d; return (y===1987&&v>=510&&v<1011)||(y===1988&&v>=508&&v<1009); }
+function idx60(s,b){ return ((6*s-5*b)%60+60)%60; }
+function pil(i){ return {s:i%10,b:i%12,i}; }
+function pname(p){ return STEM_K[p.s]+BR_K[p.b]; }
+function computeSaju(inp){
+  let {y,m,d}=inp;
+  if(inp.cal==='음력'){ const s=lunarToSolar(y,m,d,inp.leap); if(!s) return {err:'음력 날짜를 찾지 못했어요. 날짜(윤달 여부)를 확인해 주세요.'}; ({y,m,d}=s); }
+  const known=inp.time!=='';
+  let hh=12,mm=0; if(known){ [hh,mm]=inp.time.split(':').map(Number); }
+  const dst=isKDST(y,m,d)?1:0;
+  const JD=julian(y,m,d,hh+mm/60-9-dst), lam=sunLon(JD);
+  let sy=y; if(m<=2 && lam>=270 && lam<315) sy--;
+  const yp=pil(((sy-4)%60+60)%60);
+  const k=sec(lam), mb=(2+k)%12, ms=(yp.s*2+2+k)%10, mp=pil(idx60(ms,mb));
+  let t=hh*60+mm-dst*60-(inp.correct?32:0), dd=0;
+  if(t<0){t+=1440;dd=-1} if(known && t>=23*60) dd+=1;
+  const jdn=Math.round(julian(y,m,d,12))+dd, dp=pil(((jdn+49)%60+60)%60);
+  let hp=null; if(known){ const hb=Math.floor((t+60)/120)%12; hp=pil(idx60((dp.s*2+hb)%10,hb)); }
+  const dm=dp.s, P=[['연주',yp],['월주',mp],['일주',dp]].concat(hp?[['시주',hp]]:[]);
+  // 오행 개수
+  const cnt=[0,0,0,0,0]; P.forEach(([,p])=>{cnt[stemEl(p.s)]++; cnt[BR_EL[p.b]]++;});
+  // 십성 비중
+  const gw=[0,0,0,0,0], items=[];
+  const add=(s,w,label)=>{ const g=relOf(dm,s); gw[g]+=w; items.push({label,god:tenGod(dm,s),g}); };
+  add(yp.s,1,'연간'); add(BR_MAIN[yp.b],1,'연지'); add(mp.s,1,'월간'); add(BR_MAIN[mp.b],3,'월지'); add(BR_MAIN[dp.b],1.5,'일지');
+  if(hp){ add(hp.s,1,'시간'); add(BR_MAIN[hp.b],1,'시지'); }
+  const tot=gw.reduce((a,b)=>a+b,0), ratio=(gw[0]+gw[4])/tot;
+  const strength=ratio>0.55?'신강':ratio<0.4?'신약':'중화';
+  const elOfG=g=>(stemEl(dm)+g)%5;
+  const cand=strength==='신강'?[1,2,3]:strength==='신약'?[4,0]:[0,1,2,3,4];
+  const yong=cand.map(elOfG).sort((a,b)=>cnt[a]-cnt[b])[0];
+  // 대운
+  const fwd=(yp.s%2===0)===(inp.gender==='남');
+  let days=0; const s0=sec(lam);
+  for(let i=1;i<=150*4;i++){ const l=sunLon(JD+(fwd?1:-1)*i/4); if(sec(l)!==s0){ days=i/4; break; } }
+  const start=Math.max(1,Math.round(days/3));
+  const dae=[]; for(let i=0;i<9;i++) dae.push({age:start+10*i,p:pil(((mp.i+(fwd?1:-1)*(i+1))%60+60)%60)});
+  const nowY=new Date().getFullYear(), age=nowY-y+1;
+  const curDae=[...dae].reverse().find(x=>age>=x.age)||null;
+  const years=[]; for(let Y=nowY;Y<nowY+12;Y++){ const p=pil(((Y-4)%60+60)%60); years.push({Y,p,gs:relOf(dm,p.s),gb:relOf(dm,BR_MAIN[p.b])}); }
+  return {solar:{y,m,d},known,P,dm,cnt,gw,items,strength,ratio,yong,dae,curDae,years,age,gender:inp.gender,dohwa:[yp.b,dp.b].some(b=>[0,3,6,9].includes(b)),yeokma:[yp.b,dp.b].some(b=>[2,5,8,11].includes(b))};
+}
+const DAYMASTER=[
+ '갑목(甲木), 하늘로 곧게 뻗는 큰 나무예요. 곧고 정직해서 한번 정한 길은 굽히지 않고, 사람들 앞에 서는 리더 기질이 있어요. 다만 꺾이지 않으려는 고집이 부러짐이 될 수 있으니 바람에 흔들리는 법도 익히세요.',
+ '을목(乙木), 바람에 휘어도 꺾이지 않는 꽃과 덩굴이에요. 부드럽고 적응력이 뛰어나 사람 사이를 잘 잇고, 어떤 환경에서도 끝내 자리를 잡는 생명력이 있어요.',
+ '병화(丙火), 세상을 비추는 태양이에요. 밝고 열정적이며 숨김이 없어요. 어디서든 분위기를 끌어올리는 사람이지만, 급하게 타오르다 지치지 않게 속도 조절이 필요해요.',
+ '정화(丁火), 어둠을 밝히는 촛불과 별빛이에요. 섬세하고 따뜻하며 한 가지에 깊이 집중해요. 겉은 조용해도 속정이 깊어 한번 마음 준 사람은 끝까지 챙겨요.',
+ '무토(戊土), 듬직한 큰 산이에요. 믿음직하고 포용력이 커서 사람들이 기대 와요. 변화엔 느린 편이니 새로운 흐름엔 한발 먼저 움직여 보세요.',
+ '기토(己土), 곡식을 키우는 기름진 논밭이에요. 실속 있고 배려 깊으며 사람과 살림을 잘 관리해요. 생각이 많아 결정이 늦을 때가 있어요.',
+ '경금(庚金), 단단한 원석과 쇠예요. 결단력과 의리가 있고 밀어붙이는 힘이 강해요. 말이 직설적이라 오해를 사기 쉬우니 한 번 다듬어 말하면 큰 그릇이 돼요.',
+ '신금(辛金), 다듬어진 보석이에요. 감각이 섬세하고 자존심이 강하며 완벽을 추구해요. 깔끔하고 세련된 일을 할 때 빛나요.',
+ '임수(壬水), 넓은 바다와 큰 강이에요. 스케일이 크고 지혜로우며 자유를 사랑해요. 모든 걸 품는 포용력이 있지만, 방향을 정해 두지 않으면 기운이 흩어져요.',
+ '계수(癸水), 만물을 적시는 비와 이슬이에요. 총명하고 직관이 뛰어나며 차분해요. 감수성이 깊어 남의 마음을 잘 읽어요.'];
+const EL_TXT={
+ over:['목 기운이 많아 계획과 욕심이 크고 일을 벌이는 힘이 강해요. 벌인 일을 끝맺는 습관을 챙기세요.','화 기운이 많아 열정과 표현이 넘쳐요. 감정이 앞설 때 한 박자 쉬어 가면 좋아요.','토 기운이 많아 신중하고 고집이 있어요. 변화를 너무 늦게 받아들이지 않게 주의하세요.','금 기운이 많아 원칙과 결단이 강해요. 부드러운 말 한마디가 사람을 얻어요.','수 기운이 많아 생각이 깊고 많아요. 생각을 행동으로 옮기는 마감일을 정해 두세요.'],
+ lack:['목 기운이 없어요. 새로 시작하는 힘을 키우면 좋아요 — 아침 산책, 초록색, 식물 키우기.','화 기운이 없어요. 나를 드러내고 표현하는 연습이 운을 열어요 — 밝은 색, 햇볕, 사람 만나기.','토 기운이 없어요. 중심을 잡아 주는 규칙적인 생활이 도움이 돼요 — 노란색·흙색, 정리 습관.','금 기운이 없어요. 결단하고 정리하는 습관이 필요해요 — 흰색, 미루던 일 끝내기.','수 기운이 없어요. 쉬고 배우는 시간이 운을 채워요 — 검정·남색, 독서, 충분한 잠.']
+};
+const EL_LUCK=[{c:'초록',d:'동쪽',n:'3, 8'},{c:'빨강',d:'남쪽',n:'2, 7'},{c:'노랑',d:'가운데',n:'5, 10'},{c:'흰색',d:'서쪽',n:'4, 9'},{c:'검정·남색',d:'북쪽',n:'1, 6'}];
+const EL_CARE=['간·눈·근육 — 무리한 운동 뒤 스트레칭, 눈 쉬게 하기','심장·혈액순환 — 과로·흥분을 줄이고 꾸준한 유산소','위장·소화 — 규칙적인 식사, 과식·야식 줄이기','폐·호흡기·피부 — 환기, 보습, 건조한 계절 조심','신장·방광·허리 — 물 자주 마시기, 몸 따뜻하게'];
+const GROUP_TXT=[
+ '비겁(나와 같은 기운)이 강해요. 자존감과 독립심이 크고, 남 밑보다 내 일을 할 때 힘이 나요. 동업이나 돈 빌려주는 일은 신중하세요.',
+ '식상(표현하는 기운)이 강해요. 말솜씨·아이디어·손재주가 좋아 기획, 콘텐츠, 교육, 장사처럼 나를 표현하는 일에 재능이 있어요.',
+ '재성(재물의 기운)이 강해요. 현실 감각과 돈 감각이 좋아 사업, 영업, 금융, 관리에서 결과를 내요.',
+ '관성(책임·명예의 기운)이 강해요. 책임감이 크고 조직에서 인정받아 자리를 얻는 힘이 있어요. 공직, 대기업, 관리자에 잘 맞아요.',
+ '인성(배움의 기운)이 강해요. 배우고 생각하는 힘이 커서 공부, 자격증, 연구, 교육, 전문직에서 빛나요.'];
+const YEAR_TXT=[
+ '내 힘으로 밀고 나가는 해예요. 경쟁자도 함께 생기니 돈 거래·보증은 조심하세요.',
+ '아이디어와 표현이 터지는 해예요. 새 일, 부업, 창작을 시작하기 좋아요.',
+ '돈과 기회가 움직이는 해예요. 수입을 늘릴 기회가 오니 지출 관리만 같이 하세요.',
+ '책임과 자리가 생기는 해예요. 승진·이직 제안이 오기 쉬워요. 규칙과 약속을 잘 지키세요.',
+ '배우고 준비하는 해예요. 자격증, 공부, 계약·문서 운이 좋아요.'];
+
+/* ---------- 5. 손금 주제 점수 · 양손 비교 · 종합 ---------- */
+const THEMES=['리더십','창의·표현','재물·사업','조직·안정','학습·사고','관계·애정'];
+function palmThemes(f,r){
+  const t=[0,0,0,0,0,0], e=f.extra||{}, top=r&&r.mount.top;
+  if(f.heart.end==='검지 아래') t[0]++; if(f.head.start==='떨어짐') t[0]++; if(top==='목성구') t[0]++; if(f.marks.solomon==='있음') t[0]++; if(f.simian==='있음') t[0]++; if(e.jhash==='있음') t[0]++;
+  if(f.head.dir==='아래로 휨') t[1]+=2; if(f.girdle.has==='있음') t[1]++; if(top==='월구') t[1]++; if(f.marks.dhead==='있음') t[1]++;
+  if(f.sun.has==='있음') t[2]++; if(f.biz.has==='있음') t[2]+=1.5; if(top==='수성구'||top==='태양구') t[2]++; if(e.windfall==='있음'||e.star==='있음') t[2]++;
+  if(f.fate.has==='뚜렷') t[3]+=1.5; if(f.fate.len==='길게'&&f.fate.has!=='없음') t[3]+=.5; if(top==='토성구') t[3]++; if(f.head.dir==='곧음') t[3]+=.5;
+  if(f.head.len==='김') t[4]+=1.5; if(f.marks.cross==='있음') t[4]+=.5; if(e.improve==='있음') t[4]++; if(e.fine==='많음') t[4]+=.5;
+  if(f.life.curve==='크게 휨') t[5]++; if(['검지·중지 사이','손끝까지'].includes(f.heart.end)) t[5]++; if(f.marks.inbok==='많음') t[5]++; if(top==='금성구') t[5]++; if(e.influence==='있음') t[5]+=.5; if(e.marriage!=='없음'&&e.marriage) t[5]+=.5;
+  return t;
+}
+function sajuThemes(S){
+  const t=[S.gw[0],S.gw[1],S.gw[2],S.gw[3],S.gw[4],0];
+  t[5]=([1,3,5,9].includes(S.dm)?1:0.5)+(S.dohwa?1:0)+(S.gender==='남'?S.gw[2]:S.gw[3])*0.3;
+  return t;
+}
+const norm=a=>{ const m=Math.max(...a,0.001); return a.map(x=>x/m); };
+function handsReady(){ const R=state.hands['오른손'], L=state.hands['왼손']; return {R:R&&R.feat?R:null,L:L&&L.feat?L:null}; }
+function readingFor(h){ const d=state.hands[h]; if(!d||!d.feat) return null; const sv=state.hand, sm=state.mountUp; state.hand=h; state.mountUp=d.mountUp||[]; const r=buildReading(d.feat); state.hand=sv; state.mountUp=sm; return r; }
+function domHand(){ return state.dom==='왼손잡이'?'왼손':'오른손'; }
+function compareHands(){
+  const {R,L}=handsReady(); if(!R||!L) return null;
+  const dh=domHand(), nh=otherHand(dh), D=state.hands[dh].feat, N=state.hands[nh].feat;
+  const rd=readingFor(dh), rn=readingFor(nh), out=[];
+  const pairs=[
+    ['두뇌선',N.head.dir,D.head.dir,{곧음:'현실적이고 논리적인','아래로 휨':'상상력과 감성이 풍부한'}],
+    ['감정선',N.heart.end,D.heart.end,null],
+    ['운명선',N.fate.has,D.fate.has,{뚜렷:'뚜렷한',희미:'희미한',없음:'거의 없는'}],
+    ['생명선',N.life.curve,D.life.curve,{'크게 휨':'에너지가 밖으로 넘치는','완만':'차분하게 자기 페이스를 지키는'}],
+  ];
+  for(const [nm,a,b,map] of pairs){ if(a===b) continue;
+    const A=map?map[a]:a, B=map?map[b]:b;
+    out.push(`${nm}을 보면 타고난 ${nh}은 ${A} 쪽인데, 쓰는 ${dh}은 ${B} 쪽으로 바뀌었어요.`); }
+  if(rd.mount.top!==rn.mount.top) out.push(`가장 발달한 언덕도 ${nh}은 ${rn.mount.top}, ${dh}은 ${rd.mount.top}예요. 타고난 ${MOUNTS[rn.mount.top].kw.split('·')[0]} 위에 살면서 ${MOUNTS[rd.mount.top].kw.split('·')[0]}을 키워 오셨어요.`);
+  if(N.simian!==D.simian) out.push(D.simian==='있음'?`${dh}에만 막쥔손금이 있어요. 원래는 부드러웠는데 살면서 한번 정하면 끝까지 가는 집중력을 길러 오셨네요.`:`${nh}에만 막쥔손금이 있어요. 타고난 집중력이 큰데, 지금은 그 힘을 유연하게 나눠 쓰고 계세요.`);
+  const fx=(D.extra||{}).fine, fn=(N.extra||{}).fine; if(fx&&fn&&fx!==fn) out.push(`잔선은 ${nh}이 ${fn}, ${dh}이 ${fx}이에요. ${fx==='많음'?'요즘 생각할 일과 신경 쓸 일이 늘었다는 신호예요.':'지금은 마음이 정리되어 담백하게 움직이는 시기예요.'}`);
+  if(!out.length) out.push('양손의 주요선이 거의 같아요. 타고난 기질대로 꾸준히 살아오셨다는 뜻이고, 그만큼 성향이 단단하고 흔들림이 적은 분이에요.');
+  return {dh,nh,rd,rn,lines:out};
+}
+function synthesis(S){
+  const {R,L}=handsReady(); const hs=[R?'오른손':null,L?'왼손':null].filter(Boolean);
+  if(!hs.length) return null;
+  const dh=hs.includes(domHand())?domHand():hs[0];
+  let pt=[0,0,0,0,0,0]; hs.forEach(h=>{ const w=hs.length===1?1:(h===dh?0.65:0.35); const t=palmThemes(state.hands[h].feat,readingFor(h)); pt=pt.map((x,i)=>x+t[i]*w); });
+  const P=norm(pt), Sj=S?norm(sajuThemes(S)):null;
+  const comb=P.map((p,i)=>p+(Sj?Sj[i]:0));
+  const order=comb.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(x=>x[1]);
+  const agree=Sj?order.filter(i=>P[i]>=0.55&&Sj[i]>=0.55):[];
+  const palmOnly=Sj?order.filter(i=>P[i]>=0.7&&Sj[i]<0.4):[];
+  const sajuOnly=Sj?order.filter(i=>Sj[i]>=0.7&&P[i]<0.4):[];
+  return {P,Sj,order,agree,palmOnly,sajuOnly,top:order[0],dh};
+}
+const THEME_TXT=[
+ '사람을 이끌고 결정하는 자리에서 빛나요. 작게라도 팀이나 모임을 맡아 보세요.',
+ '생각을 표현하고 만들어 내는 일에서 빛나요. 글, 디자인, 기획, 콘텐츠처럼 결과물이 남는 일을 꾸준히 쌓아 보세요.',
+ '돈의 흐름을 읽고 거래를 만드는 감각이 있어요. 부업이나 작은 사업으로 감을 키우면 큰 재물로 이어져요.',
+ '한자리에서 오래 쌓아 인정받는 힘이 있어요. 조직 안에서 전문성과 직급을 함께 올리는 길이 잘 맞아요.',
+ '배우고 깊이 파고드는 힘이 커요. 자격증, 전문 지식, 연구처럼 남이 쉽게 따라 못 하는 무기를 만드세요.',
+ '사람과의 관계에서 운이 들어와요. 소개와 인맥, 가까운 사람의 도움이 기회가 되니 관계를 아끼세요.'];
+
+/* ---------- 6. 사주 입력 · 상담실 화면 ---------- */
+function sajuInput(){ try{ return JSON.parse(localStorage.getItem('sgw_saju')||'null'); }catch{ return null; } }
+function saveSajuInput(v){ try{ localStorage.setItem('sgw_saju',JSON.stringify(v)); }catch{} }
+function readSajuForm(){
+  const v={cal:$('#sjCal').value,leap:$('#sjLeap').checked,date:$('#sjDate').value,time:$('#sjUnknown').checked?'':$('#sjTime').value,gender:$('#sjGender').value,correct:$('#sjCorrect').checked};
+  if(!v.date){ toast('생년월일을 넣어 주세요'); return null; }
+  return v;
+}
+function runSaju(){
+  const v=readSajuForm(); if(!v) return;
+  saveSajuInput(v); state.sajuIn=v; renderCombo(); toast('사주를 세웠어요');
+  setTimeout(()=>$('#sjResult')&&$('#sjResult').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+function currentSaju(){
+  const v=state.sajuIn||sajuInput(); if(!v||!v.date) return null;
+  const [y,m,d]=v.date.split('-').map(Number);
+  const S=computeSaju({y,m,d,cal:v.cal,leap:v.leap,time:v.time||'',gender:v.gender,correct:v.correct});
+  return S.err?S:S;
+}
+function sajuHTML(S){
+  if(S.err) return `<div class="card"><p>${esc(S.err)}</p></div>`;
+  const pc=p=>`<div class="pl8"><div class="st e${stemEl(p.s)}">${STEM[p.s]}<small>${STEM_K[p.s]}</small></div><div class="st e${BR_EL[p.b]}">${BR[p.b]}<small>${BR_K[p.b]}</small></div></div>`;
+  const cols=[...S.P].reverse().map(([n,p])=>`<div class="pcol"><span>${n}</span>${pc(p)}<em>${n==='일주'?'나(일간)':tenGod(S.dm,p.s)}</em></div>`).join('');
+  const elBars=S.cnt.map((c,i)=>`<div class="elb"><span class="e${i}">${EL[i]}</span><i style="width:${Math.min(100,c*22)}%" class="b${i}"></i><b>${c}</b></div>`).join('');
+  const topG=S.gw.indexOf(Math.max(...S.gw));
+  const over=S.cnt.map((c,i)=>c>=3?EL_TXT.over[i]:null).filter(Boolean), lack=S.cnt.map((c,i)=>c===0?EL_TXT.lack[i]:null).filter(Boolean);
+  const L=EL_LUCK[S.yong];
+  const dae=S.dae.map(x=>`<div class="dae ${S.curDae&&S.curDae.age===x.age?'on':''}"><small>${x.age}세</small>${STEM[x.p.s]}${BR[x.p.b]}<small>${pname(x.p)}</small></div>`).join('');
+  const yrs=S.years.slice(0,5).map(x=>`<div class="yr"><b>${x.Y}년 ${pname(x.p)}</b> ${GROUPS[x.gs]}·${GROUPS[x.gb]} — ${YEAR_TXT[x.gs]}</div>`).join('');
+  return `
+  <div class="card"><h4>${ic('scroll',16)}사주 원국 <span class="sub">양력 ${S.solar.y}.${S.solar.m}.${S.solar.d}${S.known?'':' · 태어난 시 모름(3주)'}</span></h4><div class="pillars">${cols}</div></div>
+  <div class="card"><h4>${ic('sun',16)}일간 — 나를 나타내는 글자</h4><p>${DAYMASTER[S.dm]}</p></div>
+  <div class="card"><h4>${ic('layers',16)}오행 분포 · ${S.strength}</h4>${elBars}<p style="margin-top:10px">${S.strength==='신강'?'내 기운이 강한 사주예요. 힘을 밖으로 써서(표현·일·성과) 흘려보낼 때 운이 좋아져요.':S.strength==='신약'?'내 기운이 약한 편이라 도와주는 사람과 배움이 중요해요. 혼자 다 하려 하기보다 기댈 곳을 만들면 크게 돼요.':'기운이 고르게 섞인 중화 사주예요. 어느 쪽으로도 크게 치우치지 않아 균형 감각이 좋아요.'} ${over.concat(lack).join(' ')}</p>
+  <div class="tags" style="margin-top:8px"><span class="tag">보완 기운 · ${EL[S.yong]}(${EL_H[S.yong]})</span><span class="tag">색 · ${L.c}</span><span class="tag">방향 · ${L.d}</span><span class="tag">숫자 · ${L.n}</span></div></div>
+  <div class="card"><h4>${ic('compass',16)}십성 — 타고난 재능의 방향</h4><p>${GROUP_TXT[topG]}${S.dohwa?' 사주에 도화(子·午·卯·酉)가 있어 사람을 끄는 매력이 있어요.':''}${S.yeokma?' 역마(寅·申·巳·亥)가 있어 이동·변화·해외와 인연이 있어요.':''}</p></div>
+  <div class="card"><h4>${ic('calendar',16)}대운 — 10년마다 바뀌는 큰 흐름</h4><div class="daes">${dae}</div>${S.curDae?`<p style="margin-top:8px">지금(${S.age}세)은 <b>${pname(S.curDae.p)} 대운</b>이에요. ${YEAR_TXT[relOf(S.dm,S.curDae.p.s)]}</p>`:''}</div>
+  <div class="card"><h4>${ic('star',16)}올해와 앞으로의 해 (세운)</h4>${yrs}</div>
+  <div class="card"><h4>${ic('heart',16)}건강 관리 포인트 <span class="sub">전통 오행 기준 · 의학 진단 아님</span></h4><p>${S.cnt.map((c,i)=>c===0||c>=3?i:null).filter(x=>x!=null).map(i=>EL_CARE[i]).join(' / ')||'오행이 고르게 있어 특별히 치우친 곳은 없어요. 생활 리듬만 지키면 돼요.'}. 몸이 불편하면 꼭 병원 진료를 받으세요.</p></div>`;
+}
+function renderCombo(){
+  const el=$('#combo'); if(!el) return;
+  const {R,L}=handsReady(); const anyHand=R||L;
+  const v=state.sajuIn||sajuInput()||{cal:'양력',leap:false,date:'',time:'',gender:'여',correct:true};
+  const S=v.date?currentSaju():null;
+  let h=`<div class="sect-t" style="margin-top:28px">${ic('messages',15)} 손금왕 상담실</div>`;
+  h+=`<div class="card sj"><h4>${ic('user',16)}사주 정보</h4>
+   <div class="sjf"><select id="sjCal" class="sel"><option ${v.cal==='양력'?'selected':''}>양력</option><option ${v.cal==='음력'?'selected':''}>음력</option></select>
+   <label class="ck"><input type="checkbox" id="sjLeap" ${v.leap?'checked':''}> 윤달</label></div>
+   <input type="date" id="sjDate" value="${v.date}" class="sel">
+   <div class="sjf"><input type="time" id="sjTime" value="${v.time}" class="sel" ${v.date&&!v.time?'':''}><label class="ck"><input type="checkbox" id="sjUnknown" ${v.date&&!v.time?'checked':''}> 시간 모름</label></div>
+   <div class="sjf"><select id="sjGender" class="sel"><option ${v.gender==='여'?'selected':''}>여</option><option ${v.gender==='남'?'selected':''}>남</option></select>
+   <label class="ck"><input type="checkbox" id="sjCorrect" ${v.correct?'checked':''}> 서울 시차 보정(−32분)</label></div>
+   <button class="btn gold" onclick="runSaju()">${ic('scroll')}사주 세우기</button>
+   <p class="foot" style="margin-top:8px">생년월일은 이 기기에만 저장돼요. 1987·88년 서머타임은 자동 보정해요.</p></div>`;
+  h+=`<div id="sjResult">${S?sajuHTML(S):''}</div>`;
+  const C=compareHands();
+  if(C) h+=`<div class="card"><h4>${ic('hand',16)}양손 비교 <span class="sub">${C.nh}=타고난 것 · ${C.dh}=살아온 것</span></h4>${C.lines.map(x=>`<p style="margin-top:6px">${esc(x)}</p>`).join('')}</div>`;
+  const Y=anyHand?synthesis(S&&!S.err?S:null):null;
+  if(Y) h+=`<div class="card" style="border:1px solid #e0bd7266"><h4>${ic('sparkles',16)}${S&&!S.err?'사주 + 손금 종합 결론':'손금 종합 결론'}</h4><p>${esc(conclusionText(Y,S&&!S.err?S:null,C))}</p>
+   <div class="scores" style="margin-top:10px">${THEMES.map((t,i)=>`<div class="sc"><div class="k">${t}<b>${Math.round((Y.P[i]+(Y.Sj?Y.Sj[i]:Y.P[i]))*50)}</b></div><div class="bar"><i data-w="${Math.round((Y.P[i]+(Y.Sj?Y.Sj[i]:Y.P[i]))*50)}"></i></div></div>`).join('')}</div></div>`;
+  if(anyHand||S){
+    h+=`<div class="speak" id="consultBtn" onclick="consult()"><div class="pl">${ic('play',16)}</div><div class="t">전문가 상담 듣기<small>사주 → 양손 → 종합 결론 → 올해 조언 순서로 말해 드려요</small></div></div>
+    <div class="card qa"><h4>${ic('messages',16)}무엇이든 물어보세요</h4><div id="qaLog">${(state.qa||[]).map(qaItem).join('')}</div>
+    <div class="qchips">${['연애운은 어때요?','결혼은 언제쯤?','이직해도 될까요?','돈은 언제 모여요?','올해 운세는?','제 장점은 뭐예요?','어떤 일이 맞아요?','건강은 어때요?'].map(q=>`<span class="opt" onclick="ask('${q}')">${q}</span>`).join('')}</div>
+    <div class="qin"><input id="qText" placeholder="예: 내년에 창업해도 될까요?" onkeydown="if(event.key==='Enter')ask()">${(window.SpeechRecognition||window.webkitSpeechRecognition)?`<button class="btn ghost sm" onclick="listen()">${ic('mic',16)}</button>`:''}<button class="btn gold sm" onclick="ask()">${ic('send',16)}</button></div></div>`;
+  }
+  el.innerHTML=h;
+  setTimeout(()=>el.querySelectorAll('.bar i').forEach(b=>b.style.width=b.dataset.w+'%'),80);
+  $('#sjUnknown')&&$('#sjUnknown').addEventListener('change',e=>{$('#sjTime').disabled=e.target.checked});
+  if($('#sjTime')) $('#sjTime').disabled=$('#sjUnknown').checked;
+}
+function conclusionText(Y,S,C){
+  const T=i=>THEMES[i];
+  let s='';
+  if(S){
+    s+=`정리해서 말씀드릴게요. 사주로 보면 ${['갑목','을목','병화','정화','무토','기토','경금','신금','임수','계수'][S.dm]} 일간에 ${S.strength} 사주이고, 손금은 ${Y.dh} 기준으로 ${readingFor(Y.dh).type.title}이에요. `;
+    if(Y.agree.length) s+=`두 가지가 똑같이 가리키는 곳이 있어요. 바로 「${Y.agree.slice(0,2).map(T).join('」, 「')}」예요. 타고난 사주에도 있고 손에도 그대로 새겨져 있으니, 이건 확실한 강점이에요. ${THEME_TXT[Y.agree[0]]} `;
+    else s+=`가장 크게 드러나는 건 「${T(Y.top)}」이에요. ${THEME_TXT[Y.top]} `;
+    if(Y.sajuOnly.length) s+=`사주엔 「${T(Y.sajuOnly[0])}」의 기운이 큰데 손에는 아직 덜 드러나요. 타고난 재능을 아직 다 쓰지 않으셨다는 뜻이니, 이쪽을 써 보면 손금도 따라 바뀌어요. `;
+    if(Y.palmOnly.length) s+=`반대로 「${T(Y.palmOnly[0])}」은 사주엔 약한데 손에는 뚜렷해요. 타고난 게 아니라 살면서 노력으로 만들어 낸 힘이라 더 값져요. `;
+    const y0=S.years[0]; s+=`올해 ${y0.Y}년은 ${GROUPS[y0.gs]}의 해예요. ${YEAR_TXT[y0.gs]} `;
+    s+=`부족한 ${EL[S.yong]} 기운을 채우면 좋아요 — ${EL_LUCK[S.yong].c}색, ${EL_LUCK[S.yong].d} 방향이 도움이 돼요.`;
+  } else {
+    s+=`손금만으로 보면 가장 크게 드러나는 건 「${T(Y.top)}」이에요. ${THEME_TXT[Y.top]} 생년월일을 넣어 주시면 사주와 묶어서 더 정확히 말씀드릴게요.`;
+  }
+  if(C&&C.lines.length) s+=' 양손을 비교하면, '+C.lines[0];
+  return s;
+}
+
+/* ---------- 7. 질문에 답하기 (규칙 기반) ---------- */
+const INTENTS=[
+  ['death',/죽|사망|수명|언제\s*가|명줄|얼마나\s*살/],
+  ['marriage',/결혼|배우자|남편|아내|와이프|인연|짝|시집|장가/],
+  ['love',/연애|사랑|애인|연인|남친|여친|썸|이성|고백|재회|헤어/],
+  ['change',/이직|퇴사|창업|사업\s*시작|독립|전직|그만/],
+  ['career',/직업|일이|진로|적성|취업|승진|회사|커리어|맞는\s*일|어떤\s*일/],
+  ['money',/돈|재물|부자|투자|주식|코인|재테크|수입|월급|빚|금전/],
+  ['study',/시험|합격|공부|자격증|대학|입시|학업/],
+  ['health',/건강|병|아프|몸|컨디션|체력/],
+  ['move',/이사|해외|이민|유학|여행|이동/],
+  ['people',/인간관계|친구|동료|상사|사람\s*관계|대인/],
+  ['year',/올해|내년|이번\s*해|운세|\d{4}년/],
+  ['self',/장점|단점|성격|어떤\s*사람|나는|저는/],
+  ['lucky',/행운|색깔|숫자|방향|색/]
+];
+function qaItem(x){ return `<div class="qq">${esc(x.q)}</div><div class="qa-a">${esc(x.a)}</div>`; }
+function mainReading(){ const dh=domHand(); return readingFor(dh)||readingFor(otherHand(dh))||(state.feat?buildReading(state.feat):null); }
+function mainFeat(){ const dh=domHand(); return (state.hands[dh]&&state.hands[dh].feat)||(state.hands[otherHand(dh)]&&state.hands[otherHand(dh)].feat)||state.feat; }
+function yearsWith(S,gs,n=3){ return S.years.filter(x=>gs.includes(x.gs)||gs.includes(x.gb)).slice(0,n).map(x=>x.Y+'년'); }
+const ylist=(a,none)=>a.length?a.join(', '):none;
+function answer(q){
+  const r=mainReading(), f=mainFeat(), S0=currentSaju(), S=S0&&!S0.err?S0:null;
+  const it=(INTENTS.find(([,re])=>re.test(q))||['general'])[0];
+  const e=(f&&f.extra)||{}, P=[], Q=[];
+  const pre=pick=>pick[q.length%pick.length];
+  const open=pre(['좋은 질문이에요. ','네, 그 부분 짚어 볼게요. ','제가 보기엔 이래요. ']);
+  if(it==='death') return '수명이나 세상을 떠나는 때는 손금과 사주로 말씀드리지 않아요. 그건 누구도 알 수 없고, 알 필요도 없어요. 대신 지금을 건강하게 보내는 방법이라면 기꺼이 같이 봐 드릴게요.';
+  if(!r&&!S) return '먼저 손 사진이나 생년월일을 넣어 주세요. 근거를 보고 말씀드릴게요.';
+  if(it==='love'){
+    if(r) P.push(r.fortune.love);
+    if(f&&e.marriage) P.push(DB3.mshape[e.mshape]||'');
+    if(S){ const g=S.gender==='남'?2:3; const ys=yearsWith(S,[g,1]); P.push(`사주에서는 ${S.dohwa?'도화가 있어 매력이 드러나는 사주예요. ':''}${ys.length?ys.join(', ')+'에 이성 인연의 기운이 들어와요.':'가까운 해엔 인연의 기운이 크지 않으니 내가 먼저 움직이는 게 좋아요.'}`); }
+    Q.push('결론은, 마음을 먼저 표현하는 쪽이 이기는 운이에요.');
+  } else if(it==='marriage'){
+    if(f&&e.marriage){ P.push(DB3.marriage[e.marriage]); if(e.marriage!=='없음'&&e.myear!=null) P.push(`손금의 결혼선 위치로는 ${marriageAge(e.myear)}세 전후예요.`); }
+    if(e.influence==='있음') P.push('생명선 안쪽에 영향선도 있어 곁을 지켜 줄 사람이 들어온다는 표시가 있어요.');
+    if(S){ const g=S.gender==='남'?2:3; const ys=yearsWith(S,[g]); P.push(ys.length?`사주로는 ${S.gender==='남'?'재성(아내의 기운)':'관성(남편의 기운)'}이 들어오는 ${ys.join(', ')}이 인연이 맺어지기 좋은 때예요.`:`사주로는 앞으로 10년 안에 ${S.gender==='남'?'재성':'관성'}이 크게 들어오는 해가 뚜렷하지 않아요. 이런 사주는 때를 기다리기보다 소개와 모임으로 직접 기회를 만드는 쪽이 맞아요.`); }
+    Q.push('다만 결혼은 시기보다 사람이 먼저예요. 그 해에 소개나 모임을 일부러 늘려 보세요.');
+  } else if(it==='change'){
+    if(f){ P.push(f.head.start==='떨어짐'?'두뇌선이 생명선과 떨어진 독립형이라 내 판단으로 움직일 때 잘 풀려요.':'두뇌선이 생명선과 붙어 있어 충분히 준비하고 움직이는 게 맞는 손이에요.');
+      P.push(f.fate.has==='뚜렷'?'운명선이 뚜렷해 한 분야를 이어 가는 힘이 커요. 분야를 바꾸기보다 같은 분야에서 더 좋은 자리로 옮기는 이직이 유리해요.':'운명선이 강하지 않아 한 곳에 묶이기보다 여러 경험을 엮는 커리어가 맞아요. 이직 자체는 나쁘지 않아요.'); }
+    if(S){ const y0=S.years[0], good=[1,2,3]; P.push(`올해는 ${GROUPS[y0.gs]}의 해라 ${good.includes(y0.gs)?'움직이기 괜찮은 해':'준비하고 다지는 해'}예요. ${ylist(yearsWith(S,[3,1]),'다가오는 관성·식상의 해')}이 자리 이동과 새 출발에 힘이 실리는 해예요.`);
+      if(/창업|사업/.test(q)) P.push(S.gw[2]+S.gw[1]>=3?'사주에 재성과 식상이 있어 내 사업의 그릇이 있어요.':'사주상 재성이 약한 편이라 창업은 작게 시작해 검증하고 키우세요.'); }
+    Q.push('결론은 — 옮길 곳을 정해 두고 움직이세요. 그만두고 찾는 것보다 잡고 옮기는 게 이 손과 사주에 맞아요.');
+  } else if(it==='career'){
+    if(r) P.push(r.fortune.career);
+    if(S) P.push(GROUP_TXT[S.gw.indexOf(Math.max(...S.gw))]);
+    const Y=synthesis(S); if(Y) Q.push(`종합하면 「${THEMES[Y.top]}」 쪽이 가장 잘 맞아요. ${THEME_TXT[Y.top]}`);
+  } else if(it==='money'){
+    if(r) P.push(r.fortune.money);
+    if(e.windfall==='있음') P.push('횡재선도 있어 뜻밖의 수입 운이 있어요.');
+    if(S){ P.push(`사주로는 ${S.gw[2]>=2?'재성이 있어 돈 감각이 좋은':'재성이 약해 모으는 습관이 중요한'} 사주예요. ${ylist(yearsWith(S,[2,1]),'재성·식상이 오는 해')}에 돈이 움직여요.`); }
+    Q.push('투자는 크게 한 번보다 작게 여러 번, 그리고 정해 둔 원칙대로 하세요.');
+  } else if(it==='study'){
+    if(f){ P.push(f.head.len==='김'?'두뇌선이 길어 오래 붙잡고 깊게 파는 공부가 맞아요.':'두뇌선이 짧은 편이라 짧게 끊어 자주 반복하는 공부가 맞아요.'); if(e.improve==='있음') P.push(DB3.improve); }
+    if(S) P.push(`사주로는 인성의 해인 ${ylist(yearsWith(S,[4]),'인성이 오는 해')}가 시험·자격증에 좋아요.`);
+    Q.push('계획표보다 매일 같은 시간에 앉는 습관이 합격을 만들어요.');
+  } else if(it==='health'){
+    if(f){ P.push(f.life.depth==='선명'?'생명선이 깊고 또렷해 기본 체력이 좋은 손이에요.':'생명선이 옅은 편이라 무리하면 쉽게 지치는 손이에요. 쉬는 시간을 일정에 먼저 넣으세요.'); if(e.healthL==='있음') P.push(DB3.healthL); if(e.fine==='많음') P.push('잔선이 많아 신경을 많이 쓰는 편이니 마음의 피로를 잘 풀어 주세요.'); }
+    if(S){ const pts=S.cnt.map((c,i)=>c===0||c>=3?i:null).filter(x=>x!=null); if(pts.length) P.push('사주 오행으로 보면 '+pts.map(i=>EL_CARE[i]).join(', ')+' 쪽을 챙기면 좋아요.'); }
+    Q.push('이건 전통적인 관리 포인트일 뿐 진단이 아니에요. 불편한 곳이 있으면 꼭 병원에 가 보세요.');
+  } else if(it==='move'){
+    if(e.travel==='있음') P.push(DB3.travel); else if(f) P.push('여행선은 뚜렷하지 않아 생활 기반은 익숙한 곳에 두고 움직이는 편이 안정적이에요.');
+    if(S) P.push(S.yeokma?'사주에 역마가 있어 이동과 해외 인연이 강해요.':'사주에 역마는 없어요. 옮긴다면 이유와 계획이 분명할 때 좋아요.');
+  } else if(it==='people'){
+    if(f){ P.push(f.marks.inbok==='많음'?'인복선이 많아 도와주는 사람이 곁에 있어요.':'인복선은 보통이라 먼저 손 내미는 만큼 사람이 와요.'); if(e.sorrow==='있음') P.push(DB3.sorrow); }
+    if(S) P.push(S.gw[0]>=3?'사주에 비겁이 강해 자존심 대결이 생기기 쉬워요. 이기는 것보다 같이 가는 걸 고르세요.':'사주상 사람들과 부딪힘이 크지 않은 편이에요.');
+  } else if(it==='year'){
+    const m=q.match(/(\d{4})년/), Y=m?+m[1]:(/내년/.test(q)?new Date().getFullYear()+1:new Date().getFullYear());
+    if(S){ const x=S.years.find(t=>t.Y===Y)||S.years[0]; P.push(`${x.Y}년은 ${pname(x.p)}년, 나에게는 ${GROUPS[x.gs]}과 ${GROUPS[x.gb]}의 해예요. ${YEAR_TXT[x.gs]} ${x.gb!==x.gs?YEAR_TXT[x.gb]:''}`); if(S.curDae) P.push(`큰 흐름인 대운은 ${pname(S.curDae.p)}이에요.`); }
+    else if(r) P.push(r.advice);
+  } else if(it==='lucky'){
+    if(S){ const L=EL_LUCK[S.yong]; P.push(`보완하면 좋은 기운은 ${EL[S.yong]}이라 ${L.c}색, ${L.d} 방향, 숫자 ${L.n}이 행운이에요.`); }
+    if(r) P.push(`손금으로 본 행운 포인트는 ${r.lucky.color}, 숫자 ${r.lucky.number}, ${r.lucky.item}이에요.`);
+  } else if(it==='self'){
+    if(r) P.push(r.fortune.personality);
+    if(S) P.push(DAYMASTER[S.dm]);
+  } else {
+    const Y=synthesis(S); if(Y) P.push(conclusionText(Y,S,compareHands())); else if(S) P.push(DAYMASTER[S.dm]);
+    Q.push('더 구체적으로 연애, 결혼 시기, 이직, 돈, 공부, 건강, 이사처럼 물어봐 주시면 근거를 짚어 드릴게요.');
+  }
+  return (open+P.filter(Boolean).join(' ')+' '+Q.join(' ')).replace(/\s+/g,' ').trim();
+}
+function ask(q){
+  q=(q||($('#qText')&&$('#qText').value)||'').trim(); if(!q) return;
+  const a=answer(q); state.qa=(state.qa||[]).concat({q,a}).slice(-12);
+  const log=$('#qaLog'); if(log){ log.insertAdjacentHTML('beforeend',qaItem({q,a})); log.lastElementChild.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  if($('#qText')) $('#qText').value='';
+  stopSpeak(); speak(a);
+}
+function listen(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR) return;
+  const r=new SR(); r.lang='ko-KR'; r.interimResults=false; toast('말씀하세요…');
+  r.onresult=e=>{ const t=e.results[0][0].transcript; $('#qText').value=t; ask(t); };
+  r.onerror=()=>toast('음성을 못 들었어요'); r.start();
+}
+
+/* ---------- 8. 전문가 상담 (말하기) ---------- */
+function consultSteps(){
+  const S0=currentSaju(), S=S0&&!S0.err?S0:null, C=compareHands(), Y=synthesis(S), st=[];
+  st.push('반갑습니다. 오늘은 사주와 양손 손금을 같이 놓고, 하나의 이야기로 말씀드릴게요.');
+  if(S){ st.push(`먼저 사주부터 볼게요. 일주가 ${pname(S.P[2][1])}이시네요. ${DAYMASTER[S.dm]}`);
+    st.push(`오행은 ${S.cnt.map((c,i)=>EL[i]+' '+c).join(', ')}개로, ${S.strength} 사주예요. ${GROUP_TXT[S.gw.indexOf(Math.max(...S.gw))]}`);
+    if(S.curDae) st.push(`지금은 ${pname(S.curDae.p)} 대운을 지나고 계세요. ${YEAR_TXT[relOf(S.dm,S.curDae.p.s)]}`); }
+  ['오른손','왼손'].forEach(h=>{ const r=readingFor(h); if(!r) return; const d=state.hands[h].feat;
+    st.push(`${h}을 볼게요. ${(h===domHand())?'주로 쓰는 손이라 살아온 모습이 담겨 있어요.':'덜 쓰는 손이라 타고난 기질이 담겨 있어요.'} ${r.ht.name}에 ${r.type.title}, 가장 발달한 언덕은 ${r.mount.top}예요. ${DB.head.dir[d.head.dir]} ${DB.heart.end[d.heart.end]}`);
+    const xl=h===domHand()?(r.extraLines||[]).filter(l=>l.read).slice(0,3).map(l=>l.read).join(' '):''; if(xl) st.push(xl); });
+  if(C) st.push('두 손을 나란히 놓고 보면요. '+C.lines.join(' '));
+  if(Y) st.push(conclusionText(Y,S,null));
+  st.push('손금은 노력하면 바뀌고, 사주는 흐름을 알려 줄 뿐 정답은 아니에요. 궁금한 게 있으면 아래에 편하게 물어보세요.');
+  return st;
+}
+let consulting=false;
+async function consult(){
+  if(consulting){ stopSpeak(); consulting=false; return; }
+  const steps=consultSteps(); consulting=true; const my=++narrateId;
+  const btn=$('#consultBtn'); if(btn) btn.querySelector('.pl').innerHTML=ic('stop',14);
+  for(const s of steps){ if(my!==narrateId) break;
+    if(btn) btn.querySelector('small').textContent=s.slice(0,60)+'…';
+    await speak(s); if(my!==narrateId) break; await new Promise(r=>setTimeout(r,300)); }
+  consulting=false; if(btn){ btn.querySelector('.pl').innerHTML=ic('play',16); btn.querySelector('small').textContent='사주 → 양손 → 종합 결론 → 올해 조언 순서로 말해 드려요'; }
+}
+
+renderTabs(); renderCombo();
+
 </script>
 </body>
 </html>

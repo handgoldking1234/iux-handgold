@@ -24,6 +24,20 @@ async def main():
             await pg.click('#speakBtn'); await pg.wait_for_timeout(200); await pg.click('#speakBtn')
             await pg.screenshot(path=str(ROOT / f'tests/out_{img}'), full_page=True)
             await pg.evaluate("resetPhoto()")
+        # v2: 양손 + 사주 + 질문
+        await pg.evaluate("go('photo')")
+        await pg.set_input_files('#filePick', str(ROOT / 'tests/fixtures/palm.png')); await pg.wait_for_timeout(600)
+        await pg.evaluate("runAnalysis()"); await pg.wait_for_timeout(2000)
+        await pg.evaluate("switchHand('왼손')")
+        await pg.set_input_files('#filePick', str(ROOT / 'tests/fixtures/palm2.png')); await pg.wait_for_timeout(600)
+        await pg.evaluate("runAnalysis()"); await pg.wait_for_timeout(2000)
+        await pg.evaluate("toggleLineView()")
+        await pg.evaluate("state.sajuIn={cal:'음력',leap:false,date:'1979-07-29',time:'07:00',gender:'남',correct:true}; renderCombo()")
+        sj = await pg.evaluate("currentSaju().P.map(([n,p])=>STEM[p.s]+BR[p.b]).join(' ')")
+        print('saju', sj); assert sj == '己未 癸酉 庚寅 己卯', sj
+        for q in ['결혼은 언제쯤?', '이직해도 될까요?', '언제 죽어요?']:
+            print(q, '→', (await pg.evaluate(f"answer({q!r})"))[:80])
+        await pg.evaluate("stopSpeak()")
         print('errors', errs)
         await b.close()
         assert not errs, errs
